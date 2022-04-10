@@ -8,32 +8,43 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="483.0" prefWidth="424.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LogInController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="560.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LogInController">
     <children>
-        <ImageView fitHeight="211.0" fitWidth="360.0" layoutX="39.0" layoutY="39.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="420.0" fitWidth="560.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../resources/Mesa%20de%20trabajo%202xxxhdpi.png" />
+            <Image url="@../resources/LogIn_Background.jpg" />
          </image>
-        </ImageView>
-      <Label alignment="CENTER" layoutX="112.0" layoutY="250.0" prefHeight="25.0" prefWidth="200.0" text="Usuari" textAlignment="CENTER">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <TextField fx:id="textFieldUsuari" layoutX="112.0" layoutY="275.0" prefWidth="200.0" />
-        <Label alignment="CENTER" layoutX="112.0" layoutY="316.0" prefHeight="25.0" prefWidth="200.0" text="Password" textAlignment="CENTER">
-         <font>
-            <Font size="14.0" />
-         </font></Label>
-      <PasswordField fx:id="passwordFieldPassword" layoutX="112.0" layoutY="341.0" prefWidth="200.0" />
-      <Label fx:id="labelLogInMissatge" alignment="CENTER" layoutX="108.0" layoutY="381.0" prefHeight="17.0" prefWidth="200.0">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-        <Button fx:id="buttonLogIn" layoutX="174.0" layoutY="417.0" mnemonicParsing="false" onAction="#logInButtonAction" prefHeight="30.0" prefWidth="76.0" text="Accedir">
-         <font>
-            <Font size="14.0" />
-         </font></Button>
+      </ImageView>
+      <AnchorPane prefHeight="420.0" prefWidth="268.0" style="-fx-background-color: #FFFFFF80;">
+         <children>
+              <ImageView fitHeight="128.0" fitWidth="210.0" layoutX="30.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../resources/Mesa%20de%20trabajo%208mdpi.png" />
+               </image>
+              </ImageView>
+            <Label alignment="CENTER" layoutX="34.0" layoutY="198.0" prefHeight="25.0" prefWidth="200.0" text="Usuari" textAlignment="CENTER">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="textFieldUsuari" layoutX="34.0" layoutY="222.0" prefWidth="200.0" />
+              <Label alignment="CENTER" layoutX="34.0" layoutY="254.0" prefHeight="25.0" prefWidth="200.0" text="Password" textAlignment="CENTER">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <PasswordField fx:id="passwordFieldPassword" layoutX="34.0" layoutY="279.0" prefWidth="200.0" />
+            <Label fx:id="labelLogInMissatge" alignment="CENTER" layoutX="34.0" layoutY="312.0" prefHeight="17.0" prefWidth="200.0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+              <Button fx:id="buttonLogIn" layoutX="96.0" layoutY="339.0" mnemonicParsing="false" onAction="#logInButtonAction" prefHeight="30.0" prefWidth="76.0" text="Accedir">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
     </children>
 </AnchorPane>

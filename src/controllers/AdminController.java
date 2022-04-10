@@ -14,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -38,6 +39,8 @@ public class AdminController implements Initializable {
         Stage stage = new Stage();
         Scene scene = new Scene(parent);
         stage.setScene(scene);
+        Image icon = new Image("/resources/icon.png");
+        stage.getIcons().add(icon);
         stage.setTitle("Dumo-Go");
         stage.setResizable(false);
         stage.show();

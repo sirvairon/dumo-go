@@ -19,12 +19,17 @@ public class DumoGo extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
+        
+        // Carreguem la finestra principal per fer login
         Parent root = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));        
         Scene scene = new Scene(root);
+        // Establim icono aplicació
         Image icon = new Image("/resources/icon.png");
         stage.getIcons().add(icon);
+        // Establim titol aplicació i altres propietats
         stage.setTitle("Dumo-Go");
         stage.setResizable(false);
+        // L'afegim a l'stage i la mostrem
         stage.setScene(scene);
         stage.show();
     }
@@ -38,6 +43,8 @@ public class DumoGo extends Application {
     
     @Override
     public void init() throws Exception {
-            Thread.sleep(2500);
+        
+        // Afegim un sleep per mostrar un temps la pantalla de benvinguda
+        Thread.sleep(2500);
     }
 }
