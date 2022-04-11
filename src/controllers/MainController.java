@@ -97,4 +97,18 @@ public class MainController implements Initializable {
         stage.show();
     }  
     
+        @FXML
+    private void veureUsuariButtonAction(ActionEvent event) throws IOException {
+        ((Node) (event.getSource())).getScene().getWindow().hide();
+        Parent parent = FXMLLoader.load(getClass().getResource("/views/Usuari.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(parent);
+        stage.setScene(scene);
+        Image icon = new Image("/resources/icon.png");
+        stage.getIcons().add(icon);
+        stage.setTitle("Dumo-Go");
+        stage.setResizable(false);
+        stage.show();
+    }  
+    
 }

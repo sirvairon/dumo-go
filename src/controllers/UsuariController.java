@@ -8,6 +8,7 @@ import dumogo.AccionsClient;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -48,7 +49,7 @@ public class UsuariController implements Initializable {
     private TextField textFieldCognom;
     
     @FXML
-    private TextField textFieldSegonCognom;
+    private TextField textFieldCognom2;
     
     @FXML
     private TextField textFieldTelefon;
@@ -68,12 +69,15 @@ public class UsuariController implements Initializable {
     @FXML
     private TextField textFieldCodiPostal;
     
+    @FXML
+    private TextField textFieldEmail;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
     
-        @FXML
+    @FXML
     private void volverButtonAction(ActionEvent event) throws IOException, ClassNotFoundException {
         ((Node) (event.getSource())).getScene().getWindow().hide();
         Parent parent = FXMLLoader.load(getClass().getResource("/views/Main.fxml"));
@@ -87,18 +91,35 @@ public class UsuariController implements Initializable {
         stage.show();
     }
     
+    @FXML
     private void verButtonAction(ActionEvent event) throws IOException, ClassNotFoundException {
         
-        String usuari = textFieldNomUsuari.getText();
+        // Creem el HashMap on rebrem les dades de l'usuari
+        HashMap<String, String> msg_in;
         
-        AccionsClient accions_client = new AccionsClient();
-        
-        //resposta = connexio_client.establirConnexio(usuari, password);
-        //resposta = connexio_client.obtenirUsuari(usuari);
-        //labelLogInMissatge.setText(resposta);
-        HashMap resposta2 = new HashMap<String, String>();
-        //resposta2 = accions_client.obtenirUsuari(usuari);      
-        
-        textFieldDireccio.setText((String)resposta2.get("direccio"));
+        // Cridem el metode per rebre les dades de l'usuari
+        msg_in = AccionsClient.obtenirUsuari();
+        System.out.println(msg_in.toString());
+        // Omplim els labels amb les dades rebudes
+        textFieldNumSoci.setText(msg_in.get("num_soci"));
+        textFieldDNI.setText(msg_in.get("dni"));
+        textFieldNom.setText(msg_in.get("nom"));
+        textFieldCognom.setText(msg_in.get("cognom1"));
+        textFieldCognom2.setText(msg_in.get("cognom2"));
+        textFieldTelefon.setText(msg_in.get("telefon"));
+        textFieldTelefon2.setText(msg_in.get("telefon"));
+        textFieldDireccio.setText(msg_in.get("direccio"));
+        textFieldPoblacio.setText(msg_in.get("poblacio"));
+        textFieldProvincia.setText(msg_in.get("provincia"));
+        textFieldCodiPostal.setText(msg_in.get("codi_postal"));
+        textFieldEmail.setText(msg_in.get("email"));
+        textFieldNomUsuari.setText(msg_in.get("user_name"));
     }
+    
+    @FXML
+    private void modificarButtonAction(ActionEvent event) throws IOException, ClassNotFoundException {
+
+
+    }
+    
 }

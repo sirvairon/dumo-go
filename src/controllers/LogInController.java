@@ -57,16 +57,25 @@ public class LogInController implements Initializable {
         // Cridem el mètode per fer LogIn i guardem el codi de retorn obtingut
         String codi_retorn = AccionsClient.ferLogin(usuari, password);      
 
-        // En cas d'error mostrem l'error en la label destinada per aquest us
+        // En cas d'error comprobem el significat i mostrem l'error en la label destinada per aquest us
         if(!codi_retorn.equals("1000")){
-            labelLogInMissatge.setText(CodiErrors.ComprobarCodiError(codi_retorn));
-        // En cas d'error mostrem l'error en la label destinada per aquest us
+            String significat_codi_retorn = CodiErrors.ComprobarCodiError(codi_retorn);
+            System.out.println("Codi de retorn: " + codi_retorn + " - " + significat_codi_retorn);
+            labelLogInMissatge.setText(significat_codi_retorn);
+            
+        // Si es correcte accedim a la finestra corresponent si es admin o client
         }else{
             ((Node) (event.getSource())).getScene().getWindow().hide();
-            Parent parent = FXMLLoader.load(getClass().getResource("/views/Main.fxml"));
+            
+            Parent parent;            
+            if(usuari.equals("admin")){
+                parent = FXMLLoader.load(getClass().getResource("/views/Admin.fxml"));
+            }else {
+                parent = FXMLLoader.load(getClass().getResource("/views/Main.fxml"));
+            }
+            
             Stage stage = new Stage();
             Scene scene = new Scene(parent);
-
             stage.setScene(scene);
             stage.setResizable(false);
             Image icon = new Image("/resources/icon.png");

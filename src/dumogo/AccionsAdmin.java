@@ -13,7 +13,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author marcd
  */
-public class AccionsClient {
+public class AccionsAdmin {
     
     private static String codi_connexio_client;
     private static String user_name;
@@ -132,7 +131,7 @@ public class AccionsClient {
         return null;        
     }  
     
-    public static List obtenirLlistatUsuaris() throws ClassNotFoundException{
+    public static HashMap obtenirLlistatUsuaris() throws ClassNotFoundException{
         
         try {
             // Establim connexio
@@ -141,7 +140,6 @@ public class AccionsClient {
             // Creem els HashMaps per enviar i rebre les dades per fer la accio
             HashMap<String, String> msg_out = new HashMap<>();
             HashMap<String, String> msg_in;
-            List llistat;
 
             // Omplim el HasMap amb usuari, password i el codi de connexio buit
             msg_out.put("accio", "obtenir_llistat_usuaris");
@@ -149,14 +147,14 @@ public class AccionsClient {
             
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);            
-            llistat = (List) mapInputStream.readObject();         
+            msg_in = (HashMap) mapInputStream.readObject();         
             
             // Establim connexio
             yourOutputStream.close();
             mapInputStream.close();
             
             // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
-            return llistat;            
+            return msg_in;            
             
         } catch (UnknownHostException ex) {
             Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);

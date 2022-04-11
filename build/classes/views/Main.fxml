@@ -41,7 +41,7 @@
          <children>
             <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="17.0">
                <children>
-                  <Button alignment="CENTER" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="test2" text="U" textAlignment="CENTER">
+                  <Button fx:id="buttonUsuari" alignment="CENTER" mnemonicParsing="false" onAction="#veureUsuariButtonAction" prefHeight="40.0" prefWidth="40.0" styleClass="test2" text="U" textAlignment="CENTER">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>

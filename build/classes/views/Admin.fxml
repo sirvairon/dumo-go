@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.media.*?>
 <?import java.lang.*?>
 <?import java.net.*?>
 <?import java.util.*?>
@@ -7,12 +11,93 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="controllers.AdminController">
-    <stylesheets>
-        <URL value="@/styles/admin.css" />
-    </stylesheets>
+<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" styleClass="mainFxmlClass" stylesheets="@../styles/admin.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminController">
    <children>
-      <Label alignment="CENTER" layoutX="214.0" layoutY="177.0" prefHeight="46.0" prefWidth="172.0" text="ADMINISTRADOR" />
-      <Button fx:id="tancarSessio" layoutX="274.0" layoutY="262.0" mnemonicParsing="false" onAction="#tancarSessioButtonAction" text="Volver" />
+      <HBox alignment="CENTER_LEFT" prefWidth="1205.0" styleClass="menuTop">
+         <children>
+            <VBox styleClass="logo_titol">
+               <children>
+                  <ImageView fitHeight="150.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../resources/name_icon.png" />
+                     </image>
+                  </ImageView>
+                  <Label styleClass="titolAdministrador" text="Aministrador">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                  <MenuButton mnemonicParsing="false" styleClass="menuButton" text="Usuaris">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                        <CustomMenuItem mnemonicParsing="false" text="Unspecified Action">
+                          <content>
+                            <CheckBox text="Click Me" />
+                          </content>
+                        </CustomMenuItem>
+                    </items>
+                  </MenuButton>
+                  <MenuButton mnemonicParsing="false" styleClass="menuButton" text="Biblioteca">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                    </items>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </MenuButton>
+                  <MenuButton mnemonicParsing="false" styleClass="menuButton" text="Prèstecs">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                    </items>
+                  </MenuButton>
+               </children>
+               <padding>
+                  <Insets left="60.0" />
+               </padding>
+            </HBox>
+            <Button fx:id="tancarSessio" mnemonicParsing="false" onAction="#tancarSessioButtonAction" text="Tancar sessió" />
+         </children>
+      </HBox>
+      <SplitPane dividerPositions="0.12818003913894324" layoutY="92.0" prefHeight="675.0" prefWidth="1024.0">
+         <items>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#obtenirLlistatUsuaris" text="Button" />
+                  <Button mnemonicParsing="false" text="Button" />
+                  <Button mnemonicParsing="false" text="Button" />
+               </children>
+            </VBox>
+            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Llista d'usuaris">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <TableView fx:id="tableViewUsuaris" prefHeight="520.0" prefWidth="888.0">
+                                <columns>
+                                  <TableColumn prefWidth="75.0" text="C1" />
+                                  <TableColumn prefWidth="75.0" text="C2" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab text="Untitled Tab 2">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+         </items>
+      </SplitPane>
    </children>
 </AnchorPane>
