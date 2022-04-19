@@ -484,7 +484,7 @@ public class AdminController implements Initializable {
         significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
         alerta.setTitle("Tancar sessió");
         alerta.setContentText("");
-        if(codi_resposta.equals("20")){
+        if(codi_resposta.equals("20") || codi_resposta.equals("10")){
             ((Node) (event.getSource())).getScene().getWindow().hide();
             Parent parent = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));
             Stage stage = new Stage();
