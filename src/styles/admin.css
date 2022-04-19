@@ -2,12 +2,70 @@
  * Empty Stylesheet file.
  */
 
+* {
+    /*-fx-font: "Tahoma", Arial, sans-serif;*/
+    -fx-font-family: "Tahoma", Arial, sans-serif;
+}
 .mainFxmlClass {
+    /*
+    -fx-font: "Helvetica", Arial, sans-serif;
+    -fx-font-family: "Helvetica", Arial, sans-serif;
+    */
+    /*-fx-font-family: 'Verdana', Arial, sans-serif;*/
 
 }
 
+.tab-pane:top *.tab-header-area {
+    /*-fx-background-insets: 0, 0 0 0 0;*/
+ /* -fx-padding: 0.416667em 0.166667em 0.0em 0.833em; /* 5 2 0 10 */
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em; /* overridden as 5 2 0 0 */
+    -fx-border-radius: 0px;
+    -fx-background-radius: 0;
+}
+
+.tab-pane:bottom *.tab-header-area {
+   /* -fx-background-insets: 0, 0 0 0 0;*/
+ /* -fx-padding: 0.416667em 0.166667em 0.0em 0.833em; /* 5 2 0 10 */
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em; /* overridden as 5 2 0 0 */
+    -fx-border-radius: 0px;
+    -fx-background-radius: 0;
+}
+
+.tabPaneGeneral{
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em;    
+}
+
+.tabPaneGeneral .tab {
+    -fx-font-size: 14px; 
+    /*-fx-background-color: #0288D1;*/
+    -fx-cursor: hand;
+    -fx-border-radius: 0px;
+    -fx-border-width: 0px 0px 0px 0px;
+    /*-fx-border-width: 1px 1px 1px 1px;*/
+    -fx-border-color: #03A9F4;
+    -fx-background-radius: 0;
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em;
+    /*-fx-text-fill: #ffffff;*/
+    /*-fx-background-insets: 0, 0 0 0 0;*/
+}
+
+.tabPaneGeneral .tab-label {
+    -fx-padding: 0.999999em 2.332em 0.999999em 2.332em;
+    /*-fx-text-fill: #ffffff;*/
+}
+
+.taulaGeneral {
+    
+    
+}
+
+.tabPaneGeneral .split-pane {
+    /*-fx-padding: 0.999999em 0.0em 0.0em 0.0em;*/
+}
+
+
 .menuTop {
-    -fx-padding: 1em 0 1em 0;
+    -fx-padding: 1em 1em 1em 1em;
 }
 
 .menuButton {    
@@ -16,16 +74,24 @@
     -fx-padding: 0.999999em 2.332em 0.999999em 2.332em;
     -fx-font-size: 14px;    
     -fx-accent: #03A9F4;
-    -fx-accent-text-fill: red;
-    -fx-focus-color: red;
+    /*-fx-accent-text-fill: red;*/
+    /*-fx-focus-color: red;*/
 }
 
-.menuButton > .label{
+.menuButton .label{
     -fx-text-fill: #ffffff;
 }
 
-.menuButton > .menu-item > .label {
+.menuButton .menu-item {
+    -fx-text-fill: #ffffff;
+} 
+
+.menuButton .menu-item .label {
     -fx-text-fill: #000000;
+}
+
+.menuButton .menu-item:focused  .label {
+    -fx-text-fill: #ffffff;
 }
 
 .arrow-button > .arrow {
@@ -33,7 +99,7 @@
 }
 
 .logo_titol{
-    -fx-padding: 0 0 0 1.333332em;
+    -fx-padding: 0 0 0 0;
 }
 
 .titolAdministrador {
@@ -56,4 +122,41 @@
     -fx-background-radius: 3, 2;
     -fx-cursor: hand;
     -fx-padding: 0.333333em 0.583em 0.333333em 0.583em; /* 4 7 4 7 */
+}
+
+.hboxBotonesEdicion {
+    -fx-padding: 0.999999em 0.999999em 0.999999em 0.999999em;
+    -fx-alignment: CENTER_RIGHT;
+    -fx-spacing: 3.333333em;
+}
+
+.hboxBotonesEdicion .button {
+    -fx-background-color: #03A9F4;
+    -fx-text-fill: #ffffff;
+    -fx-cursor: hand;
+    -fx-padding: 0.333333em 0.333333em 0.333333em 0.333333em;
+    -fx-font-size: 14px;    
+    -fx-accent: #03A9F4;
+    -fx-pref-width: 90;
+}
+
+.hBoxResultat {
+    -fx-alignment: TOP_RIGHT;
+    -fx-padding: 0.666666em 0.666666em 0.666666em 0.666666em;
+    -fx-spacing: 0.5em;
+}
+
+.hBoxResultat .label {
+    -fx-font-size: 14px; 
+}
+
+.hBoxFooter{
+    -fx-background-color: #03A9F4;   
+    -fx-padding: 0.666666em 0.666666em 0.666666em 0.666666em;
+}
+
+.hBoxFooter .label {
+    -fx-background-color: #03A9F4;  
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px; 
 }

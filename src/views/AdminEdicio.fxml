@@ -10,13 +10,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" fx:id="raiz" styleClass="mainFxmlClass" stylesheets="@../styles/usuari.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UsuariController">
+<AnchorPane id="AnchorPane" fx:id="raiz" styleClass="mainFxmlClass" stylesheets="@../styles/usuari.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminEdicioController">
    <children>
       <VBox layoutY="7.0" styleClass="vBoxGeneral">
          <children>
             <VBox styleClass="vboxSeccion">
                <children>
-                  <Label id="titolSeccioPrincipal" text="Dades d'usuari" />
+                  <Label id="titolSeccioPrincipal" text="Dades d'administrador" />
                   <HBox styleClass="hboxSeccion">
                      <children>
                         <VBox alignment="CENTER" styleClass="usuariImage">

@@ -10,16 +10,16 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" fx:id="raiz" styleClass="mainFxmlClass" stylesheets="@../styles/usuari.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UsuariController">
+<AnchorPane id="AnchorPane" fx:id="raiz" styleClass="mainFxmlClass" stylesheets="@../styles/usuariedicio.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UsuariEdicioController">
    <children>
       <VBox layoutY="7.0" styleClass="vBoxGeneral">
          <children>
             <VBox styleClass="vboxSeccion">
                <children>
                   <Label id="titolSeccioPrincipal" text="Dades d'usuari" />
-                  <HBox styleClass="hboxSeccion">
+                  <HBox alignment="TOP_RIGHT" styleClass="hboxSeccion">
                      <children>
-                        <VBox alignment="CENTER" styleClass="usuariImage">
+                        <VBox alignment="CENTER" styleClass="usuariImage" HBox.hgrow="ALWAYS">
                            <children>
                               <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -43,8 +43,8 @@
                                     </VBox>
                                     <VBox>
                                        <children>
-                                          <Label fx:id="labelNumSoci" layoutX="327.0" layoutY="38.0" text="Número de soci" />
-                                          <TextField fx:id="textFieldNumSoci" layoutX="412.0" layoutY="34.0" prefWidth="200.0" />
+                                          <Label fx:id="labelPassword" layoutX="327.0" layoutY="38.0" text="Password" />
+                                          <PasswordField fx:id="passwordFieldPassword" prefWidth="200.0" />
                                        </children>
                                     </VBox>
                                  </children>
@@ -53,8 +53,8 @@
                                  <children>
                                     <VBox>
                                        <children>
-                                          <Label fx:id="labelNumSoci1" layoutX="327.0" layoutY="38.0" text="Data d'alta" />
-                                          <TextField fx:id="textFieldDataAlta" layoutX="412.0" layoutY="34.0" prefWidth="200.0" />
+                                          <Label fx:id="labelNumSoci2" layoutX="327.0" layoutY="38.0" text="Número de soci" />
+                                          <TextField fx:id="textFieldNumSoci" layoutX="412.0" layoutY="34.0" prefWidth="200.0" />
                                        </children>
                                     </VBox>
                                     <VBox>
@@ -66,6 +66,22 @@
                                  </children>
                               </HBox>
                               <HBox spacing="40.0" />
+                              <HBox spacing="40.0">
+                                 <children>
+                                    <VBox>
+                                       <children>
+                                          <Label fx:id="labelNumSoci1" layoutX="327.0" layoutY="38.0" text="Data d'alta" />
+                                          <DatePicker fx:id="datePickerDataAlta" prefHeight="23.0" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox>
+                                       <children>
+                                          <Label fx:id="labelAdminAlta" text="Administrador alta" />
+                                          <TextField fx:id="textFieldAdminAlta" disable="true" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
                      </children>

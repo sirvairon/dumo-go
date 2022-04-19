@@ -85,3 +85,11 @@
     -fx-pref-width: 90;
 }
 
+.hboxResposta {
+    -fx-padding: 0.999999em 0 0 0;
+}
+
+.hboxResposta > .label {
+    -fx-padding: 0.333333em 0.333333em 0.333333em 0.333333em;
+    
+}

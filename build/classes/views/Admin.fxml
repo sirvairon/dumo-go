@@ -11,9 +11,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" styleClass="mainFxmlClass" stylesheets="@../styles/admin.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminController">
+<VBox id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../styles/admin.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminController">
    <children>
-      <HBox alignment="CENTER_LEFT" prefWidth="1205.0" styleClass="menuTop">
+      <HBox alignment="CENTER_LEFT" styleClass="menuTop">
          <children>
             <VBox styleClass="logo_titol">
                <children>
@@ -22,7 +22,7 @@
                         <Image url="@../resources/name_icon.png" />
                      </image>
                   </ImageView>
-                  <Label styleClass="titolAdministrador" text="Aministrador">
+                  <Label styleClass="titolAdministrador" text="Administrador">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
@@ -33,13 +33,10 @@
                <children>
                   <MenuButton mnemonicParsing="false" styleClass="menuButton" text="Usuaris">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Action 1" />
-                      <MenuItem mnemonicParsing="false" text="Action 2" />
-                        <CustomMenuItem mnemonicParsing="false" text="Unspecified Action">
-                          <content>
-                            <CheckBox text="Click Me" />
-                          </content>
-                        </CustomMenuItem>
+                      <MenuItem mnemonicParsing="false" onAction="#veureLlistatUsuaris" text="Llistat d'usuaris" />
+                      <MenuItem mnemonicParsing="false" text="Llistat d'administradors" />
+                        <MenuItem mnemonicParsing="false" onAction="#afegirUsuari" text="Afegir usuari" />
+                        <MenuItem mnemonicParsing="false" text="Afegir administrador" />
                     </items>
                   </MenuButton>
                   <MenuButton mnemonicParsing="false" styleClass="menuButton" text="Biblioteca">
@@ -62,42 +59,78 @@
                   <Insets left="60.0" />
                </padding>
             </HBox>
-            <Button fx:id="tancarSessio" mnemonicParsing="false" onAction="#tancarSessioButtonAction" text="Tancar sessió" />
+            <Pane HBox.hgrow="ALWAYS" />
+            <Button fx:id="tancarSessio" mnemonicParsing="false" onAction="#ferLogout" text="Tancar sessió" />
          </children>
       </HBox>
-      <SplitPane dividerPositions="0.12818003913894324" layoutY="92.0" prefHeight="675.0" prefWidth="1024.0">
-         <items>
-            <VBox prefHeight="200.0" prefWidth="100.0">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#obtenirLlistatUsuaris" text="Button" />
-                  <Button mnemonicParsing="false" text="Button" />
-                  <Button mnemonicParsing="false" text="Button" />
-               </children>
-            </VBox>
-            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
-              <tabs>
-                <Tab text="Llista d'usuaris">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+      <TabPane fx:id="tabPaneGeneral" styleClass="tabPaneGeneral" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="Infinity" tabMaxWidth="Infinity" tabMinHeight="8.0" tabMinWidth="8.0" VBox.vgrow="ALWAYS">
+        <tabs>
+          <Tab closable="false" text="Inici">
+               <content>
+                  <VBox alignment="CENTER">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="200.0">
                            <children>
-                              <TableView fx:id="tableViewUsuaris" prefHeight="520.0" prefWidth="888.0">
-                                <columns>
-                                  <TableColumn prefWidth="75.0" text="C1" />
-                                  <TableColumn prefWidth="75.0" text="C2" />
-                                </columns>
-                              </TableView>
+                              <Button mnemonicParsing="false" text="Button" />
+                              <Button mnemonicParsing="false" text="Button" />
+                              <Button mnemonicParsing="false" text="Button" />
                            </children>
-                        </AnchorPane>
-                  </content>
-                </Tab>
-                <Tab text="Untitled Tab 2">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                  </content>
-                </Tab>
-              </tabs>
-            </TabPane>
-         </items>
-      </SplitPane>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="200.0">
+                           <children>
+                              <Button mnemonicParsing="false" text="Button" />
+                              <Button mnemonicParsing="false" text="Button" />
+                              <Button mnemonicParsing="false" text="Button" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="200.0">
+                           <children>
+                              <Button mnemonicParsing="false" text="Button" />
+                              <Button mnemonicParsing="false" text="Button" />
+                              <Button mnemonicParsing="false" text="Button" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+            <Tab text="Llistat d'usuaris">
+               <content>
+                  <VBox styleClass="vbUsuaris">
+                     <children>
+                        <HBox alignment="CENTER" spacing="40.0" styleClass="hboxBotonesEdicion">
+                           <children>
+                              <HBox>
+                                 <children>
+                                    <Button mnemonicParsing="false" text="Button" />
+                                    <TextField />
+                                 </children>
+                              </HBox>
+                              <Button mnemonicParsing="false" text="Actualitzar" />
+                              <Button mnemonicParsing="false" text="Afegir" />
+                              <Button mnemonicParsing="false" text="Modificar" />
+                              <Button mnemonicParsing="false" text="Eliminar" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="tableViewUsuaris1" VBox.vgrow="ALWAYS" />
+                        <HBox alignment="TOP_RIGHT" spacing="5.0" styleClass="hBoxResultat">
+                           <children>
+                              <Label fx:id="labelResultat" contentDisplay="RIGHT" text="Resultat:" textAlignment="RIGHT" />
+                              <Label text="Valor" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+      <HBox alignment="CENTER" prefWidth="200.0" styleClass="hBoxFooter">
+         <children>
+            <Label text="Dumo-Go  App. 2022" />
+            <Pane HBox.hgrow="ALWAYS" />
+            <Label text="v. 1.0" />
+         </children>
+      </HBox>
    </children>
-</AnchorPane>
+</VBox>

@@ -9,6 +9,7 @@ import dumogo.CodiErrors;
 import dumogo.Usuari;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -25,6 +26,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -40,7 +42,7 @@ import javafx.stage.StageStyle;
  *
  * @author marcd
  */
-public class UsuariController implements Initializable {
+public class UsuariEdicioController implements Initializable {
 
     /**
      * Initializes the controller class.
@@ -88,7 +90,7 @@ public class UsuariController implements Initializable {
     @FXML
     private ChoiceBox choiceBoxGenere;    
     @FXML
-    private TextField textFieldDataAlta;    
+    private DatePicker datePickerDataAlta;    
     @FXML
     private ChoiceBox choiceBoxTipusSoci;    
     @FXML
@@ -107,39 +109,13 @@ public class UsuariController implements Initializable {
     private TextField textFieldAdminAlta;
     @FXML
     private PasswordField passwordFieldPassword;    
-            
-    @FXML
-    private void verButtonAction(ActionEvent event) throws IOException, ClassNotFoundException {
-        
-        // Creem el HashMap on rebrem les dades de l'usuari
-        HashMap<String, String> msg_in;
-        
-        // Cridem el metode per rebre les dades de l'usuari
-        msg_in = AccionsClient.obtenirUsuari();
-        System.out.println(msg_in.toString());
-        // Omplim els labels amb les dades rebudes
-        textFieldNumSoci.setText(msg_in.get("num_soci"));
-        textFieldDNI.setText(msg_in.get("dni"));
-        textFieldNom.setText(msg_in.get("nom"));
-        textFieldCognom1.setText(msg_in.get("cognom1"));
-        textFieldCognom2.setText(msg_in.get("cognom2"));
-        textFieldTelefon1.setText(msg_in.get("telefon1"));
-        textFieldTelefon2.setText(msg_in.get("telefon2"));
-        textFieldDireccio.setText(msg_in.get("direccio"));
-        textFieldPoblacio.setText(msg_in.get("poblacio"));
-        textFieldProvincia.setText(msg_in.get("provincia"));
-        textFieldCodiPostal.setText(msg_in.get("codi_postal"));
-        textFieldCorreu.setText(msg_in.get("correu"));
-        textFieldNomUsuari.setText(msg_in.get("nom_user"));
-        textFieldAdminAlta.setText(msg_in.get("admin_alta"));
-        passwordFieldPassword.setText(msg_in.get("password"));
-    }
-        
+/*            
     public void recuperarDades(){
         stage = (Stage) this.raiz.getScene().getWindow();
         usuari = (Usuari) stage.getUserData();
         omplirDades(usuari);               
     }
+*/
     
     private void omplirDades(Usuari usuari){
         this.usuari = usuari;
@@ -158,7 +134,7 @@ public class UsuariController implements Initializable {
         textFieldPais.setText(usuari.getPais());
         textFieldCorreu.setText(usuari.getCorreu());
         choiceBoxGenere.setValue(usuari.getGenere());
-        textFieldDataAlta.setText(usuari.getData_Alta());
+        datePickerDataAlta.setValue(LocalDate.parse(usuari.getData_Alta()));
         choiceBoxTipusSoci.setValue(usuari.getTipus_Soci());
         textFieldDataNaixement.setText(usuari.getData_naixement());
         textAreaObservacions.setText(usuari.getObservacions());    
@@ -183,7 +159,7 @@ public class UsuariController implements Initializable {
         textFieldPais.setText("");
         textFieldCorreu.setText("");
         choiceBoxGenere.setValue("");
-        textFieldDataAlta.setText("");
+        datePickerDataAlta.setValue(LocalDate.now());
         choiceBoxTipusSoci.setValue("");
         textFieldDataNaixement.setText("");
         textAreaObservacions.setText("");    
@@ -194,7 +170,8 @@ public class UsuariController implements Initializable {
     public void afegirUsuari(){
         // Esborrem dades en cas de que hi hagi
         esborrarDades();
-        
+        datePickerDataAlta.setValue(LocalDate.now());
+        textFieldAdminAlta.setText(AccionsClient.getNom_user_actual());
         //butoModificar = null;
         textFieldDNI.setDisable(false);
 
@@ -277,7 +254,7 @@ public class UsuariController implements Initializable {
             new SimpleStringProperty(textFieldDataNaixement.getText()),
             new SimpleStringProperty(textFieldNumSoci.getText()),
             new SimpleStringProperty(choiceBoxTipusSoci.getValue().toString()),
-            new SimpleStringProperty(textFieldDataAlta.getText()),
+            new SimpleStringProperty(datePickerDataAlta.getValue().toString()),
             new SimpleStringProperty(textFieldNom.getText()),
             new SimpleStringProperty(textFieldCognom1.getText()),
             new SimpleStringProperty(textFieldCognom2.getText()),
@@ -292,7 +269,7 @@ public class UsuariController implements Initializable {
             new SimpleStringProperty(textFieldCorreu.getText()),
             new SimpleStringProperty(textFieldCorreu.getText()),
             new SimpleStringProperty(textAreaObservacions.getText()),
-            new SimpleStringProperty(textFieldAdminAlta.getText())
+            new SimpleStringProperty(textFieldAdminAlta.getText())            
         );
 
         return u;

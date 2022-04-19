@@ -40,7 +40,7 @@ import javafx.stage.StageStyle;
  *
  * @author marcd
  */
-public class UsuariController implements Initializable {
+public class AdminEdicioController implements Initializable {
 
     /**
      * Initializes the controller class.
@@ -132,7 +132,7 @@ public class UsuariController implements Initializable {
         textFieldCorreu.setText(msg_in.get("correu"));
         textFieldNomUsuari.setText(msg_in.get("nom_user"));
         textFieldAdminAlta.setText(msg_in.get("admin_alta"));
-        passwordFieldPassword.setText(msg_in.get("password"));
+        passwordFieldPassword.setText(msg_in.get("admin_alta"));
     }
         
     public void recuperarDades(){
@@ -272,7 +272,6 @@ public class UsuariController implements Initializable {
         
         Usuari u = new Usuari(
             new SimpleStringProperty(textFieldNomUsuari.getText()),
-            new SimpleStringProperty(passwordFieldPassword.getText()),
             new SimpleStringProperty(textFieldDNI.getText()),
             new SimpleStringProperty(textFieldDataNaixement.getText()),
             new SimpleStringProperty(textFieldNumSoci.getText()),
@@ -292,7 +291,8 @@ public class UsuariController implements Initializable {
             new SimpleStringProperty(textFieldCorreu.getText()),
             new SimpleStringProperty(textFieldCorreu.getText()),
             new SimpleStringProperty(textAreaObservacions.getText()),
-            new SimpleStringProperty(textFieldAdminAlta.getText())
+            new SimpleStringProperty(textFieldAdminAlta.getText()),
+            new SimpleStringProperty(passwordFieldPassword.getText())
         );
 
         return u;

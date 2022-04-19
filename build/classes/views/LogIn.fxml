@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="560.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LogInController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="560.0" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LogInController">
     <children>
       <ImageView fitHeight="420.0" fitWidth="560.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -22,28 +22,29 @@
                   <Image url="@../resources/Mesa%20de%20trabajo%208mdpi.png" />
                </image>
               </ImageView>
-            <Label alignment="CENTER" layoutX="34.0" layoutY="198.0" prefHeight="25.0" prefWidth="200.0" text="Usuari" textAlignment="CENTER">
+            <Label alignment="CENTER" layoutX="34.0" layoutY="192.0" prefHeight="25.0" prefWidth="200.0" text="Usuari" textAlignment="CENTER">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="textFieldUsuari" layoutX="34.0" layoutY="222.0" prefWidth="200.0" />
-              <Label alignment="CENTER" layoutX="34.0" layoutY="254.0" prefHeight="25.0" prefWidth="200.0" text="Password" textAlignment="CENTER">
+            <TextField fx:id="textFieldUsuari" layoutX="34.0" layoutY="216.0" prefWidth="200.0" />
+              <Label alignment="CENTER" layoutX="34.0" layoutY="248.0" prefHeight="25.0" prefWidth="200.0" text="Password" textAlignment="CENTER">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <PasswordField fx:id="passwordFieldPassword" layoutX="34.0" layoutY="279.0" prefWidth="200.0" />
-            <Label fx:id="labelLogInMissatge" alignment="CENTER" layoutX="34.0" layoutY="312.0" prefHeight="17.0" prefWidth="200.0">
+            <PasswordField fx:id="passwordFieldPassword" layoutX="34.0" layoutY="273.0" prefWidth="200.0" />
+            <Label fx:id="labelLogInMissatge" alignment="CENTER" layoutX="34.0" layoutY="306.0" prefHeight="17.0" prefWidth="200.0">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-              <Button fx:id="buttonLogIn" layoutX="96.0" layoutY="339.0" mnemonicParsing="false" onAction="#logInButtonAction" prefHeight="30.0" prefWidth="76.0" text="Accedir">
+              <Button fx:id="buttonLogIn" layoutX="87.0" layoutY="337.0" mnemonicParsing="false" onAction="#logInButtonAction" prefHeight="30.0" prefWidth="95.0" styleClass="buttonLogin" text="Accedir">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
+            <ToggleButton fx:id="buttonOpcioEntrada" layoutX="87.0" layoutY="378.0" mnemonicParsing="false" onAction="#buttonOpcioEntradaAction" prefWidth="95.0" styleClass="buttonOpcioEntrada" text="Usuari" />
          </children>
       </AnchorPane>
     </children>

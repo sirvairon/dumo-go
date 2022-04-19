@@ -17,18 +17,26 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
  * @author marcd
  */
 public class LogInController implements Initializable {
+    
+    private String codi_resposta;
+    private String significat_codi_resposta;
+    private static final String STRING_CODI_RESPOSTA = "codi_resposta";
     
     @FXML
     private Label labelLogInMissatge;
@@ -38,37 +46,32 @@ public class LogInController implements Initializable {
     private PasswordField passwordFieldPassword;
     @FXML
     private TextField textFieldUsuari;
-    
+    @FXML
+    private ToggleButton buttonOpcioEntrada;
+            
     @FXML
     private void logInButtonAction(ActionEvent event) throws IOException, ClassNotFoundException {
         
         // Obtenim les dades d'usuari i password
         String usuari = textFieldUsuari.getText();
         String password = passwordFieldPassword.getText();
-        
-        // Creem el Hashmap per passar les dades
-        HashMap usuari_pass = new HashMap<String, String>();
-        usuari_pass.put(usuari,password);
+        String tipus_inici = buttonOpcioEntrada.getText();
         
         // Creem el Hashmap per obtenir el codi de resposta
-        HashMap resposta2 = new HashMap<String, String>();
-        String resposta;
-                        
-        // Cridem el mètode per fer LogIn i guardem el codi de retorn obtingut
-        String codi_retorn = AccionsClient.ferLogin(usuari, password);      
-
+        HashMap msg_in;
+                       
+        // Cridem el mètode per fer LogIn i guardem el codi de retorn obtingut 
+        msg_in = AccionsClient.ferLogIn(usuari, password, tipus_inici);
+        codi_resposta = (String) msg_in.get(STRING_CODI_RESPOSTA);
+        
+        System.out.println("(LOGIN CONTROLLER)codi_resposta:" + codi_resposta);
         // En cas d'error comprobem el significat i mostrem l'error en la label destinada per aquest us
-        if(!codi_retorn.equals("1000")){
-            String significat_codi_retorn = CodiErrors.ComprobarCodiError(codi_retorn);
-            System.out.println("Codi de retorn: " + codi_retorn + " - " + significat_codi_retorn);
-            labelLogInMissatge.setText(significat_codi_retorn);
+        if(codi_resposta.equals("8000")){
             
-        // Si es correcte accedim a la finestra corresponent si es admin o client
-        }else{
             ((Node) (event.getSource())).getScene().getWindow().hide();
             
             Parent parent;            
-            if(usuari.equals("admin")){
+            if(tipus_inici.equals("Administrador")){
                 parent = FXMLLoader.load(getClass().getResource("/views/Admin.fxml"));
             }else {
                 parent = FXMLLoader.load(getClass().getResource("/views/Main.fxml"));
@@ -77,28 +80,37 @@ public class LogInController implements Initializable {
             Stage stage = new Stage();
             Scene scene = new Scene(parent);
             stage.setScene(scene);
-            stage.setResizable(false);
+            //stage.setResizable(false);
             Image icon = new Image("/resources/icon.png");
             stage.getIcons().add(icon);
             stage.setTitle("Dumo-Go");
             stage.show();
+        }else if(codi_resposta.equals("-1")){
+            significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
+            System.out.println("Codi de resposta: " + codi_resposta + " - " + significat_codi_resposta);
+            Alert alerta = new Alert(Alert.AlertType.NONE);
+            DialogPane dialogPane = alerta.getDialogPane();
+            dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
+            alerta.initStyle(StageStyle.UNDECORATED);
+            alerta.setTitle("Error de connexió");
+            alerta.setHeaderText(significat_codi_resposta);
+            alerta.setAlertType(Alert.AlertType.ERROR);
+            alerta.show();
+        }else{
+            significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
+            System.out.println("Codi de resposta: " + codi_resposta + " - " + significat_codi_resposta);
+            labelLogInMissatge.setText(significat_codi_resposta);
         }
-
-/*
-        }elseif(textFieldUsuari.getText().equals("admin")){
-            Parent parent = FXMLLoader.load(getClass().getResource("/views/Admin.fxml"));
-            Stage stage = new Stage();
-            Scene scene = new Scene(parent);
-            
-            stage.setScene(scene);
-            stage.setResizable(false);
-            Image icon = new Image("/resources/icon.png");
-            stage.getIcons().add(icon);
-            stage.setTitle("Dumo-Go - Administrador");
-            stage.show();
-            //labelLogInMissatge.setText("OK");
+    }
+    
+    @FXML
+    private void buttonOpcioEntradaAction(ActionEvent event) throws IOException, ClassNotFoundException {
+        String text = buttonOpcioEntrada.getText();
+        if (text.equals("Usuari"))
+            buttonOpcioEntrada.setText("Administrador");
+        else{
+            buttonOpcioEntrada.setText("Usuari");
         }
-*/
     }
     
     @Override

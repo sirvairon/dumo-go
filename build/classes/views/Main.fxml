@@ -29,14 +29,7 @@
             </GridPane>
          </content>
       </ScrollPane>
-      <MenuButton id="iphone" layoutX="446.0" layoutY="446.0" mnemonicParsing="false" text="Usuario">
-        <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
-        </items>
-      </MenuButton>
       <Label alignment="CENTER" layoutX="426.0" layoutY="499.0" prefHeight="46.0" prefWidth="172.0" text="MAIN" />
-      <Button fx:id="tancarSessio" layoutX="487.0" layoutY="570.0" mnemonicParsing="false" onAction="#tancarSessioButtonAction" text="Volver" />
       <AnchorPane prefHeight="80.0" prefWidth="1024.0">
          <children>
             <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="17.0">
@@ -67,6 +60,7 @@
                     </ImageView>
                 </graphic>
             </Button>
+            <Button fx:id="tancarSessio" layoutX="751.0" layoutY="27.0" mnemonicParsing="false" onAction="#tancarSessioButtonAction" text="Tancar Sessió" />
          </children>
       </AnchorPane>
    </children>
