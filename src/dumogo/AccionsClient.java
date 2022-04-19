@@ -163,7 +163,7 @@ public class AccionsClient {
             System.out.println("(ACCIONS CLIENT)codi_resposta:" + codi_resposta);
             // Si el codi de retorn es correcte guardem el codi de connexio rebut del servidor
             // i el nom d'usuari per futures consultes
-            if(codi_resposta == 20 ){
+            if(codi_resposta == 20 || codi_resposta == 10){
                 codi_connexio_client = null;
                 nom_user_actual = null;                
             }
