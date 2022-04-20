@@ -209,7 +209,7 @@ public class AdminController implements Initializable {
         vbUsuaris.getChildren().addAll(tb,hbResultat, hbButons);
         
         // Omplim la taula amb la informació i la label amb el resultat total
-        omplirDadesTaulaUsuaris(tb, resultatValor); 
+        //omplirDadesTaulaUsuaris(tb, resultatValor); 
         
         // Afegim el vBUsuaris que conte tot a la pestanya (tab) creada
         tab1.setContent(vbUsuaris);
