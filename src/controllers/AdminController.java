@@ -6,6 +6,7 @@ package controllers;
 
 import dumogo.AccionsClient;
 import dumogo.CodiErrors;
+import dumogo.PestanyaLlistat;
 import dumogo.Usuari;
 import java.io.IOException;
 import java.net.URL;
@@ -209,7 +210,7 @@ public class AdminController implements Initializable {
         vbUsuaris.getChildren().addAll(tb,hbResultat, hbButons);
         
         // Omplim la taula amb la informació i la label amb el resultat total
-        //omplirDadesTaulaUsuaris(tb, resultatValor); 
+        omplirDadesTaulaUsuaris(tb, resultatValor); 
         
         // Afegim el vBUsuaris que conte tot a la pestanya (tab) creada
         tab1.setContent(vbUsuaris);
@@ -220,6 +221,20 @@ public class AdminController implements Initializable {
         //tableViewUsuaris.setEditable(true);
     }    
 
+    @FXML
+    private void crearPestanyaLlistat()throws IOException, ClassNotFoundException {
+        PestanyaLlistat pt = new PestanyaLlistat("Llistat d'usuaris");
+        pt.omplirDades();
+        pt.omplirDadesTaulaUsuaris();
+
+                // Afegim la pestanya al grup de pestanyes
+        tabPaneGeneral.getTabs().add(pt);
+        // Seleccionem la pestanya creada
+        tabPaneGeneral.getSelectionModel().select(pt);
+        //tableViewUsuaris.setEditable(true);
+        System.out.println(pt.getContent());
+    }
+    
     private void clickTaulaUsuaris(TableView tb) throws IOException {
         // Mirem l'element clickat
         Usuari usuari_fila = (Usuari) tb.getSelectionModel().getSelectedItem();
