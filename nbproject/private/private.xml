@@ -11,10 +11,11 @@
         <group name="DUMO-GO">
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/AdminController.java</file>
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/UsuariEdicioController.java</file>
-            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/CodiErrors.java</file>
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/AccionsClient.java</file>
-            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/CodiErrors2.java</file>
-            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/AdminEdicioController.java</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/DumoGo.java</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/PestanyaLlistat.java</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/styles/admin.css</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/LogInController.java</file>
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/Usuari.java</file>
         </group>
     </open-files>

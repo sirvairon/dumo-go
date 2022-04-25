@@ -4,7 +4,9 @@
  */
 package dumogo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -36,7 +38,32 @@ public class Usuari {
     private final SimpleStringProperty genere;
     private final SimpleStringProperty observacions;
     private final SimpleStringProperty admin_alta;
+    
+    private final String nom_user_label = "Nom d'usuari";
+    private final String password_label = "Password";
+    private final String dni_label = "DNI";
+    private final String num_soci_label = "Núm. soci";
+    private final String tipus_soci_label = "Tipus de soci" ;
+    private final String data_alta_label = "Data d'alta";    
+    private final String nom_label = "Nom";  
+    private final String cognom1_label = "Primer Cognom";  
+    private final String cognom2_label = "Segon Cognom";
+    private final String direccio_label = "Direcció";
+    private final String codi_postal_label = "Codi Postal";
+    private final String poblacio_label = "Població";    
+    private final String provincia_label = "Provincia";  
+    private final String pais_label = "País";
+    private final String telefon1_label = "Telèfon 1";
+    private final String telefon2_label = "Telèfon 2";   
+    private final String correu_label = "Correu";
+    private final String foto_label = "Foto";     
+    private final String data_naixement_label = "Data de Naixement"; 
+    private final String genere_label = "Gènere";
+    private final String observacions_label = "Observacions";
+    private final String admin_alta_label = "Administrador alta";
 
+    static public final Map<String, String> mapaNomCamps = new HashMap<>();
+        
     public Usuari(HashMap<String, SimpleStringProperty> map) {
         this.nom_user = new SimpleStringProperty((String.valueOf(map.get("nom_user"))));
         this.password = new SimpleStringProperty((String.valueOf(map.get("password"))));
@@ -59,7 +86,8 @@ public class Usuari {
         this.correu = new SimpleStringProperty((String.valueOf(map.get("correu"))));
         this.foto = new SimpleStringProperty((String.valueOf(map.get("foto"))));
         this.observacions = new SimpleStringProperty((String.valueOf(map.get("observacions"))));
-        this.admin_alta = new SimpleStringProperty((String.valueOf(map.get("admin_alta"))));        
+        this.admin_alta = new SimpleStringProperty((String.valueOf(map.get("admin_alta"))));   
+        generaMapNomCamps();
     }
     
     //public Usuari(SimpleStringProperty nom_user, SimpleStringProperty num_soci, SimpleStringProperty dni, SimpleStringProperty nom, SimpleStringProperty cognom1, SimpleStringProperty cognom2, SimpleStringProperty direccio, SimpleStringProperty codi_postal, SimpleStringProperty poblacio, SimpleStringProperty provincia, SimpleStringProperty telefon1, SimpleStringProperty telefon2, SimpleStringProperty correu, SimpleStringProperty foto) {  
@@ -90,7 +118,8 @@ public class Usuari {
         this.correu = correu;
         this.foto = foto;
         this.observacions = observacions;
-        this.admin_alta = admin_alta;        
+        this.admin_alta = admin_alta;    
+        generaMapNomCamps();
     }  
 
     public final String getNom() {
@@ -268,6 +297,122 @@ public class Usuari {
     public SimpleStringProperty password() {
         return password;
     }
+
+    private void generaMapNomCamps(){
+        mapaNomCamps.put("user_name", nom_user_label);
+        mapaNomCamps.put("password", password_label);
+        mapaNomCamps.put("DNI", dni_label);
+        mapaNomCamps.put("num_soci", num_soci_label);
+        mapaNomCamps.put("tipus_soci", tipus_soci_label);
+        mapaNomCamps.put("data_alta", data_alta_label);
+        mapaNomCamps.put("nom", nom_label);
+        mapaNomCamps.put("cognom1", cognom1_label);
+        mapaNomCamps.put("cognom2", cognom2_label);
+        mapaNomCamps.put("direccio", direccio_label);
+        mapaNomCamps.put("codi_postal", codi_postal_label);
+        mapaNomCamps.put("poblacio", poblacio_label);
+        mapaNomCamps.put("provincia", provincia_label);
+        mapaNomCamps.put("pais", pais_label);
+        mapaNomCamps.put("telefon1", telefon1_label);
+        mapaNomCamps.put("telefon2", telefon2_label);
+        mapaNomCamps.put("correu", correu_label);
+        mapaNomCamps.put("foto", foto_label);
+        mapaNomCamps.put("data_naixement", data_naixement_label);
+        mapaNomCamps.put("genere", genere_label);
+        mapaNomCamps.put("observacions", observacions_label);
+        mapaNomCamps.put("admin_alta", admin_alta_label);
+    }
     
+    public Map getNomCamps(){
+        return mapaNomCamps;
+    }
+    
+    public String getNom_user_label() {
+        return nom_user_label;
+    }
+
+    public String getPassword_label() {
+        return password_label;
+    }
+
+    public String getDni_label() {
+        return dni_label;
+    }
+
+    public String getNum_soci_label() {
+        return num_soci_label;
+    }
+
+    public String getTipus_soci_label() {
+        return tipus_soci_label;
+    }
+
+    public String getData_alta_label() {
+        return data_alta_label;
+    }
+
+    public String getNom_label() {
+        return nom_label;
+    }
+
+    public String getCognom1_label() {
+        return cognom1_label;
+    }
+
+    public String getCognom2_label() {
+        return cognom2_label;
+    }
+
+    public String getDireccio_label() {
+        return direccio_label;
+    }
+
+    public String getCodi_postal_label() {
+        return codi_postal_label;
+    }
+
+    public String getPoblacio_label() {
+        return poblacio_label;
+    }
+
+    public String getProvincia_label() {
+        return provincia_label;
+    }
+
+    public String getPais_label() {
+        return pais_label;
+    }
+
+    public String getTelefon1_label() {
+        return telefon1_label;
+    }
+
+    public String getTelefon2_label() {
+        return telefon2_label;
+    }
+
+    public String getCorreu_label() {
+        return correu_label;
+    }
+
+    public String getFoto_label() {
+        return foto_label;
+    }
+
+    public String getData_naixement_label() {
+        return data_naixement_label;
+    }
+
+    public String getGenere_label() {
+        return genere_label;
+    }
+
+    public String getObservacions_label() {
+        return observacions_label;
+    }
+
+    public String getAdmin_alta_label() {
+        return admin_alta_label;
+    }
 }
 

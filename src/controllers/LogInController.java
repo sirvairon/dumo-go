@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -80,6 +81,7 @@ public class LogInController implements Initializable {
             Stage stage = new Stage();
             Scene scene = new Scene(parent);
             stage.setScene(scene);
+            stage.setOnCloseRequest(e -> Platform.exit());
             //stage.setResizable(false);
             Image icon = new Image("/resources/icon.png");
             stage.getIcons().add(icon);

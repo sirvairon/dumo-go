@@ -160,3 +160,41 @@
     -fx-text-fill: #ffffff;
     -fx-font-size: 14px; 
 }
+
+.vbLlistat .hBoxFiltre {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 20;
+}
+
+.vbLlistat .hBoxFiltre .choice-box {
+    -fx-pref-width: 150;
+}   
+
+.vbLlistat .hBoxFiltre .text-field {
+    -fx-pref-width: 200;
+}
+
+.vbLlistat {
+    
+}
+.butoTancaSessio {
+    -fx-graphic: url(../resources/tanca_sessio_iconldpi.png);
+    /*-fx-graphic-fit-to-height: 10;*/
+    /*-fx-graphic-size: 10;*/
+    -fx-graphic-text-gap: 4;
+    -fx-content-display: top;
+    
+    -fx-background-color: #03A9F4;
+    -fx-cursor: hand;
+    -fx-padding: 0.5em 1.332em 0.5em 1.332em;
+    -fx-font-size: 14px;    
+    -fx-accent: #03A9F4;
+    -fx-text-fill: #ffffff;
+    
+    /*-fx-background-image: url(../resources/tanca_sessio_iconmdpi.png);*/
+    /*-fx-background-size: 30px;*/
+    /*-fx-background-repeat: no-repeat;*/
+    /*-fx-background-position: 90%;*/
+    /*-fx-graphic: url(../resources/nouser.jpg);*/
+}
+

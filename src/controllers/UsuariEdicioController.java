@@ -198,6 +198,7 @@ public class UsuariEdicioController implements Initializable {
                         msg_in = AccionsClient.agefirUsuari(usuari);
                         // Obtenim el codi de resposta
                         codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
+                        codi_resposta = "10";
                         // Obtenim el sinificat del codi de resposta
                         significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
                         // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
@@ -332,7 +333,9 @@ public class UsuariEdicioController implements Initializable {
         // La mostrem i esperem click
         alerta.showAndWait();
         // Tanquem finestra
-        raiz.getScene().getWindow().hide();
+        //raiz.getScene().getWindow().hide();
+        Stage stage1 = (Stage) raiz.getScene().getWindow();
+        stage1.close();
         // Obrim finestra de login
         Parent parent = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));
         Stage stage = new Stage();

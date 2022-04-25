@@ -12,7 +12,6 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -147,7 +146,6 @@ public class AccionsClient {
             }
 
             // Omplim el HasMap amb usuari, password i el codi de connexio buit
-
             msg_out.put("accio", "tancar_sessio");
             msg_out.put("codi", codi_connexio_client);
             msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
@@ -386,8 +384,78 @@ public class AccionsClient {
         
         return null;        
     }
+    
+    public static ArrayList obtenirLlistat(String tipus) throws ClassNotFoundException{
+        
+        try {
+            // Establim connexio
+            establirConnexio();
 
-    private static void usuariAHashmap(HashMap hashmap, Usuari usuari){        
+            // Creem el HashMap per enviar i el List per rebre les dades per fer l'accio
+            msg_out = new HashMap<>();
+            List<HashMap> llistat_hashmaps;
+            ArrayList llistat = null;
+            
+            switch(tipus){
+                case "usuaris":                    
+                    // Creem l'ArrayList on guardarem tots els usuaris                    
+                    llistat = new ArrayList<Usuari>();
+
+                    // Omplim el HasMap amb l'accio, i el codi de connexio
+                    msg_out.put("accio", "obtenir_llistat_usuaris");
+                    msg_out.put(STRING_CODI_CONNEXIO, codi_connexio_client);
+
+                    // Enviem i rebem la informacio
+                    mapOutputStream.writeObject(msg_out);            
+                    llistat_hashmaps = (List) mapInputStream.readObject();
+
+                    // Omplim el llistat d'usuaris amb els usuaris de cada HashMap dins d'el List tornat
+                    for (HashMap obj:llistat_hashmaps) {
+                        Usuari u = new Usuari(obj);
+                        llistat.add(u);
+                    }                        
+
+                case "administradors":
+                    // Creem l'ArrayList on guardarem tots els usuaris                    
+                    llistat = new ArrayList<Usuari>();
+
+                    // Omplim el HasMap amb l'accio, i el codi de connexio
+                    msg_out.put("accio", "obtenir_llistat_administradors");
+                    msg_out.put(STRING_CODI_CONNEXIO, codi_connexio_client);
+
+                    // Enviem i rebem la informacio
+                    mapOutputStream.writeObject(msg_out);            
+                    llistat_hashmaps = (List) mapInputStream.readObject();
+
+                    // Omplim el llistat d'usuaris amb els usuaris de cada HashMap dins d'el List tornat
+                    for (HashMap obj:llistat_hashmaps) {
+                        Usuari u = new Usuari(obj);
+                        llistat.add(u);
+                    }   
+                    break;
+                case "llibres":
+                    break;
+                    
+            }
+            
+            // Tanquem connexio
+            yourOutputStream.close();
+            mapInputStream.close();
+
+            // Retornem el llistat d'usuaris
+            return llistat; 
+           
+            
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;        
+    }
+
+    public static void usuariAHashmap(HashMap hashmap, Usuari usuari){        
         // Afegim les dades de l'usuari al hashmap
         hashmap.put("user_name", usuari.getNom_user());
         hashmap.put("dni", usuari.getDni());
