@@ -1,0 +1,162 @@
+/*
+ * CSS GENERAL DE L'APLICACIO
+ */
+
+/************* CLASSES GENERALS *************/
+
+/* tot */
+
+.root {
+    -fx-font: 14px "Tahoma";
+    -fx-font-family: "Tahoma", Arial, sans-serif;
+    -fx-font-weight: normal;
+    -fx-font-style: normal;
+    -fx-font-size: 14px;
+}
+
+/* tab-pane */
+.tab-pane {
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em;    
+}
+
+.tab-pane:top *.tab-header-area {
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em; /* overridden as 5 2 0 0 */
+    -fx-border-radius: 0px;
+    -fx-background-radius: 0;
+}
+
+.tab-pane:bottom *.tab-header-area {
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em; /* overridden as 5 2 0 0 */
+    -fx-border-radius: 0px;
+    -fx-background-radius: 0;
+}
+
+.tab-pane .tab {
+    -fx-cursor: hand;
+    -fx-border-radius: 0px;
+    -fx-border-width: 0px 0px 0px 0px;
+    -fx-border-color: #03A9F4;
+    -fx-background-radius: 0;
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em;
+}
+
+.tab-pane .tab-label {
+    -fx-padding: 0.999999em 2.332em 0.999999em 2.332em;
+}
+
+.tab-pane .split-pane {
+}
+
+.tab-pane {      
+}
+
+/* button */
+
+.button, .toggle-button {
+    -fx-background-color: #03A9F4;
+    -fx-text-fill: #ffffff;
+    -fx-content-display: left;
+    -fx-cursor: hand;
+    -fx-padding: 0.333333em 0.333333em 0.333333em 0.333333em;
+    -fx-accent: #03A9F4;
+    -fx-pref-width: 90;
+}
+
+/* menu-button */
+.menu-button {
+    -fx-background-color: #03A9F4;
+    -fx-cursor: hand;
+    -fx-padding: 0.0em 2.332em 0.0em 2.332em;
+    -fx-accent: #03A9F4;
+}
+
+.menu-button .label {
+    -fx-text-fill: #ffffff;
+    -fx-padding: 1.333333em 0.333333em 1.333333em 0.0em;
+}
+
+.menu-button .menu-item {
+    -fx-text-fill: #ffffff;
+    -fx-cursor: hand;
+} 
+
+.menu-button .menu-item .label {
+    -fx-text-fill: #000000;
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em;
+}
+
+.menu-button .menu-item:focused .label {
+    -fx-text-fill: #ffffff;
+}
+
+.menu-button .arrow-button > .arrow {
+    -fx-background-color: #ffffff;
+}
+
+/************* CLASSES PROPIES *************/
+
+/* menu top */
+.menuTop {
+    -fx-padding: 1em 1em 1em 1em;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.menuTop .vBoxLogo_titol .label {
+    -fx-padding: 0.0em 0.0em 0.0em 0.333333em;
+    -fx-font-size: 16px;
+}
+
+.butoTancaSessio {
+    -fx-graphic: url(../resources/tanca_sessio_iconldpi.png);
+    -fx-graphic-text-gap: 4;
+}
+
+/* footer */
+.hBoxFooter {
+    -fx-background-color: #03A9F4;   
+    -fx-padding: 0.666666em 0.666666em 0.666666em 0.666666em;
+}
+
+.hBoxFooter .label {
+    -fx-background-color: #03A9F4;  
+    -fx-text-fill: #ffffff;
+}
+
+/* pestanya llistats */
+.tab-pane .hboxBotonesEdicion {
+    -fx-padding: 0.999999em 0.999999em 0.999999em 0.999999em;
+    -fx-alignment: CENTER_RIGHT;
+    -fx-spacing: 3.333333em;
+}
+
+.tab-pane .hBoxResultat {
+    -fx-alignment: CENTER_RIGHT;
+    -fx-padding: 0.666666em 0.666666em 0.666666em 0.666666em;
+    -fx-spacing: 0.5em;
+}
+
+.tab-pane .hBoxFiltre {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 20;
+}
+
+.tab-pane .hBoxFiltre .choice-box {
+    -fx-pref-width: 150;
+}   
+
+.tab-pane .hBoxFiltre .text-field {
+    -fx-pref-width: 200;
+}
+
+/* buttons */
+.botoPetit {
+    -fx-padding: 0.1em 0.333333em 0.1em 0.333333em;
+    -fx-pref-width: 30; 
+    -fx-max-width: 30;
+    -fx-pref-height: 28;
+    -fx-max-height: 28;
+}
+
+.botoEditar {
+    -fx-graphic: url(../resources/editar_iconxhdpi.png);
+}

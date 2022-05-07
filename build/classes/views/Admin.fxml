@@ -1,45 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.media.*?>
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../styles/admin.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" styleClass="mainFxmlClass" stylesheets="@../styles/general.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminController">
    <children>
       <HBox alignment="CENTER_LEFT" styleClass="menuTop">
          <children>
-            <VBox styleClass="logo_titol">
+            <VBox styleClass="vBoxLogo_titol">
                <children>
                   <ImageView fitHeight="150.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../resources/name_icon.png" />
                      </image>
                   </ImageView>
-                  <Label styleClass="titolAdministrador" text="Administrador">
+                  <Label text="Administrador">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font size="14.0" />
                      </font>
                   </Label>
                </children>
             </VBox>
-            <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <HBox alignment="BOTTOM_LEFT" spacing="10.0">
                <children>
-                  <MenuButton mnemonicParsing="false" styleClass="menuButton" text="Usuaris">
+                  <MenuButton mnemonicParsing="false" text="Usuaris">
                     <items>
-                      <MenuItem fx:id="usuaris" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Llistat d'usuaris" />
-                      <MenuItem fx:id="administradors" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Llistat d'administradors" />
+                        <MenuItem mnemonicParsing="false" onAction="#buscarUsuari" text="Buscar Usuari" />
                         <MenuItem mnemonicParsing="false" onAction="#afegirUsuari" text="Afegir usuari" />
+                      <MenuItem fx:id="usuaris" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Llistat d'usuaris" />
+                        <MenuItem mnemonicParsing="false" text="Buscar administrador" />
                         <MenuItem mnemonicParsing="false" text="Afegir administrador" />
+                      <MenuItem fx:id="administradors" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Llistat d'administradors" />
                     </items>
                   </MenuButton>
-                  <MenuButton mnemonicParsing="false" styleClass="menuButton" text="Biblioteca">
+                  <MenuButton mnemonicParsing="false" text="Biblioteca">
                     <items>
                       <MenuItem mnemonicParsing="false" text="Action 1" />
                       <MenuItem mnemonicParsing="false" text="Action 2" />
@@ -48,7 +56,7 @@
                         <Font size="14.0" />
                      </font>
                   </MenuButton>
-                  <MenuButton mnemonicParsing="false" styleClass="menuButton" text="Prèstecs">
+                  <MenuButton mnemonicParsing="false" text="Prèstecs">
                     <items>
                       <MenuItem mnemonicParsing="false" text="Action 1" />
                       <MenuItem mnemonicParsing="false" text="Action 2" />
@@ -60,18 +68,15 @@
                </padding>
             </HBox>
             <Pane HBox.hgrow="ALWAYS" />
-            <Button fx:id="tancarSessio2" contentDisplay="TOP" mnemonicParsing="false" onAction="#ferLogout" styleClass="butoTancaSessio" text="Tancar sessió">
-                <graphic>
-                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../resources/baseline_power_settings_new_black_18dp.png" />
-                     </image>
-                  </ImageView>
-                 </graphic>
-            </Button>
+            <MenuButton mnemonicParsing="false" styleClass="butoTancaSessio" text="Usuari">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Modificar perfil" />
+                <MenuItem mnemonicParsing="false" onAction="#ferLogout" text="Tancar sessió" />
+              </items>
+            </MenuButton>
          </children>
       </HBox>
-      <TabPane fx:id="tabPaneGeneral" styleClass="tabPaneGeneral" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="Infinity" tabMaxWidth="Infinity" tabMinHeight="8.0" tabMinWidth="8.0" VBox.vgrow="ALWAYS">
+      <TabPane fx:id="tabPaneGeneral" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="Infinity" tabMaxWidth="Infinity" tabMinHeight="8.0" tabMinWidth="8.0" VBox.vgrow="ALWAYS">
         <tabs>
           <Tab closable="false" text="Inici">
                <content>
@@ -104,7 +109,7 @@
             </Tab>
             <Tab text="Llistat">
                <content>
-                  <VBox styleClass="vbLlistat">
+                  <VBox>
                      <children>
                         <HBox alignment="CENTER" spacing="40.0" styleClass="hboxBotonesEdicion">
                            <children>

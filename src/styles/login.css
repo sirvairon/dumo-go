@@ -1,75 +1,24 @@
 /*
- * Empty Stylesheet file.
+ * CSS DE LA PANTALLA DE LOGIN
  */
-* {
-    /*-fx-font: "Tahoma", Arial, sans-serif;*/
-    -fx-font-family: "Arial", Arial, sans-serif;
+
+.mainFxmlClass > AnchorPane {
+    -fx-background-color: #FFFFFF80;
 }
 
-.mainFxmlClass {
-
+.imatge_login {
+    -fx-fit-to-width: 560;
+    -fx-fit-to-height: 420;
 }
 
-.menuTop {
-    -fx-padding: 1em 0 1em 0;
+VBox {
+    -fx-alignment: CENTER;
 }
 
-.buttonOpcioEntrada {    
-    -fx-background-color: #03A9F4;
-    /*-fx-base: #03A9F4;*/
-    -fx-cursor: hand;
-    -fx-padding: 0.166666em 0.666666em 0.166666em 0.666666em;
-    -fx-font-size: 12px;    
-    -fx-accent: #000000;
-    -fx-accent-text-fill: red;
-    -fx-focus-color: red;
-    -fx-text-fill: #ffffff;
-    /*-fx-base: #03A9F4;*/
+.mainFxmlClass > AnchorPane > VBox {
+    -fx-spacing: 10;
 }
 
-
-
-.buttonLogin {
-    -fx-background-color: #03A9F4;
-    -fx-text-fill: #ffffff;
-    -fx-cursor: hand;
-    -fx-font-size: 14px;
-}
-
-.menuButton > .label{
-    -fx-text-fill: #ffffff;
-}
-
-.menuButton > .menu-item > .label {
-    -fx-text-fill: #000000;
-}
-
-.arrow-button > .arrow {
-    -fx-background-color: #ffffff;
-}
-
-.logo_titol{
-    -fx-padding: 0 0 0 1.333332em;
-}
-
-.titolAdministrador {
-    -fx-padding: 0 0 0 0.333333em;
-    -fx-font-size: 16px;
-}
-
-.test{
-    -fx-background-color: #03A9F4;
-    -fx-text-inner-color: #ffffff;
-    -fx-text-fill: -fx-text-inner-color;
-    -fx-highlight-fill: derive(-fx-control-inner-background,-20%);
-    -fx-highlight-text-fill: -fx-text-inner-color;
-    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
-    /*
-    -fx-background-color: linear-gradient(to bottom, derive(-fx-text-box-border, -10%), -fx-text-box-border),
-        linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);
-    */  
-    -fx-background-insets: 0, 1;
-    -fx-background-radius: 3, 2;
-    -fx-cursor: hand;
-    -fx-padding: 0.333333em 0.583em 0.333333em 0.583em; /* 4 7 4 7 */
+.toggle-button {
+    -fx-font-size: 12px;
 }

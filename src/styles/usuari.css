@@ -4,7 +4,7 @@
 
 * {
     /*-fx-font: "Tahoma", Arial, sans-serif;*/
-    -fx-font-family: "Arial", Arial, sans-serif;
+    -fx-font-family: "Tahoma", Arial, sans-serif;
 }
 
 .mainFxmlClass {
@@ -84,4 +84,66 @@
     -fx-accent: #03A9F4;
     -fx-pref-width: 90;
 }
+
+.menuTop {
+    -fx-padding: 1em 1em 1em 1em;
+}
+
+.menuButton {    
+    -fx-graphic: url(../resources/menu_iconldpi.png);
+    /*-fx-graphic-fit-to-height: 10;*/
+    /*-fx-graphic-size: 10;*/
+    -fx-graphic-text-gap: 4;
+    -fx-content-display: top;
+    
+    -fx-background-color: #03A9F4;
+    -fx-cursor: hand;
+    -fx-padding: 0.5em 1.332em 0.5em 1.332em;
+    -fx-font-size: 14px;    
+    -fx-accent: #03A9F4;
+    /*-fx-accent-text-fill: red;*/
+    /*-fx-focus-color: red;*/
+}
+
+.menuButton .label{
+    -fx-text-fill: #ffffff;
+}
+
+.menuButton .menu-item {
+    -fx-text-fill: #ffffff;
+} 
+
+.menuButton .menu-item .label {
+    -fx-text-fill: #000000;
+}
+
+.menuButton .menu-item:focused  .label {
+    -fx-text-fill: #ffffff;
+}
+
+.arrow-button > .arrow {
+    -fx-background-color: #ffffff;
+}
+
+.butoUsuari {
+    -fx-graphic: url(../resources/usuari_iconldpi.png);
+    /*-fx-graphic-fit-to-height: 10;*/
+    /*-fx-graphic-size: 10;*/
+    -fx-graphic-text-gap: 4;
+    -fx-content-display: top;
+    
+    -fx-background-color: #03A9F4;
+    -fx-cursor: hand;
+    -fx-padding: 0.5em 1.332em 0.5em 1.332em;
+    -fx-font-size: 14px;    
+    -fx-accent: #03A9F4;
+    -fx-text-fill: #ffffff;
+    
+    /*-fx-background-image: url(../resources/tanca_sessio_iconmdpi.png);*/
+    /*-fx-background-size: 30px;*/
+    /*-fx-background-repeat: no-repeat;*/
+    /*-fx-background-position: 90%;*/
+    /*-fx-graphic: url(../resources/nouser.jpg);*/
+}
+
 

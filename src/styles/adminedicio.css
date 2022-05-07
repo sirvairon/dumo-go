@@ -1,68 +1,46 @@
 /*
- * Empty Stylesheet file.
+ * CSS DE L'EDICIO D'ADMINISTRADOR
  */
 
-* {
-    /*-fx-font: "Tahoma", Arial, sans-serif;*/
-    -fx-font-family: "Arial", Arial, sans-serif;
-}
-
-.mainFxmlClass {
-}
-
-.vBoxGeneral {
+.mainFxmlClass > VBox {
     -fx-padding: 1.333332em 1.333332em 1.333332em 1.333332em;
 }
 
-.vBoxGeneral .label{
-    -fx-padding: 0.999999em 0em 0.333333em 0em;
+.label{
+    -fx-padding: 0.999999em 0.0em 0.333333em 0.0em;
 }
 
-.titolSeccio {
-    -fx-padding: 0.999999em 0em 0.333333em 0em;
-    -fx-font-size: 14px;
+.mainFxmlClass > VBox > VBox > .label {
     -fx-font-weight: bold;
 }
 
-#titolSeccioPrincipal{
-    -fx-padding: 0em 0em 0.333333em 0em;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;    
-}
-.hboxSeccion {
+.mainFxmlClass > VBox > VBox > HBox {
     -fx-border-width: 2px 0px 0px 0px;
     -fx-border-color: #03A9F4;
     -fx-border-radius: 0px;
+    -fx-spacing: 40;
+}
 
+.mainFxmlClass > VBox > VBox > HBox > VBox > HBox {
+    -fx-spacing: 40;
 }
 
 .choice-box { 
-    /*-fx-background-color: black; */
-    -fx-padding: 0em 0em 0em 0em;
+    -fx-pref-width: 200;
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em;
 }
 
 .choice-box > .label { 
-    /*-fx-background-color: black; */
     -fx-padding: 0.333333em 0.333333em 0.333333em 0.333333em;
 }
-/* Background color of the whole context menu*/
+
 .choice-box .context-menu { 
-    /*-fx-background-color: black; */
     -fx-pref-width: 200;
-    -fx-padding: 0em 0em 0em 0em;
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em;
 }
-/* Focused item background color in the list*/
-.choice-box .menu-item:focused { 
-    /*-fx-background-color: orange; */
-}
-/* Text color of non-focused items in the list*/
+
 .choice-box .menu-item > .label { 
     -fx-padding: 0.333333em 0.333333em 0.333333em 0.333333em;
-    /*-fx-text-fill: white; */
-}
-/* Text color of focused item in the list*/
-.choice-box .menu-item:focused > .label { 
-    /*fx-text-fill: black; */
 }
 
 .usuariImage {
@@ -72,16 +50,5 @@
 }
 
 .hboxBotones {
-    -fx-padding: 1.333333em 0 0 0;
+    -fx-padding: 1.333333em 0.0em 0.0em 0.0em;
 }
-
-.hboxBotones .button {
-    -fx-background-color: #03A9F4;
-    -fx-text-fill: #ffffff;
-    -fx-cursor: hand;
-    -fx-padding: 0.333333em 0.333333em 0.333333em 0.333333em;
-    -fx-font-size: 14px;    
-    -fx-accent: #03A9F4;
-    -fx-pref-width: 90;
-}
-

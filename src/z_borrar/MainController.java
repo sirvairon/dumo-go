@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
-package controllers;
+package z_borrar;
 
+import controllers.UsuariEdicioController;
 import dumogo.AccionsClient;
 import dumogo.CodiErrors;
 import dumogo.Usuari;
@@ -51,6 +52,9 @@ public class MainController implements Initializable {
     private String significat_codi_resposta;
     private static final String STRING_CODI_RESPOSTA = "codi_resposta";
     private Alert alerta;
+    private UsuariEdicioController usuariEdicioControlador;
+    private Stage stageUsuari;
+    
     @FXML
     private GridPane grid_libros;     
     
@@ -140,5 +144,38 @@ public class MainController implements Initializable {
         stage.setResizable(false);
         stage.show();
     }  
+    
+    @FXML
+    private void mostrarPerfil(ActionEvent event) throws IOException {
+         // Obrim la finestra usuari 
+        obrirFinestraUsuari();
+        // Actualitzem el controlador (finestra usuari) per mijtà del mètode dins del controlador
+        usuariEdicioControlador.mostrarPerfil();
+    } 
+    
+    private void obrirFinestraUsuari() throws IOException{ // Per modificar
+        // En cas de que no s'hagi creat el stage (finestra oberta) el creem
+        if (stageUsuari == null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/UsuariEdicio.fxml"));
+            Parent root = (Parent) loader.load();
+            usuariEdicioControlador = loader.getController();
+            stageUsuari = new Stage();
+            stageUsuari.setScene(new Scene(root));
+            Image icon = new Image("/resources/usuari_icon.png");
+            //stageUsuari.getIcons().add(icon);
+            //stageUsuari.setTitle("Dumo-Go2");
+            stageUsuari.setResizable(false);
+
+            // Quan es tanqui esborrem el stage de memòria                    
+            stageUsuari.setOnHiding(we -> stageUsuari = null);
+
+            // Mostrem la finestra del usuari a editar
+            stageUsuari.show();   
+            
+        // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
+        }else{
+            stageUsuari.toFront();
+        }
+    }
     
 }

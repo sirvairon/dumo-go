@@ -20,8 +20,11 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -30,7 +33,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -45,269 +51,140 @@ public class UsuariController implements Initializable {
     /**
      * Initializes the controller class.
      */
-     
-    private Stage stage;
-    private Usuari usuari;
+    private HashMap<String, String> msg_in;
     private String codi_resposta;
     private String significat_codi_resposta;
     private static final String STRING_CODI_RESPOSTA = "codi_resposta";
     private Alert alerta;
-    private final ObservableList<String> olGenere = FXCollections.observableArrayList("Masculí","Femení","Altre");
-    private final ObservableList<String> olTipusSoci = FXCollections.observableArrayList("Premium","Standard");
+    private UsuariEdicioController usuariEdicioControlador;
+    private Stage stageUsuari;
     
     @FXML
-    private AnchorPane raiz;    
+    private GridPane grid_libros;     
+    
     @FXML
-    private TextField textFieldNomUsuari;    
+    private ImageView book_image; 
+    
     @FXML
-    private TextField textFieldNumSoci;    
-    @FXML
-    private TextField textFieldDNI;    
-    @FXML
-    private TextField textFieldNom;    
-    @FXML
-    private TextField textFieldCognom1;    
-    @FXML
-    private TextField textFieldCognom2;    
-    @FXML
-    private TextField textFieldTelefon1;    
-    @FXML
-    private TextField textFieldTelefon2;    
-    @FXML
-    private TextField textFieldDireccio;    
-    @FXML
-    private TextField textFieldPoblacio;    
-    @FXML
-    private TextField textFieldProvincia;    
-    @FXML
-    private TextField textFieldCodiPostal;    
-    @FXML
-    private TextField textFieldPais;    
-    @FXML
-    private TextField textFieldCorreu;    
-    @FXML
-    private ChoiceBox choiceBoxGenere;    
-    @FXML
-    private TextField textFieldDataAlta;    
-    @FXML
-    private ChoiceBox choiceBoxTipusSoci;    
-    @FXML
-    private TextField textFieldDataNaixement;            
-    @FXML
-    private TextArea textAreaObservacions;    
-    @FXML
-    private HBox hboxBotones;    
-    @FXML
-    private Button butoCancelar;    
-    @FXML
-    private Button butoAccio;
-    @FXML
-    private Label labelResposta;
-    @FXML
-    private TextField textFieldAdminAlta;
-    @FXML
-    private PasswordField passwordFieldPassword;    
+    private Label book_title; 
             
-    @FXML
-    private void verButtonAction(ActionEvent event) throws IOException, ClassNotFoundException {
-        
-        // Creem el HashMap on rebrem les dades de l'usuari
-        HashMap<String, String> msg_in;
-        
-        // Cridem el metode per rebre les dades de l'usuari
-        msg_in = AccionsClient.obtenirUsuari();
-        System.out.println(msg_in.toString());
-        // Omplim els labels amb les dades rebudes
-        textFieldNumSoci.setText(msg_in.get("num_soci"));
-        textFieldDNI.setText(msg_in.get("dni"));
-        textFieldNom.setText(msg_in.get("nom"));
-        textFieldCognom1.setText(msg_in.get("cognom1"));
-        textFieldCognom2.setText(msg_in.get("cognom2"));
-        textFieldTelefon1.setText(msg_in.get("telefon1"));
-        textFieldTelefon2.setText(msg_in.get("telefon2"));
-        textFieldDireccio.setText(msg_in.get("direccio"));
-        textFieldPoblacio.setText(msg_in.get("poblacio"));
-        textFieldProvincia.setText(msg_in.get("provincia"));
-        textFieldCodiPostal.setText(msg_in.get("codi_postal"));
-        textFieldCorreu.setText(msg_in.get("correu"));
-        textFieldNomUsuari.setText(msg_in.get("nom_user"));
-        textFieldAdminAlta.setText(msg_in.get("admin_alta"));
-        passwordFieldPassword.setText(msg_in.get("password"));
-    }
-        
-    public void recuperarDades(){
-        stage = (Stage) this.raiz.getScene().getWindow();
-        usuari = (Usuari) stage.getUserData();
-        omplirDades(usuari);               
-    }
-    
-    private void omplirDades(Usuari usuari){
-        this.usuari = usuari;
-        textFieldNomUsuari.setText(usuari.getNom_user());
-        textFieldNumSoci.setText(usuari.getNum_soci());
-        textFieldDNI.setText(usuari.getDni());
-        textFieldNom.setText(usuari.getNom());
-        textFieldCognom1.setText(usuari.getCognom1());
-        textFieldCognom2.setText(usuari.getCognom2());
-        textFieldTelefon1.setText(usuari.getTelefon1());
-        textFieldTelefon2.setText(usuari.getTelefon2());
-        textFieldDireccio.setText(usuari.getDireccio());
-        textFieldPoblacio.setText(usuari.getPoblacio());
-        textFieldProvincia.setText(usuari.getProvincia());
-        textFieldCodiPostal.setText(usuari.getCodi_postal());
-        textFieldPais.setText(usuari.getPais());
-        textFieldCorreu.setText(usuari.getCorreu());
-        choiceBoxGenere.setValue(usuari.getGenere());
-        textFieldDataAlta.setText(usuari.getData_Alta());
-        choiceBoxTipusSoci.setValue(usuari.getTipus_Soci());
-        textFieldDataNaixement.setText(usuari.getData_naixement());
-        textAreaObservacions.setText(usuari.getObservacions());    
-        textFieldAdminAlta.setText(usuari.getAdmin_Alta()); 
-        passwordFieldPassword.setText(usuari.getPassword());
-    }
-    
-    private void esborrarDades(){
-        usuari = null;
-        textFieldNomUsuari.setText("");
-        textFieldNumSoci.setText("");
-        textFieldDNI.setText("");
-        textFieldNom.setText("");
-        textFieldCognom1.setText("");
-        textFieldCognom2.setText("");
-        textFieldTelefon1.setText("");
-        textFieldTelefon2.setText("");
-        textFieldDireccio.setText("");
-        textFieldPoblacio.setText("");
-        textFieldProvincia.setText("");
-        textFieldCodiPostal.setText("");
-        textFieldPais.setText("");
-        textFieldCorreu.setText("");
-        choiceBoxGenere.setValue("");
-        textFieldDataAlta.setText("");
-        choiceBoxTipusSoci.setValue("");
-        textFieldDataNaixement.setText("");
-        textAreaObservacions.setText("");    
-        textFieldAdminAlta.setText(""); 
-        passwordFieldPassword.setText("");
-    }
-        
-    public void afegirUsuari(){
-        // Esborrem dades en cas de que hi hagi
-        esborrarDades();
-        
-        //butoModificar = null;
-        textFieldDNI.setDisable(false);
-
-        butoAccio.setText("Afegir");
-        butoAccio.setOnMouseClicked( new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                    usuari = obtenirUsuariPantalla();
-                    try {
-                        // Creem HashMap<String, String> msg_in;el HashMap on rebrem el codi de resposta
-                        HashMap<String, String> msg_in;
-
-                        msg_in = AccionsClient.agefirUsuari(usuari);
-                        codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
-                        significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-                        System.out.println("Codi de resposta:" + codi_resposta + " - " + significat_codi_resposta);
-                        alerta.setTitle("Afegir usuari");
-                        alerta.setHeaderText(significat_codi_resposta);
-                        if(codi_resposta.equals("1000")){
-                            alerta.setAlertType(Alert.AlertType.INFORMATION);
-                            alerta.showAndWait();
-                            ((Node) (event.getSource())).getScene().getWindow().hide();
-                        }else{
-                            alerta.setAlertType(Alert.AlertType.ERROR);
-                            alerta.show();
-                        }
-
-                    } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-        });
-    }
-    
-    public void modificarUsuari(Usuari u){
-        // Omplim les dades per les obtingudes
-        omplirDades(u);
-        butoAccio.setText("Modificar");
-        butoAccio.setOnMouseClicked( new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                usuari = obtenirUsuariPantalla();
-                try {
-                    // Creem HashMap<String, String> msg_in;el HashMap on rebrem el codi de resposta
-                    HashMap<String, String> msg_in;
-
-                    msg_in = AccionsClient.modificarUsuari(usuari);
-                    codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
-                    significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-                    System.out.println("Codi de resposta:" + codi_resposta + " - " + significat_codi_resposta);
-                    alerta.setTitle("Modificar usuari");
-                    alerta.setHeaderText(significat_codi_resposta);
-                    if(codi_resposta.equals("5000")){
-                        alerta.setAlertType(Alert.AlertType.INFORMATION);
-                        alerta.showAndWait();
-                        ((Node) (event.getSource())).getScene().getWindow().hide();
-                    }else{
-                        alerta.setAlertType(Alert.AlertType.ERROR);
-                        alerta.show();
-                    }
-
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
-    }
-    
-    @FXML
-    private void tancarFinestra(ActionEvent event) throws IOException, ClassNotFoundException {
-        ((Node) (event.getSource())).getScene().getWindow().hide();
-    }
-    
-    private Usuari obtenirUsuariPantalla(){
-        
-        Usuari u = new Usuari(
-            new SimpleStringProperty(textFieldNomUsuari.getText()),
-            new SimpleStringProperty(passwordFieldPassword.getText()),
-            new SimpleStringProperty(textFieldDNI.getText()),
-            new SimpleStringProperty(textFieldDataNaixement.getText()),
-            new SimpleStringProperty(textFieldNumSoci.getText()),
-            new SimpleStringProperty(choiceBoxTipusSoci.getValue().toString()),
-            new SimpleStringProperty(textFieldDataAlta.getText()),
-            new SimpleStringProperty(textFieldNom.getText()),
-            new SimpleStringProperty(textFieldCognom1.getText()),
-            new SimpleStringProperty(textFieldCognom2.getText()),
-            new SimpleStringProperty(choiceBoxGenere.getValue().toString()),
-            new SimpleStringProperty(textFieldDireccio.getText()),
-            new SimpleStringProperty(textFieldCodiPostal.getText()),
-            new SimpleStringProperty(textFieldPoblacio.getText()),
-            new SimpleStringProperty(textFieldProvincia.getText()),
-            new SimpleStringProperty(textFieldPais.getText()),
-            new SimpleStringProperty(textFieldTelefon1.getText()),
-            new SimpleStringProperty(textFieldTelefon2.getText()),
-            new SimpleStringProperty(textFieldCorreu.getText()),
-            new SimpleStringProperty(textFieldCorreu.getText()),
-            new SimpleStringProperty(textAreaObservacions.getText()),
-            new SimpleStringProperty(textFieldAdminAlta.getText())
-        );
-
-        return u;
-    }
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Establim el contigut del llistat dels butons per escollir (genere, tipus de soci,...)
-        choiceBoxGenere.setItems(olGenere);
-        choiceBoxTipusSoci.setItems(olTipusSoci);
-        //choiceBoxGenere.setValue("Masculí");
+        /*
+        // TODO
+        Label label1 = new Label("A");
+        Label label2 = new Label("B");
+        Label label3 = new Label("C");
+        Label label4 = new Label("D");
+        //grid_libros.add(label4, 0, 0, 1, 1);
+        //grid_libros.add(label1, 1, 0, 1, 1);
+        //grid_libros.add(label2, 2, 0, 1, 1);
+        //grid_libros.add(label3, 3, 0, 1, 1);
+        ColumnConstraints column = new ColumnConstraints();
+        RowConstraints row = new RowConstraints();
+        column.setHalignment(HPos.CENTER);
+        row.setValignment(VPos.BOTTOM);
+        row.setVgrow(Priority.ALWAYS);
+        grid_libros.getRowConstraints().addAll(row);
+        grid_libros.getColumnConstraints().addAll(column);
+        Image image1 = new Image(getClass().getResourceAsStream("/resources/book.jpg"));
+        for(int i = 0; i<60; i++){
+            for(int j = 0; j<4; j++){
+                //grid_libros.addRow(i, new Label("Id"));
+                VBox vbox_libro = new VBox();
+                vbox_libro.getChildren().add(new ImageView(image1));
+                vbox_libro.getChildren().add(new Label("Id"+(j+i)));
+                grid_libros.add(vbox_libro,j,i);
+                //grid_libros.add(new ImageView(image1),j,i);
+                //grid_libros.add(new Label("Id"+(j+i)), j, i);                
+            }           
+        }
+        //grid_libros.addRow(1, new Label("Id"));
+        //grid_libros.addRow(2, new Label("Id"));
+        //grid_libros.addRow(3, new Label("Id"));
+*/        
         alerta = new Alert(Alert.AlertType.NONE);
         DialogPane dialogPane = alerta.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
         alerta.initStyle(StageStyle.UNDECORATED);
+
+    }    
+    
+    @FXML
+    private void ferLogout(ActionEvent event) throws IOException{
+        // Fem l'accio de fer tancar sessio
+        msg_in = AccionsClient.ferLogOut();
+        // Obtenim codi de resposta
+        codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
+        // Obtenim significat del codi de resposta
+        significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);        
+        // Comprobem si ha sigut correcte tancar sessio
+        if(codi_resposta.equals("20")){
+            ((Node) (event.getSource())).getScene().getWindow().hide();
+            Parent parent = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));
+            Stage stage = new Stage();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            Image icon = new Image("/resources/icon.png");
+            stage.getIcons().add(icon);
+            stage.setTitle("Dumo-Go");
+            stage.setResizable(false);
+            stage.show();      
+        }else{
+            // Configurem l'alerta per indicar que hi ha hagut un error
+            alerta.setTitle("Tancar sessió");
+            alerta.setContentText("");
+            alerta.setAlertType(Alert.AlertType.ERROR);
+            alerta.setHeaderText(significat_codi_resposta);
+            alerta.show();
+        }
+    }
+    
+    @FXML
+    private void veureUsuariButtonAction(ActionEvent event) throws IOException {
+        ((Node) (event.getSource())).getScene().getWindow().hide();
+        Parent parent = FXMLLoader.load(getClass().getResource("/views/Usuari.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(parent);
+        stage.setScene(scene);
+        Image icon = new Image("/resources/icon.png");
+        stage.getIcons().add(icon);
+        stage.setTitle("Dumo-Go");
+        stage.setResizable(false);
+        stage.show();
+    }  
+    
+    @FXML
+    private void mostrarPerfil(ActionEvent event) throws IOException {
+         // Obrim la finestra usuari 
+        obrirFinestraUsuari();
+        // Actualitzem el controlador (finestra usuari) per mijtà del mètode dins del controlador
+        usuariEdicioControlador.mostrarPerfil();
     } 
-        
+    
+    private void obrirFinestraUsuari() throws IOException{ // Per modificar
+        // En cas de que no s'hagi creat el stage (finestra oberta) el creem
+        if (stageUsuari == null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/UsuariEdicio.fxml"));
+            Parent root = (Parent) loader.load();
+            usuariEdicioControlador = loader.getController();
+            stageUsuari = new Stage();
+            stageUsuari.setScene(new Scene(root));
+            Image icon = new Image("/resources/usuari_icon.png");
+            //stageUsuari.getIcons().add(icon);
+            //stageUsuari.setTitle("Dumo-Go2");
+            stageUsuari.setResizable(false);
+
+            // Quan es tanqui esborrem el stage de memòria                    
+            stageUsuari.setOnHiding(we -> stageUsuari = null);
+
+            // Mostrem la finestra del usuari a editar
+            stageUsuari.show();   
+            
+        // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
+        }else{
+            stageUsuari.toFront();
+        }
+    }
+    
 }

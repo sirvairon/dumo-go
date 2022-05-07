@@ -29,6 +29,7 @@ public class AccionsClient {
     private static String nom_user_actual;
     private static String codi_connexio_client;
     private static final String STRING_CODI_CONNEXIO = "codi";
+    private static final String STRING_NOM_USUARI = "user_name";
     private static int codi_resposta;
     private static final String STRING_CODI_RESPOSTA = "codi_resposta";
     private static OutputStream yourOutputStream;
@@ -88,7 +89,7 @@ public class AccionsClient {
                 msg_out.put("nom_admin", usuari);
             }else if(tipus.equals("Usuari")){
                 msg_out.put("accio", "comprobar_usuari");
-                msg_out.put("user_name", usuari);
+                msg_out.put(STRING_NOM_USUARI, usuari);
             }            
             msg_out.put("password", pass);
             msg_out.put(STRING_CODI_CONNEXIO, "");     
@@ -104,7 +105,7 @@ public class AccionsClient {
             System.out.println("(ACCIONS CLIENT)codi_resposta:" + codi_resposta);
             // Si el codi de retorn es correcte guardem el codi de connexio rebut del servidor
             // i el nom d'usuari per futures consultes
-            if(codi_resposta == 8010 || codi_resposta == 8020 || codi_resposta == 7010 || codi_resposta == 7020 || codi_resposta == 0){
+            if(codi_resposta == 8010 || codi_resposta == 8020 || codi_resposta == 8030 || codi_resposta == 7010 || codi_resposta == 7020 || codi_resposta == 7030 || codi_resposta == 0){
                 System.out.println("(ACCIONS CLIENT 2)codi_resposta:" + String.valueOf(codi_resposta));
                 msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));               
             }else{                
@@ -237,20 +238,77 @@ public class AccionsClient {
             msg_out = new HashMap<>();
 
             // Omplim el HasMap amb usuari, password i el codi de connexio buit
-            msg_out.put("accio", "obtenir_usuari");
-            msg_out.put("user_name", nom_user_actual);
+            msg_out.put("accio", "mostra_usuari");
+            msg_out.put(STRING_NOM_USUARI, nom_user_actual);
             msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
             
             // Enviem i rebem la informacio
-            mapOutputStream.writeObject(msg_out);            
-            msg_in = (HashMap) mapInputStream.readObject();         
+            mapOutputStream.writeObject(msg_out);           
+            msg_in = (HashMap) mapInputStream.readObject(); 
+            
+            /*
+            Object o = mapInputStream.readObject();
+            if(o instanceof HashMap){
+                msg_in = (HashMap)o;
+            }else if(o instanceof Integer){
+                msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));
+            }
+            */
             
             // Establim connexio
             yourOutputStream.close();
             mapInputStream.close();
             
             // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
-            return msg_in;            
+            //return msg_in; 
+            return msg_in; 
+            
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;        
+    } 
+    
+    public static HashMap buscarUsuari(String nom_usuari) throws ClassNotFoundException{
+        
+        try {
+            // Establim connexio
+            if(establirConnexio() == -1){
+                msg_in.put(STRING_CODI_RESPOSTA, "-1");
+                return msg_in;
+            }
+
+            // Creem els HashMaps per enviar i rebre les dades per fer la accio
+            msg_out = new HashMap<>();
+
+            // Omplim el HasMap amb usuari, password i el codi de connexio buit
+            msg_out.put("accio", "mostra_usuari");
+            msg_out.put(STRING_NOM_USUARI, nom_usuari);
+            msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
+            
+            // Enviem i rebem la informacio
+            mapOutputStream.writeObject(msg_out);           
+            msg_in = (HashMap) mapInputStream.readObject(); 
+            System.out.println(msg_in.toString()); 
+            /*
+            Object o = mapInputStream.readObject();
+            if(o instanceof HashMap){
+                msg_in = (HashMap)o;
+            }else if(o instanceof Integer){
+                msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));
+            }
+            */
+            
+            // Establim connexio
+            yourOutputStream.close();
+            mapInputStream.close();
+            
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            //return msg_in; 
+            return msg_in; 
             
         } catch (UnknownHostException ex) {
             Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -279,7 +337,7 @@ public class AccionsClient {
             msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
                    
             // Afegim les dades de l'usuari al hashmap
-            msg_out.put("user_name", usuari.getNom_user());
+            msg_out.put(STRING_NOM_USUARI, usuari.getNom_user());
             
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);     
@@ -343,6 +401,48 @@ public class AccionsClient {
         return null;        
     }  
 
+    public static HashMap modificarPassword(String password) throws ClassNotFoundException {
+        
+        try {
+            // Establim connexio
+            if(establirConnexio() == -1){
+                msg_in.put(STRING_CODI_RESPOSTA, "-1");
+                return msg_in;
+            }
+
+            // Creem els HashMaps per enviar i rebre les dades per fer la accio
+            msg_out = new HashMap<>();
+            msg_in = new HashMap<>();
+
+            // Omplim el HasMap accio i el codi de connexio
+            msg_out.put("accio", "canvia_password");
+            msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
+                   
+            // Afegim el nom d'usuari i password a modificar al hashmap
+            msg_out.put(STRING_NOM_USUARI, nom_user_actual);
+            msg_out.put("password_nou", password);
+            
+            // Enviem i rebem la informacio
+            mapOutputStream.writeObject(msg_out);     
+            codi_resposta = (int) mapInputStream.readObject();
+            msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
+            
+            // Establim connexio
+            yourOutputStream.close();
+            mapInputStream.close();
+            
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            return msg_in;            
+            
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;          
+    }
+    
     public static ArrayList obtenirLlistatUsuaris() throws ClassNotFoundException{
         
         try {
@@ -408,6 +508,7 @@ public class AccionsClient {
                     // Enviem i rebem la informacio
                     mapOutputStream.writeObject(msg_out);            
                     llistat_hashmaps = (List) mapInputStream.readObject();
+                    System.out.println("Llistat rebut" + llistat_hashmaps.toString());
 
                     // Omplim el llistat d'usuaris amb els usuaris de cada HashMap dins d'el List tornat
                     for (HashMap obj:llistat_hashmaps) {
@@ -457,26 +558,26 @@ public class AccionsClient {
 
     public static void usuariAHashmap(HashMap hashmap, Usuari usuari){        
         // Afegim les dades de l'usuari al hashmap
-        hashmap.put("user_name", usuari.getNom_user());
+        hashmap.put(STRING_NOM_USUARI, usuari.getNom_user());
         hashmap.put("dni", usuari.getDni());
         hashmap.put("data_naixement", usuari.getData_naixement());
-        hashmap.put("num_soci", usuari.getNum_soci());
-        hashmap.put("tipus_soci", usuari.getTipus_Soci());
+        //hashmap.put("num_soci", usuari.getNum_soci());
+        //hashmap.put("tipus_soci", usuari.getTipus_Soci());
         hashmap.put("data_alta", usuari.getData_Alta());
         hashmap.put("nom", usuari.getNom());
         hashmap.put("cognom1", usuari.getCognom1());
-        hashmap.put("cognom2", usuari.getCognom2());
-        hashmap.put("genere", usuari.getGenere());
+        //hashmap.put("cognom2", usuari.getCognom2());
+        //hashmap.put("genere", usuari.getGenere());
         hashmap.put("direccio", usuari.getDireccio());
-        hashmap.put("codi_postal", usuari.getCodi_postal());
-        hashmap.put("poblacio", usuari.getPoblacio());        
-        hashmap.put("provincia", usuari.getProvincia());        
+        //hashmap.put("codi_postal", usuari.getCodi_postal());
+        //hashmap.put("poblacio", usuari.getPoblacio());        
+        //hashmap.put("provincia", usuari.getProvincia());        
         hashmap.put("pais", usuari.getPais());
         hashmap.put("telefon1", usuari.getTelefon1());     
-        hashmap.put("telefon2", usuari.getTelefon2());
+        //hashmap.put("telefon2", usuari.getTelefon2());
         hashmap.put("correu", usuari.getCorreu());
-        hashmap.put("foto", usuari.getFoto());
-        hashmap.put("observacions", usuari.getObservacions());   
+        //hashmap.put("foto", usuari.getFoto());
+        //hashmap.put("observacions", usuari.getObservacions());   
         hashmap.put("admin_alta", usuari.getAdmin_Alta());
         hashmap.put("password", usuari.getPassword());
     }

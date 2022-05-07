@@ -4,7 +4,9 @@
  */
 package controllers;
 
+//import z_borrar.UsuariBuscarController;
 import dumogo.AccionsClient;
+import dumogo.Buscador;
 import dumogo.CodiErrors;
 import dumogo.PestanyaLlistat;
 import dumogo.Usuari;
@@ -47,6 +49,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
@@ -62,13 +65,15 @@ public class AdminController implements Initializable {
     private Usuari usuariTemp;
     private Object element_temp;
     private Date tempsUltimClick;
-    private Stage stageUsuari;
+    private Stage stageUsuari, stageBuscar;
     private UsuariEdicioController usuariEdicioControlador;
+    //private UsuariBuscarController UsuariBuscarController;
     private HashMap<String, String> msg_in;
     private String codi_resposta;
     private String significat_codi_resposta;
     private static final String STRING_CODI_RESPOSTA = "codi_resposta";
     private Alert alerta;
+    
     
     
     //@FXML
@@ -80,9 +85,9 @@ public class AdminController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         alerta = new Alert(Alert.AlertType.NONE);
-        DialogPane dialogPane = alerta.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
         alerta.initStyle(StageStyle.UNDECORATED);
+        DialogPane dialogPane = alerta.getDialogPane();
+        dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());        
     }
 
     @FXML
@@ -248,7 +253,7 @@ public class AdminController implements Initializable {
         significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);        
         // Comprobem si ha sigut correcte tancar sessio
         if(codi_resposta.equals("20")){
-            ((Node) (event.getSource())).getScene().getWindow().hide();
+            tabPaneGeneral.getScene().getWindow().hide();
             Parent parent = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));
             Stage stage = new Stage();
             Scene scene = new Scene(parent);
@@ -274,6 +279,63 @@ public class AdminController implements Initializable {
         obrirFinestraUsuari();
         // Esborrem dades en cas de que hi hagi alguna
         usuariEdicioControlador.afegirUsuari();
+    }
+    
+    @FXML
+    private void buscarUsuari() throws IOException{
+        
+        Usuari usuari;
+        
+        // En cas de que no s'hagi creat el stage (finestra oberta) el creem
+        if (stageBuscar == null) { 
+            
+            // Creem un buscador en funcio del tipus
+            Buscador buscador = new Buscador("usuari");
+ 
+            // Obtenim els elements per controlar els clicks del buscador
+            Button butoBuscar = buscador.getButoBuscar();
+            Button butoCancelar = buscador.getButoCancelar();
+
+            // Configurem el EventHandler en cas de fer click al buto buscar
+            butoBuscar.setOnMouseClicked( new EventHandler() {
+                @Override
+                public void handle(Event event) {
+                    try {
+                        String nom_usuari = buscador.getParaula();
+                        if(nom_usuari != null){
+                            msg_in = AccionsClient.buscarUsuari(nom_usuari);
+                            System.out.println("buscarUsuari msg_in:");
+                            System.out.println(msg_in.toString());
+                        }
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
+            
+            // Configurem el EventHandler en cas de fer click al buto cancelar
+            butoCancelar.setOnMouseClicked( new EventHandler() {
+                @Override
+                public void handle(Event event) {
+                    stageBuscar.close();
+                }
+            });
+            
+            stageBuscar = new Stage();
+            stageBuscar.initModality(Modality.WINDOW_MODAL);
+            Image icon = new Image("/resources/usuari_icon.png");
+            stageBuscar.getIcons().add(icon);
+            stageBuscar.setTitle("Buscar usuari");
+            stageBuscar.setResizable(false);
+            stageBuscar.setScene(new Scene(buscador));
+            stageBuscar.initOwner( tabPaneGeneral.getScene().getWindow() );
+            stageBuscar.setOnHiding(we -> stageBuscar = null);
+            stageBuscar.show();
+            
+        // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
+        }else{
+            stageBuscar.toFront();
+        }
     }
     
     private void modificarUsuari(Usuari usuari) throws IOException{ 

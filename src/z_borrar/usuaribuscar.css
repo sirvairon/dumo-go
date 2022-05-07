@@ -1,0 +1,22 @@
+/*
+ * CSS PER TROBAR ELEMENTS
+ */
+
+VBox, HBox {
+    -fx-padding: 1.333332em 1.333332em 1.333332em 1.333332em;
+    -fx-spacing: 20;
+    -fx-alignment: CENTER;
+}
+
+HBox {
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em;
+}
+
+VBox > VBox {
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em;
+    -fx-spacing: 10;
+    -fx-alignment: TOP_LEFT;
+}
+
+
+

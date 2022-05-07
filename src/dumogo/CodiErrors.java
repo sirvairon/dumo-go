@@ -13,7 +13,7 @@ public class CodiErrors {
     private static String significat;
     
     public static String ComprobarCodiError (String num_codi){
-        significat = "Error no contemplat";
+        significat = "Error desconegut";
         
         switch(num_codi){
             case "-1":
@@ -21,7 +21,7 @@ public class CodiErrors {
                 break;
                 
             case "0":
-                significat = "ERROR DB";
+                significat = "Error desconegut";
                 break;
                 
             /* accio = afegir_usuari */
@@ -140,6 +140,48 @@ public class CodiErrors {
                 break;
             case "8030":
                 significat = "usuari ja connectat";
+                break;
+                
+            /* accio = llista_usuaris */
+            case "1100":
+                significat = "Llista retornada correctament";
+                break;
+            
+            /* accio = llista_admins */
+            case "1200":
+                significat = "Llista retornada correctament";
+                break;
+                
+            /* accio = modifica_usuari/admin */
+            case "1300":
+                significat = "Usuari Modificat";
+                break;
+            case "1310":
+                significat = "Format_email_incorrecte";
+                break;
+            case "1320":
+                significat = "format_dni_incorrecte";
+                break;
+            case "1330":
+                significat = "format_password_incorrecte";
+                break;
+                
+            /* accio = canvia_password */
+            case "9000":
+                significat = "Canvi realitzat";
+                break;
+                
+            /* accio = afegir_llibre */
+            case "1400":
+                significat = "Llibre afegit";
+                break;
+                
+            /* accio = esborrar_llibre */
+            case "1500":
+                significat = "Llibre esborrat";
+                break;
+            case "1510":
+                significat = "No s'ha trobat llibre amb aquest id";
                 break;
             
             /* accio = tancar_sessio */

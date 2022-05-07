@@ -4,6 +4,7 @@
  */
 package dumogo;
 
+import z_borrar.Usuari_;
 import controllers.AdminController;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,9 +52,9 @@ public final class PestanyaLlistat extends Tab {
     private final ChoiceBox opcioFiltre;
     private ObservableList<String> llistaFiltre;
     private final Button butoActualitzar, butoAfegir, butoModificar, butoEliminar, butoFiltre;    
-    private ArrayList<Usuari> llista;
-    private ObservableList<Usuari> data;
-    private FilteredList<Usuari> data_filtrada;
+    private ArrayList<Usuari_> llista;
+    private ObservableList<Usuari_> data;
+    private FilteredList<Usuari_> data_filtrada;
     private Map<String, String> mapaNomCamps;
     
     public PestanyaLlistat(String nomLlista, String tipusLlista) throws ClassNotFoundException {
@@ -148,7 +149,7 @@ public final class PestanyaLlistat extends Tab {
                 data = FXCollections.observableArrayList(llista); 
                 
                 // Obtenim el nom dels camps per columnes, filtre,...
-                mapaNomCamps = Usuari.mapaNomCamps;
+                mapaNomCamps = Usuari_.mapaNomCamps;
             case ADMINISTRADOR_CASE:
                 // Esborrem l'informacio per carregar-la de nou
                 data = null;
@@ -160,7 +161,7 @@ public final class PestanyaLlistat extends Tab {
                 data = FXCollections.observableArrayList(llista); 
 
                 // Obtenim el nom dels camps per columnes, filtre,...
-                mapaNomCamps = Usuari.mapaNomCamps;
+                mapaNomCamps = Usuari_.mapaNomCamps;
             break;            
         }
     }
@@ -198,7 +199,7 @@ public final class PestanyaLlistat extends Tab {
                 resultat.setText("Usuaris:");
                 break;
             case ADMINISTRADOR_CASE:
-                mapaNomCamps = Usuari.mapaNomCamps;
+                mapaNomCamps = Usuari_.mapaNomCamps;
                 System.out.println(mapaNomCamps);
                 llistaFiltre = FXCollections.observableArrayList(
                         mapaNomCamps.get("DNI"), 
@@ -259,18 +260,6 @@ public final class PestanyaLlistat extends Tab {
                     } else {
                         return false;
                     }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("num_soci"))){
-                    if(usuariFiltrat.getNum_soci().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("tipus_soci"))){
-                    if(usuariFiltrat.getTipus_Soci().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
                 }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data_alta"))){
                     if(usuariFiltrat.getData_Alta().toLowerCase().indexOf(paraulaFiltre) > -1){
                         return true;
@@ -289,12 +278,6 @@ public final class PestanyaLlistat extends Tab {
                     } else {
                         return false;
                     }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("cognom2"))){
-                    if(usuariFiltrat.getCognom2().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
                 }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data_naixement"))){
                     if(usuariFiltrat.getData_naixement().toLowerCase().indexOf(paraulaFiltre) > -1){
                         return true;
@@ -303,6 +286,50 @@ public final class PestanyaLlistat extends Tab {
                     }                    
                 }else if(opcioFiltreTxt.equals(mapaNomCamps.get("direccio"))){
                     if(usuariFiltrat.getDireccio().toLowerCase().indexOf(paraulaFiltre) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }                    
+                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("pais"))){
+                    if(usuariFiltrat.getPais().toLowerCase().indexOf(paraulaFiltre) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }                    
+                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("telefon1"))){
+                    if(usuariFiltrat.getTelefon1().toLowerCase().indexOf(paraulaFiltre) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }                    
+                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("correu"))){
+                    if(usuariFiltrat.getCorreu().toLowerCase().indexOf(paraulaFiltre) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }                    
+                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("admin_alta"))){
+                    if(usuariFiltrat.getAdmin_Alta().toLowerCase().indexOf(paraulaFiltre) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }                    
+                }
+                /*
+                else if(opcioFiltreTxt.equals(mapaNomCamps.get("cognom2"))){
+                    if(usuariFiltrat.getCognom2().toLowerCase().indexOf(paraulaFiltre) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }                    
+                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("num_soci"))){
+                    if(usuariFiltrat.getNum_soci().toLowerCase().indexOf(paraulaFiltre) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }                    
+                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("tipus_soci"))){
+                    if(usuariFiltrat.getTipus_Soci().toLowerCase().indexOf(paraulaFiltre) > -1){
                         return true;
                     } else {
                         return false;
@@ -325,38 +352,14 @@ public final class PestanyaLlistat extends Tab {
                     } else {
                         return false;
                     }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("pais"))){
-                    if(usuariFiltrat.getPais().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("telefon1"))){
-                    if(usuariFiltrat.getTelefon1().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
                 }else if(opcioFiltreTxt.equals(mapaNomCamps.get("telefon2"))){
                     if(usuariFiltrat.getTelefon2().toLowerCase().indexOf(paraulaFiltre) > -1){
                         return true;
                     } else {
                         return false;
                     }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("correu"))){
-                    if(usuariFiltrat.getCorreu().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("admin_alta"))){
-                    if(usuariFiltrat.getAdmin_Alta().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
                 }
-                
+                */
                 // No s'ha trobat res
                 return false;
             });
@@ -381,126 +384,128 @@ public final class PestanyaLlistat extends Tab {
         
         // Per crear totes les columnes de la taula usuaris
         
-        TableColumn<Usuari,String> col_Nom = new TableColumn<Usuari,String>(mapaNomCamps.get("nom"));        
-        col_Nom.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
+        TableColumn<Usuari_,String> col_Nom = new TableColumn<Usuari_,String>(mapaNomCamps.get("nom"));        
+        col_Nom.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
                 return p.getValue().nom();
         }});
         //col_Nom.setCellValueFactory(new PropertyValueFactory<>("nom"));
 
-        TableColumn<Usuari,String> col_Cognom = new TableColumn<Usuari,String>(mapaNomCamps.get("cognom1"));
-        col_Cognom.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
+        TableColumn<Usuari_,String> col_Cognom = new TableColumn<Usuari_,String>(mapaNomCamps.get("cognom1"));
+        col_Cognom.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
                 return p.getValue().cognom1();
         }});
 
-        TableColumn<Usuari,String> col_Poblacio = new TableColumn<Usuari,String>(mapaNomCamps.get("poblacio"));
-        col_Poblacio.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
-                return p.getValue().poblacio();
-        }});
-
-        TableColumn<Usuari,String> col_NomUsuari = new TableColumn<Usuari,String>(mapaNomCamps.get("user_name"));
-        col_NomUsuari.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
+        TableColumn<Usuari_,String> col_NomUsuari = new TableColumn<Usuari_,String>(mapaNomCamps.get("user_name"));
+        col_NomUsuari.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
                 return p.getValue().nom_user();
         }});
 
-        TableColumn<Usuari,String> col_Provincia = new TableColumn<Usuari,String>(mapaNomCamps.get("provincia"));
-        col_Provincia.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
-                return p.getValue().provincia();
-        }});
-
-        TableColumn<Usuari,String> col_Cognom2 = new TableColumn<Usuari,String>(mapaNomCamps.get("cognom2"));
-        col_Cognom2.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
-                return p.getValue().cognom2();
-        }});
-
-        TableColumn<Usuari,String> col_NumSoci = new TableColumn<Usuari,String>(mapaNomCamps.get("num_soci"));
-        col_NumSoci.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
-                return p.getValue().num_soci();
-        }});
-
-        TableColumn<Usuari,String> col_Direccio = new TableColumn<Usuari,String>(mapaNomCamps.get("direccio"));
-        col_Direccio.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
+        TableColumn<Usuari_,String> col_Direccio = new TableColumn<Usuari_,String>(mapaNomCamps.get("direccio"));
+        col_Direccio.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
                 return p.getValue().direccio();
         }});      
 
-        TableColumn<Usuari,String> col_Telefon = new TableColumn<Usuari,String>(mapaNomCamps.get("telefon1"));
-        col_Telefon.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
+        TableColumn<Usuari_,String> col_Telefon = new TableColumn<Usuari_,String>(mapaNomCamps.get("telefon1"));
+        col_Telefon.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
                 return p.getValue().telefon1();
         }});
 
-        TableColumn<Usuari,String> col_CodiPostal = new TableColumn<Usuari,String>(mapaNomCamps.get("codi_postal"));
-        col_CodiPostal.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
-                return p.getValue().codi_postal();
-        }});
-
-        TableColumn<Usuari,String> col_DNI = new TableColumn<Usuari,String>(mapaNomCamps.get("DNI"));
-        col_DNI.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
+        TableColumn<Usuari_,String> col_DNI = new TableColumn<Usuari_,String>(mapaNomCamps.get("DNI"));
+        col_DNI.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
                 return p.getValue().dni();
         }});
 
-        TableColumn<Usuari,String> col_Correu = new TableColumn<Usuari,String>(mapaNomCamps.get("correu"));
-        col_Correu.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
+        TableColumn<Usuari_,String> col_Correu = new TableColumn<Usuari_,String>(mapaNomCamps.get("correu"));
+        col_Correu.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
                 return p.getValue().correu();
         }});
 
-        TableColumn<Usuari,String> col_Telefon2 = new TableColumn<Usuari,String>(mapaNomCamps.get("telefon2"));
-        col_Telefon2.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
-                return p.getValue().telefon2();
-        }});
-        
-        TableColumn<Usuari,String> col_Pais = new TableColumn<Usuari,String>(mapaNomCamps.get("pais"));
-        col_Pais.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
+        TableColumn<Usuari_,String> col_Pais = new TableColumn<Usuari_,String>(mapaNomCamps.get("pais"));
+        col_Pais.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
                 return p.getValue().pais();
         }}); 
         
-        TableColumn<Usuari,String> col_Genere = new TableColumn<Usuari,String>(mapaNomCamps.get("genere"));
-        col_Genere.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
-                return p.getValue().genere();
-        }});  
-        
-        TableColumn<Usuari,String> col_DataNaixament = new TableColumn<Usuari,String>(mapaNomCamps.get("data_naixement"));
-        col_DataNaixament.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
+        TableColumn<Usuari_,String> col_DataNaixament = new TableColumn<Usuari_,String>(mapaNomCamps.get("data_naixement"));
+        col_DataNaixament.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
                 return p.getValue().data_naixement();
         }});  
         
-        TableColumn<Usuari,String> col_Observacions = new TableColumn<Usuari,String>(mapaNomCamps.get("observacions"));
-        col_Observacions.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
-                return p.getValue().observacions();
-        }});  
-        
-        TableColumn<Usuari,String> col_TipusSoci = new TableColumn<Usuari,String>(mapaNomCamps.get("tipus_soci"));
-        col_TipusSoci.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
-                return p.getValue().tipus_soci();
-        }});  
-        
-        TableColumn<Usuari,String> col_DataAlta = new TableColumn<Usuari,String>(mapaNomCamps.get("data_alta"));
-        col_DataAlta.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
+        TableColumn<Usuari_,String> col_DataAlta = new TableColumn<Usuari_,String>(mapaNomCamps.get("data_alta"));
+        col_DataAlta.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
                 return p.getValue().data_alta();
         }});  
         
-        TableColumn<Usuari,String> col_AdminAlta = new TableColumn<Usuari,String>(mapaNomCamps.get("admin_alta"));
-        col_AdminAlta.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari, String> p) {
+        TableColumn<Usuari_,String> col_AdminAlta = new TableColumn<Usuari_,String>(mapaNomCamps.get("admin_alta"));
+        col_AdminAlta.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
                 return p.getValue().admin_alta();
         }}); 
+        
+        /*
+        TableColumn<Usuari_,String> col_Poblacio = new TableColumn<Usuari_,String>(mapaNomCamps.get("poblacio"));
+        col_Poblacio.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
+                return p.getValue().poblacio();
+        }});
+
+        TableColumn<Usuari_,String> col_Provincia = new TableColumn<Usuari_,String>(mapaNomCamps.get("provincia"));
+        col_Provincia.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
+                return p.getValue().provincia();
+        }});
+
+        TableColumn<Usuari_,String> col_Cognom2 = new TableColumn<Usuari_,String>(mapaNomCamps.get("cognom2"));
+        col_Cognom2.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
+                return p.getValue().cognom2();
+        }});
+
+        TableColumn<Usuari_,String> col_NumSoci = new TableColumn<Usuari_,String>(mapaNomCamps.get("num_soci"));
+        col_NumSoci.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
+                return p.getValue().num_soci();
+        }});
+        
+        TableColumn<Usuari_,String> col_CodiPostal = new TableColumn<Usuari_,String>(mapaNomCamps.get("codi_postal"));
+        col_CodiPostal.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
+                return p.getValue().codi_postal();
+        }});
+        
+        TableColumn<Usuari_,String> col_Telefon2 = new TableColumn<Usuari_,String>(mapaNomCamps.get("telefon2"));
+        col_Telefon2.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
+                return p.getValue().telefon2();
+        }});
+        
+        TableColumn<Usuari_,String> col_Genere = new TableColumn<Usuari_,String>(mapaNomCamps.get("genere"));
+        col_Genere.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
+                return p.getValue().genere();
+        }}); 
+        
+        TableColumn<Usuari_,String> col_Observacions = new TableColumn<Usuari_,String>(mapaNomCamps.get("observacions"));
+        col_Observacions.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
+                return p.getValue().observacions();
+        }});  
+        
+        TableColumn<Usuari_,String> col_TipusSoci = new TableColumn<Usuari_,String>(mapaNomCamps.get("tipus_soci"));
+        col_TipusSoci.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari_,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari_,String> p) {
+                return p.getValue().tipus_soci();
+        }}); 
+        */
         
         // Afegim les columnes a la taula    
         switch(tipusLlista){
@@ -508,48 +513,48 @@ public final class PestanyaLlistat extends Tab {
                 taulaLlistat.getColumns().addAll(
                         col_DNI, 
                         col_NomUsuari, 
-                        col_NumSoci, 
-                        col_TipusSoci, 
+                        //col_NumSoci, 
+                        //col_TipusSoci, 
                         col_DataAlta, 
                         col_Nom, 
                         col_Cognom, 
-                        col_Cognom2, 
+                        //col_Cognom2, 
                         col_DataNaixament, 
-                        col_Genere, 
+                        //col_Genere, 
                         col_Direccio, 
-                        col_CodiPostal, 
-                        col_Poblacio, 
-                        col_Provincia, 
+                        //col_CodiPostal, 
+                        //col_Poblacio, 
+                        //col_Provincia, 
                         col_Pais, 
                         col_Telefon, 
-                        col_Telefon2, 
+                        //col_Telefon2, 
                         col_Correu, 
-                        col_AdminAlta, 
-                        col_Observacions
+                        col_AdminAlta 
+                        //col_Observacions
                         );    
                 break;
             case ADMINISTRADOR_CASE:
                 taulaLlistat.getColumns().addAll(
                         col_DNI, 
                         col_NomUsuari, 
-                        col_NumSoci, 
-                        col_TipusSoci, 
+                        //col_NumSoci, 
+                        //col_TipusSoci, 
                         col_DataAlta, 
                         col_Nom, 
                         col_Cognom, 
-                        col_Cognom2, 
+                        //col_Cognom2, 
                         col_DataNaixament, 
-                        col_Genere, 
+                        //col_Genere, 
                         col_Direccio, 
-                        col_CodiPostal, 
-                        col_Poblacio, 
-                        col_Provincia, 
+                        //col_CodiPostal, 
+                        //col_Poblacio, 
+                        //col_Provincia, 
                         col_Pais, 
                         col_Telefon, 
-                        col_Telefon2, 
+                        //col_Telefon2, 
                         col_Correu, 
-                        col_AdminAlta, 
-                        col_Observacions
+                        col_AdminAlta 
+                        //col_Observacions
                         );    
                 break;
         }

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -28,6 +29,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 /**
  *
@@ -75,13 +77,24 @@ public class LogInController implements Initializable {
             if(tipus_inici.equals("Administrador")){
                 parent = FXMLLoader.load(getClass().getResource("/views/Admin.fxml"));
             }else {
-                parent = FXMLLoader.load(getClass().getResource("/views/Main.fxml"));
+                parent = FXMLLoader.load(getClass().getResource("/views/Usuari.fxml"));
             }
             
             Stage stage = new Stage();
             Scene scene = new Scene(parent);
             stage.setScene(scene);
-            stage.setOnCloseRequest(e -> Platform.exit());
+
+            // Establim que si tanquem la finestra farem logout abans de tancar l'aplicacio
+            stage.setOnCloseRequest(
+                new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent event) {
+                      AccionsClient.ferLogOut();
+                      Platform.exit();
+                    }
+                }
+            );
+            
             //stage.setResizable(false);
             Image icon = new Image("/resources/icon.png");
             stage.getIcons().add(icon);

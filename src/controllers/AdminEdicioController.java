@@ -144,24 +144,24 @@ public class AdminEdicioController implements Initializable {
     private void omplirDades(Usuari usuari){
         this.usuari = usuari;
         textFieldNomUsuari.setText(usuari.getNom_user());
-        textFieldNumSoci.setText(usuari.getNum_soci());
+        //textFieldNumSoci.setText(usuari.getNum_soci());
         textFieldDNI.setText(usuari.getDni());
         textFieldNom.setText(usuari.getNom());
         textFieldCognom1.setText(usuari.getCognom1());
-        textFieldCognom2.setText(usuari.getCognom2());
+        //textFieldCognom2.setText(usuari.getCognom2());
         textFieldTelefon1.setText(usuari.getTelefon1());
-        textFieldTelefon2.setText(usuari.getTelefon2());
+        //textFieldTelefon2.setText(usuari.getTelefon2());
         textFieldDireccio.setText(usuari.getDireccio());
-        textFieldPoblacio.setText(usuari.getPoblacio());
-        textFieldProvincia.setText(usuari.getProvincia());
-        textFieldCodiPostal.setText(usuari.getCodi_postal());
+        //textFieldPoblacio.setText(usuari.getPoblacio());
+        //textFieldProvincia.setText(usuari.getProvincia());
+        //textFieldCodiPostal.setText(usuari.getCodi_postal());
         textFieldPais.setText(usuari.getPais());
         textFieldCorreu.setText(usuari.getCorreu());
-        choiceBoxGenere.setValue(usuari.getGenere());
+        //choiceBoxGenere.setValue(usuari.getGenere());
         textFieldDataAlta.setText(usuari.getData_Alta());
-        choiceBoxTipusSoci.setValue(usuari.getTipus_Soci());
+        //choiceBoxTipusSoci.setValue(usuari.getTipus_Soci());
         textFieldDataNaixement.setText(usuari.getData_naixement());
-        textAreaObservacions.setText(usuari.getObservacions());    
+        //textAreaObservacions.setText(usuari.getObservacions());    
         textFieldAdminAlta.setText(usuari.getAdmin_Alta()); 
         passwordFieldPassword.setText(usuari.getPassword());
     }
@@ -274,23 +274,23 @@ public class AdminEdicioController implements Initializable {
             new SimpleStringProperty(textFieldNomUsuari.getText()),
             new SimpleStringProperty(textFieldDNI.getText()),
             new SimpleStringProperty(textFieldDataNaixement.getText()),
-            new SimpleStringProperty(textFieldNumSoci.getText()),
-            new SimpleStringProperty(choiceBoxTipusSoci.getValue().toString()),
+            //new SimpleStringProperty(textFieldNumSoci.getText()),
+            //new SimpleStringProperty(choiceBoxTipusSoci.getValue().toString()),
             new SimpleStringProperty(textFieldDataAlta.getText()),
             new SimpleStringProperty(textFieldNom.getText()),
             new SimpleStringProperty(textFieldCognom1.getText()),
-            new SimpleStringProperty(textFieldCognom2.getText()),
-            new SimpleStringProperty(choiceBoxGenere.getValue().toString()),
+            //new SimpleStringProperty(textFieldCognom2.getText()),
+            //new SimpleStringProperty(choiceBoxGenere.getValue().toString()),
             new SimpleStringProperty(textFieldDireccio.getText()),
-            new SimpleStringProperty(textFieldCodiPostal.getText()),
-            new SimpleStringProperty(textFieldPoblacio.getText()),
-            new SimpleStringProperty(textFieldProvincia.getText()),
+            //new SimpleStringProperty(textFieldCodiPostal.getText()),
+            //new SimpleStringProperty(textFieldPoblacio.getText()),
+            //new SimpleStringProperty(textFieldProvincia.getText()),
             new SimpleStringProperty(textFieldPais.getText()),
             new SimpleStringProperty(textFieldTelefon1.getText()),
-            new SimpleStringProperty(textFieldTelefon2.getText()),
+            //new SimpleStringProperty(textFieldTelefon2.getText()),
             new SimpleStringProperty(textFieldCorreu.getText()),
-            new SimpleStringProperty(textFieldCorreu.getText()),
-            new SimpleStringProperty(textAreaObservacions.getText()),
+            //new SimpleStringProperty(textFieldCorreu.getText()),
+            //new SimpleStringProperty(textAreaObservacions.getText()),
             new SimpleStringProperty(textFieldAdminAlta.getText()),
             new SimpleStringProperty(passwordFieldPassword.getText())
         );
