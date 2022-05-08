@@ -9,13 +9,15 @@
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/LogInController.java</file>
         </group>
         <group name="DUMO-GO">
-            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/styles/buscarusuari.css</file>
-            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/BuscarUsuariController.java</file>
-            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/CodiErrors.java</file>
-            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/views/UsuariEdicio.fxml</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/UsuariEdicioController.java</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/AccionsClient.java</file>
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/styles/general.css</file>
-            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/views/BuscarUsuari.fxml</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/DumoGo.java</file>
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/styles/usuariedicio.css</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/LogInController.java</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/z_borrar/UsuariEdicio_.fxml</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/Usuari.java</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/nbproject/jfx-impl.xml</file>
         </group>
     </open-files>
 </project-private>
