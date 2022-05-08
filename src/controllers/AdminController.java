@@ -277,6 +277,7 @@ public class AdminController implements Initializable {
     private void afegirUsuari() throws IOException{
         // Obrim la finestra usuari
         obrirFinestraUsuari();
+        stageUsuari.setTitle("Afegir usuari");
         // Esborrem dades en cas de que hi hagi alguna
         usuariEdicioControlador.afegirUsuari();
     }
@@ -382,8 +383,8 @@ public class AdminController implements Initializable {
             stageUsuari = new Stage();
             stageUsuari.setScene(new Scene(root));
             Image icon = new Image("/resources/usuari_icon.png");
-            //stageUsuari.getIcons().add(icon);
-            //stageUsuari.setTitle("Dumo-Go2");
+            stageUsuari.getIcons().add(icon);
+            stageUsuari.setTitle("Usuari");
             stageUsuari.setResizable(false);
 
             // Quan es tanqui esborrem el stage de memòria                    

@@ -60,8 +60,7 @@ public class UsuariEdicioController implements Initializable {
     private String significat_codi_resposta;
     private static final String STRING_CODI_RESPOSTA = "codi_resposta";
     private Alert alerta;
-    private final ObservableList<String> olGenere = FXCollections.observableArrayList("Masculí","Femení","Altre");
-    private final ObservableList<String> olTipusSoci = FXCollections.observableArrayList("Premium","Standard");
+    private HashMap<String, String> msg_in;
     
     @FXML
     private AnchorPane raiz;    
@@ -106,6 +105,15 @@ public class UsuariEdicioController implements Initializable {
         omplirDades(usuari);               
     }
 */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        // Creem l'alerta que farem servir per informar d'errors o accions correctes
+        alerta = new Alert(Alert.AlertType.NONE);
+        // Per poder aplicar estil a les alertes hem de aplicar-les al dialogpane
+        DialogPane dialogPane = alerta.getDialogPane();
+        dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
+        alerta.initStyle(StageStyle.UNDECORATED);
+    } 
     
     private void omplirDades(Usuari usuari){
         // Agafem l'usuari i el guardem
@@ -276,52 +284,7 @@ public class UsuariEdicioController implements Initializable {
         // Tornem l'usuari creat
         return u;
     }
-    
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // Creem l'alerta que farem servir per informar d'errors o accions correctes
-        alerta = new Alert(Alert.AlertType.NONE);
-        // Per poder aplicar estil a les alertes hem de aplicar-les al dialogpane
-        DialogPane dialogPane = alerta.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
-        alerta.initStyle(StageStyle.UNDECORATED);
-    } 
-    
-    public void sessioCaducada() throws IOException {
-        // En cas de retornar codi 10 (sessio caducada)
-        // Obtenim el text de l'error
-        //significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-                // Creem l'alerta que farem servir per informar d'errors o accions correctes
-        alerta = new Alert(Alert.AlertType.NONE);
-        // Per poder aplicar estil a les alertes hem de aplicar-les al dialogpane
-        DialogPane dialogPane = alerta.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
-        alerta.initStyle(StageStyle.UNDECORATED);
-        significat_codi_resposta = "Sessió caducada";
-        // Establim alerta
-        alerta.setTitle("Sessió caducada");
-        alerta.setContentText("");
-        alerta.setAlertType(Alert.AlertType.ERROR);
-        alerta.setHeaderText(significat_codi_resposta);
-        // La mostrem i esperem click
-        alerta.showAndWait();
-        // Tanquem finestra
-        //raiz.getScene().getWindow().hide();
-        //Stage stage1 = stage.getScene().getWindow();
-        //stage1.close();
-        stage.getScene().getWindow();
-        // Obrim finestra de login
-        Parent parent = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));
-        Stage stage1 = new Stage();
-        Scene scene = new Scene(parent);
-        stage1.setScene(scene);
-        Image icon = new Image("/resources/icon.png");
-        stage1.getIcons().add(icon);
-        stage1.setTitle("Dumo-Go");
-        stage1.setResizable(false);
-        stage1.show();    
-    }   
-    
+        
     public void mostrarPerfil(){
         try {
             /** PER MODIFICAR PERFIL DESDE L'USUARI**/
@@ -416,18 +379,83 @@ public class UsuariEdicioController implements Initializable {
         // Creem la finestra per comprovar que s'introdueix el password desitjat        
         VBox vbox_pass1 = new VBox();
         Label label_pass1 = new Label("Contrasenya");
-        PasswordField pass1 = new PasswordField();
-        vbox_pass1.getChildren().addAll(label_pass1,pass1);
+        PasswordField passfield_pass1 = new PasswordField();
+        vbox_pass1.getChildren().addAll(label_pass1,passfield_pass1);
         
         VBox vbox_pass2 = new VBox();
         Label label_pass2 = new Label("Repeteix contrasenya");
-        PasswordField pass2 = new PasswordField();
-        vbox_pass2.getChildren().addAll(label_pass2,pass2);
+        PasswordField passfield_pass2 = new PasswordField();
+        vbox_pass2.getChildren().addAll(label_pass2,passfield_pass2);
         
         VBox vbox_resultat = new VBox();
-        Label resultat = new Label("");
-        Button buto = new Button("Aceptar");
-        vbox_resultat.getChildren().addAll(resultat,buto);
+        Label label_resultat = new Label("");
+        
+        HBox hbox_resultat = new HBox();        
+        Button buto_aceptar = new Button("Aceptar");        
+        buto_aceptar.setOnMouseClicked( new EventHandler() {
+                @Override
+                public void handle(Event event) {
+                    try {
+                        // Obtenim el texte dels dos passwords
+                        String pass1 = passfield_pass1.getText();
+                        String pass2 = passfield_pass2.getText();
+                        // Comparem i fem en funció dels textfields passwords
+                        // Si es null o esta buit
+                        if(pass1 == null || pass2 == null || pass1.equals("") || pass2.equals("")){
+                            label_resultat.setText("S'han d'omplir el dos camps");
+                        // Si son iguals els dos camps
+                        }else if(pass1.equals(pass2)){
+                            //Comprovem si estem afegint o modificant usuari
+                            if(usuari!=null){
+                                // Si la variable usuari no esta buida es que estem modificat el password de l'usuari
+                                msg_in = AccionsClient.modificarPassword(pass1);
+                                codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
+                                // Comprobem el text del codi de resposta
+                                significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
+                                // Sessio caducada
+                                if(codi_resposta.equals("10")){
+                                    sessioCaducada();
+                                // Passord modificat correctament
+                                }else if(codi_resposta.equals("9000")){
+                                    alerta.setAlertType(Alert.AlertType.INFORMATION);
+                                    alerta.setHeaderText(significat_codi_resposta);
+                                    alerta.showAndWait();
+                                    passwordFieldPassword.setText(pass1);
+                                    // Tanquem finestra
+                                    stage.close();
+                                // Error al eliminar usuari
+                                }else{
+                                    label_resultat.setText(significat_codi_resposta);
+                                }
+                                System.out.println("modificarpassword msg_in:");
+                                System.out.println(msg_in.toString());
+                            }else{
+                                // Si la variable usuari esta buida es que estem afegint un usuari nou
+                                passwordFieldPassword.setText(pass1);
+                                stage.close();
+                            }
+                        // Si no son iguals els dos camps del password
+                        }else{
+                            label_resultat.setText("La contrasenya no coincideix");
+                        }
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            });
+
+        // Per sortir de la finestra
+        Button buto_cancelar = new Button("Cancelar");
+        buto_cancelar.setOnMouseClicked( new EventHandler() {
+                @Override
+                public void handle(Event event) {
+                    stage.close();
+                }
+            });
+        hbox_resultat.getChildren().addAll(buto_aceptar,buto_cancelar);
+        vbox_resultat.getChildren().addAll(label_resultat,hbox_resultat);
 
         VBox vbox = new VBox();
         vbox.getStyleClass().add("password");
@@ -438,7 +466,7 @@ public class UsuariEdicioController implements Initializable {
         
         stage = new Stage();
         stage.initModality(Modality.WINDOW_MODAL);
-        Image icon = new Image("/resources/usuari_icon.png");
+        Image icon = new Image("/resources/editar_icon_neg.png");
         stage.getIcons().add(icon);
         stage.setTitle("Verificar password");
         stage.setResizable(false);
@@ -448,5 +476,39 @@ public class UsuariEdicioController implements Initializable {
         stage.show();
         
     }
-
+    
+    public void sessioCaducada() throws IOException {
+        // En cas de retornar codi 10 (sessio caducada)
+        // Obtenim el text de l'error
+        //significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
+                // Creem l'alerta que farem servir per informar d'errors o accions correctes
+        alerta = new Alert(Alert.AlertType.NONE);
+        // Per poder aplicar estil a les alertes hem de aplicar-les al dialogpane
+        DialogPane dialogPane = alerta.getDialogPane();
+        dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
+        alerta.initStyle(StageStyle.UNDECORATED);
+        significat_codi_resposta = "Sessió caducada";
+        // Establim alerta
+        alerta.setTitle("Sessió caducada");
+        alerta.setContentText("");
+        alerta.setAlertType(Alert.AlertType.ERROR);
+        alerta.setHeaderText(significat_codi_resposta);
+        // La mostrem i esperem click
+        alerta.showAndWait();
+        // Tanquem finestra
+        //raiz.getScene().getWindow().hide();
+        //Stage stage1 = stage.getScene().getWindow();
+        //stage1.close();
+        stage.getScene().getWindow();
+        // Obrim finestra de login
+        Parent parent = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));
+        Stage stage1 = new Stage();
+        Scene scene = new Scene(parent);
+        stage1.setScene(scene);
+        Image icon = new Image("/resources/icon.png");
+        stage1.getIcons().add(icon);
+        stage1.setTitle("Dumo-Go");
+        stage1.setResizable(false);
+        stage1.show();    
+    }   
 }
