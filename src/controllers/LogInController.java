@@ -27,6 +27,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
@@ -99,6 +100,7 @@ public class LogInController implements Initializable {
             Image icon = new Image("/resources/icon.png");
             stage.getIcons().add(icon);
             stage.setTitle("Dumo-Go");
+            stage.setMaximized(true);
             stage.show();
         }else if(codi_resposta.equals("-1")){
             significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);

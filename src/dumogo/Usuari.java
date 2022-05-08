@@ -259,5 +259,6 @@ public class Usuari {
     public String getAdmin_alta_label() {
         return admin_alta_label;
     }
+    
 }
 

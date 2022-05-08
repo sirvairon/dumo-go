@@ -205,6 +205,9 @@ public class AccionsClient {
             // Afegim les dades de l'usuari al hashmap
             usuariAHashmap(msg_out, usuari);
             
+            System.out.println("USUARI A ENVIAR:");
+            System.out.println(msg_out);
+            
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);     
             codi_resposta = (int) mapInputStream.readObject();

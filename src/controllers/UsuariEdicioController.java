@@ -164,7 +164,6 @@ public class UsuariEdicioController implements Initializable {
         textFieldAdminAlta.setText(AccionsClient.getNom_user_actual());
         // Com es un alta nova desde l'administrador s'han de poder editar tots els camps
         textFieldDNI.setDisable(false);
-        textFieldNumSoci.setDisable(false);
         // Establim al buto de l'accio, l'accio que volem fer (afegir)
         butoAccio.setText("Afegir");
         // Configurem el EventHandler en cas de fer click al boto d'afegir
@@ -194,14 +193,15 @@ public class UsuariEdicioController implements Initializable {
                             ((Node) (event.getSource())).getScene().getWindow().hide();
                         // Error a l'afegir l'usuari
                         }else{
+                            usuari = null;
                             alerta.setAlertType(Alert.AlertType.ERROR);
                             alerta.show();
                         }
                     } catch (ClassNotFoundException ex) {
                         Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
-                    Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                        Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
         });
     }
@@ -212,7 +212,6 @@ public class UsuariEdicioController implements Initializable {
         omplirDades(u);
         // Com es desde l'administrador s'han de poder editar tots els camps
         textFieldDNI.setDisable(false);
-        textFieldNumSoci.setDisable(false);
         // Establim al buto de l'accio, l'accio que volem fer (modificar)
         butoAccio.setText("Modificar");
         // Configurem el EventHandler en cas de fer click al boto de modificar
@@ -268,16 +267,16 @@ public class UsuariEdicioController implements Initializable {
         try{
             data = datePickerDataNaixement.getValue().toString();
         }catch (NullPointerException ex) {
-            data = "";
+            data = "null";
         }
-        
+        System.out.println("data: " + data);
         // Creem un usuari obtenint les dades de la pantalla
         Usuari u = new Usuari(
             new SimpleStringProperty(textFieldUserName.getText()),
             new SimpleStringProperty(passwordFieldPassword.getText()),
             new SimpleStringProperty(textFieldDNI.getText()),
-            new SimpleStringProperty(textFieldNumSoci.getText()),
             new SimpleStringProperty(data),
+            new SimpleStringProperty(textFieldNumSoci.getText()),            
             new SimpleStringProperty(datePickerDataAlta.getValue().toString()),
             new SimpleStringProperty(textFieldNom.getText()),
             new SimpleStringProperty(textFieldCognoms.getText()),
