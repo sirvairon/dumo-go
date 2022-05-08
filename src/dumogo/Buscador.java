@@ -42,10 +42,10 @@ public class Buscador extends VBox {
         this.getStyleClass().add("buscador");
         //this.getStyleClass().addAll("root","mainFxmlClass");
         this.getChildren().addAll(vbBusqueda, hbButons);
-        String cssFile2 = this.getClass().getResource("/styles/general.css").toExternalForm();
-        String cssFile3 = this.getClass().getResource("/styles/buscador.css").toExternalForm();
+        String cssFile1 = this.getClass().getResource("/styles/general.css").toExternalForm();
+        String cssFile2 = this.getClass().getResource("/styles/buscador.css").toExternalForm();
         
-        this.getStylesheets().addAll(cssFile2,cssFile3);
+        this.getStylesheets().addAll(cssFile1,cssFile2);
         //this.getStylesheets().add(cssFile2);
         
         //vbContigut.getChildren().addAll(vbBusqueda, hbButons);

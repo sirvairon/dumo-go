@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
-package controllers;
+package z_borrar;
 
+import controllers.*;
 import dumogo.AccionsClient;
 import dumogo.CodiErrors;
 import dumogo.Usuari;
@@ -39,7 +40,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -66,25 +66,43 @@ public class UsuariEdicioController implements Initializable {
     @FXML
     private AnchorPane raiz;    
     @FXML
-    private TextField textFieldNomUsuari;       
+    private TextField textFieldNomUsuari;    
+    @FXML
+    private TextField textFieldNumSoci;    
     @FXML
     private TextField textFieldDNI;    
     @FXML
     private TextField textFieldNom;    
     @FXML
-    private TextField textFieldCognom1;       
+    private TextField textFieldCognom1;    
     @FXML
-    private TextField textFieldTelefon1;        
+    private TextField textFieldCognom2;    
     @FXML
-    private TextField textFieldDireccio;    ;    
+    private TextField textFieldTelefon1;    
+    @FXML
+    private TextField textFieldTelefon2;    
+    @FXML
+    private TextField textFieldDireccio;    
+    @FXML
+    private TextField textFieldPoblacio;    
+    @FXML
+    private TextField textFieldProvincia;    
+    @FXML
+    private TextField textFieldCodiPostal;    
     @FXML
     private TextField textFieldPais;    
     @FXML
-    private TextField textFieldCorreu;       
+    private TextField textFieldCorreu;    
     @FXML
-    private DatePicker datePickerDataAlta;       
+    private ChoiceBox choiceBoxGenere;    
     @FXML
-    private DatePicker datePickerDataNaixement;               
+    private DatePicker datePickerDataAlta;    
+    @FXML
+    private ChoiceBox choiceBoxTipusSoci;    
+    @FXML
+    private TextField textFieldDataNaixement;            
+    @FXML
+    private TextArea textAreaObservacions;    
     @FXML
     private HBox hboxBotones;    
     @FXML
@@ -111,7 +129,8 @@ public class UsuariEdicioController implements Initializable {
         // Agafem l'usuari i el guardem
         this.usuari = usuari;
         // Omplim els camps de pantalla amb l'usuari
-        textFieldNomUsuari.setText(usuari.getNom_user());        
+        textFieldNomUsuari.setText(usuari.getNom_user());
+        
         textFieldDNI.setText(usuari.getDni());
         textFieldNom.setText(usuari.getNom());
         textFieldCognom1.setText(usuari.getCognom1());
@@ -120,9 +139,18 @@ public class UsuariEdicioController implements Initializable {
         textFieldPais.setText(usuari.getPais());
         textFieldCorreu.setText(usuari.getCorreu());
         datePickerDataAlta.setValue(LocalDate.parse(usuari.getData_Alta()));
-        datePickerDataNaixement.setValue(LocalDate.parse(usuari.getData_naixement()));
+        textFieldDataNaixement.setText(usuari.getData_naixement());
         textFieldAdminAlta.setText(usuari.getAdmin_Alta()); 
         passwordFieldPassword.setText(usuari.getPassword());
+        //textFieldNumSoci.setText(usuari.getNum_soci());
+        //textFieldCognom2.setText(usuari.getCognom2());
+        //textFieldTelefon2.setText(usuari.getTelefon2());
+        //textFieldPoblacio.setText(usuari.getPoblacio());
+        //textFieldProvincia.setText(usuari.getProvincia());
+        //textFieldCodiPostal.setText(usuari.getCodi_postal());
+        //choiceBoxGenere.setValue(usuari.getGenere());
+        //choiceBoxTipusSoci.setValue(usuari.getTipus_Soci());
+        //textAreaObservacions.setText(usuari.getObservacions());
     }
     
     private void esborrarDades(){
@@ -130,15 +158,24 @@ public class UsuariEdicioController implements Initializable {
         usuari = null;
         // Esborrem els camps de pantalla
         textFieldNomUsuari.setText("");
+        textFieldNumSoci.setText("");
         textFieldDNI.setText("");
         textFieldNom.setText("");
         textFieldCognom1.setText("");
+        textFieldCognom2.setText("");
         textFieldTelefon1.setText("");
+        textFieldTelefon2.setText("");
         textFieldDireccio.setText("");
+        textFieldPoblacio.setText("");
+        textFieldProvincia.setText("");
+        textFieldCodiPostal.setText("");
         textFieldPais.setText("");
         textFieldCorreu.setText("");
+        choiceBoxGenere.setValue("");
         datePickerDataAlta.setValue(LocalDate.now());
-        datePickerDataNaixement.setValue(null);
+        choiceBoxTipusSoci.setValue("");
+        textFieldDataNaixement.setText("");
+        textAreaObservacions.setText("");    
         textFieldAdminAlta.setText(""); 
         passwordFieldPassword.setText("");
     }
@@ -152,6 +189,8 @@ public class UsuariEdicioController implements Initializable {
         textFieldAdminAlta.setText(AccionsClient.getNom_user_actual());
         // Com es un alta nova desde l'administrador s'han de poder editar tots els camps
         textFieldDNI.setDisable(false);
+        textFieldNumSoci.setDisable(false);
+        choiceBoxTipusSoci.setDisable(false);
         // Establim al buto de l'accio, l'accio que volem fer (afegir)
         butoAccio.setText("Afegir");
         // Configurem el EventHandler en cas de fer click al boto d'afegir
@@ -166,6 +205,7 @@ public class UsuariEdicioController implements Initializable {
                         msg_in = AccionsClient.agefirUsuari(usuari);
                         // Obtenim el codi de resposta
                         codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
+                        codi_resposta = "10";
                         // Obtenim el sinificat del codi de resposta
                         significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
                         // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
@@ -199,6 +239,8 @@ public class UsuariEdicioController implements Initializable {
         omplirDades(u);
         // Com es desde l'administrador s'han de poder editar tots els camps
         textFieldDNI.setDisable(false);
+        textFieldNumSoci.setDisable(false);
+        choiceBoxTipusSoci.setDisable(false);
         // Establim al buto de l'accio, l'accio que volem fer (modificar)
         butoAccio.setText("Modificar");
         // Configurem el EventHandler en cas de fer click al boto de modificar
@@ -249,28 +291,29 @@ public class UsuariEdicioController implements Initializable {
     }
     
     private Usuari obtenirUsuariPantalla(){
-        // Comprobem si alguns camps estan buits
-        String data;
-        try{
-            data = datePickerDataNaixement.getValue().toString();
-        }catch (NullPointerException ex) {
-            data = "";
-        }
-        
         // Creem un usuari obtenint les dades de la pantalla
         Usuari u = new Usuari(
             new SimpleStringProperty(textFieldNomUsuari.getText()),
             new SimpleStringProperty(passwordFieldPassword.getText()),
             new SimpleStringProperty(textFieldDNI.getText()),
-            //new SimpleStringProperty(textFieldDataNaixement.getText()),
-            new SimpleStringProperty(data),
+            new SimpleStringProperty(textFieldDataNaixement.getText()),
+            //new SimpleStringProperty(textFieldNumSoci.getText()),
+            //new SimpleStringProperty(choiceBoxTipusSoci.getValue().toString()),
             new SimpleStringProperty(datePickerDataAlta.getValue().toString()),
             new SimpleStringProperty(textFieldNom.getText()),
             new SimpleStringProperty(textFieldCognom1.getText()),
+            //new SimpleStringProperty(textFieldCognom2.getText()),
+            //new SimpleStringProperty(choiceBoxGenere.getValue().toString()),
             new SimpleStringProperty(textFieldDireccio.getText()),
+            //new SimpleStringProperty(textFieldCodiPostal.getText()),
+            //new SimpleStringProperty(textFieldPoblacio.getText()),
+            //new SimpleStringProperty(textFieldProvincia.getText()),
             new SimpleStringProperty(textFieldPais.getText()),
             new SimpleStringProperty(textFieldTelefon1.getText()),
+            //new SimpleStringProperty(textFieldTelefon2.getText()),
             new SimpleStringProperty(textFieldCorreu.getText()),
+            //new SimpleStringProperty(textFieldCorreu.getText()),
+            //new SimpleStringProperty(textAreaObservacions.getText()),
             new SimpleStringProperty(textFieldAdminAlta.getText())            
         );
         // Tornem l'usuari creat
@@ -279,6 +322,9 @@ public class UsuariEdicioController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // Establim el contigut del llistat dels butons per escollir (genere, tipus de soci,...)
+        choiceBoxGenere.setItems(olGenere);
+        choiceBoxTipusSoci.setItems(olTipusSoci);
         // Creem l'alerta que farem servir per informar d'errors o accions correctes
         alerta = new Alert(Alert.AlertType.NONE);
         // Per poder aplicar estil a les alertes hem de aplicar-les al dialogpane
@@ -413,40 +459,16 @@ public class UsuariEdicioController implements Initializable {
     
     @FXML
     private void modificarPassword(ActionEvent event) throws IOException, ClassNotFoundException {
-        // Creem la finestra per comprovar que s'introdueix el password desitjat        
-        VBox vbox_pass1 = new VBox();
-        Label label_pass1 = new Label("Contrasenya");
-        PasswordField pass1 = new PasswordField();
-        vbox_pass1.getChildren().addAll(label_pass1,pass1);
-        
-        VBox vbox_pass2 = new VBox();
-        Label label_pass2 = new Label("Repeteix contrasenya");
-        PasswordField pass2 = new PasswordField();
-        vbox_pass2.getChildren().addAll(label_pass2,pass2);
-        
-        VBox vbox_resultat = new VBox();
-        Label resultat = new Label("");
-        Button buto = new Button("Aceptar");
-        vbox_resultat.getChildren().addAll(resultat,buto);
-
-        VBox vbox = new VBox();
-        vbox.getStyleClass().add("password");
-        String cssFile1 = this.getClass().getResource("/styles/general.css").toExternalForm();
-        String cssFile2 = this.getClass().getResource("/styles/password.css").toExternalForm();        
-        vbox.getStylesheets().addAll(cssFile1,cssFile2);
-        vbox.getChildren().addAll(vbox_pass1,vbox_pass2,vbox_resultat);
-        
-        stage = new Stage();
-        stage.initModality(Modality.WINDOW_MODAL);
-        Image icon = new Image("/resources/usuari_icon.png");
-        stage.getIcons().add(icon);
-        stage.setTitle("Verificar password");
-        stage.setResizable(false);
-        stage.setScene(new Scene(vbox));
-        stage.initOwner( raiz.getScene().getWindow() );
-        stage.setOnHiding(we -> stage = null);
-        stage.show();
-        
+        //((Node) (event.getSource())).getScene().getWindow().hide();
+        Parent parent = FXMLLoader.load(getClass().getResource("/views/Password.fxml"));
+        Stage stage1 = new Stage();
+        Scene scene = new Scene(parent);
+        stage1.setScene(scene);
+        Image icon = new Image("/resources/icon.png");
+        stage1.getIcons().add(icon);
+        stage1.setTitle("Dumo-Go");
+        stage1.setResizable(false);
+        stage1.show(); 
     }
 
 }

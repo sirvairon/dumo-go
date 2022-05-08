@@ -274,7 +274,7 @@
       </VBox>      
    </children>
    <stylesheets>
-      <URL value="@../styles/usuariedicio.css" />
+      <URL value="@usuariedicio_.css" />
       <URL value="@../styles/general.css" />
    </stylesheets>
 </AnchorPane>
