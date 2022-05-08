@@ -41,6 +41,16 @@
                                  <children>
                                     <VBox>
                                        <children>
+                                          <Label fx:id="labelNumSoci" text="Num. soci" />
+                                          <TextField fx:id="textFieldNumSoci" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox>
+                                 <children>
+                                    <VBox>
+                                       <children>
                                           <Label fx:id="labelNomUsuari" text="Nom d'usuari" />
                                           <TextField fx:id="textFieldNomUsuari" prefWidth="200.0" />
                                        </children>
@@ -65,36 +75,18 @@
                                     </VBox>
                                  </children>
                               </HBox>
-                              <HBox spacing="40.0" />
-                              <HBox spacing="40.0" />
-                              <HBox>
-                                 <children>
-                                    <VBox>
-                                       <children>
-                                          <Label fx:id="labelDNI" text="DNI" />
-                                          <TextField fx:id="textFieldDNI" disable="true" prefWidth="200.0" />
-                                       </children>
-                                    </VBox>
-                                    <VBox>
-                                       <children>
-                                          <Label text="Data de naixement" />
-                                          <DatePicker fx:id="datePickerDataNaixement" prefHeight="23.0" prefWidth="200.0" />
-                                       </children>
-                                    </VBox>
-                                 </children>
-                              </HBox>
                               <HBox spacing="40.0">
                                  <children>
-                                    <VBox>
-                                       <children>
-                                          <Label fx:id="labelNumSoci1" layoutX="327.0" layoutY="38.0" text="Data d'alta" />
-                                          <DatePicker fx:id="datePickerDataAlta" prefHeight="23.0" prefWidth="200.0" />
-                                       </children>
-                                    </VBox>
                                     <VBox fx:id="vBoxAdminAlta">
                                        <children>
                                           <Label fx:id="labelAdminAlta" text="Administrador alta" />
                                           <TextField fx:id="textFieldAdminAlta" disable="true" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox>
+                                       <children>
+                                          <Label fx:id="labelNumSoci1" layoutX="327.0" layoutY="38.0" text="Data d'alta" />
+                                          <DatePicker fx:id="datePickerDataAlta" prefHeight="23.0" prefWidth="200.0" />
                                        </children>
                                     </VBox>
                                  </children>
@@ -116,14 +108,30 @@
                                  <children>
                                     <VBox>
                                        <children>
+                                          <Label fx:id="labelDNI" text="DNI" />
+                                          <TextField fx:id="textFieldDNI" disable="true" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox>
+                                       <children>
+                                          <Label text="Data de naixement" />
+                                          <DatePicker fx:id="datePickerDataNaixement" prefHeight="23.0" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox>
+                                 <children>
+                                    <VBox>
+                                       <children>
                                           <Label fx:id="labelNom" text="Nom" />
                                           <TextField fx:id="textFieldNom" prefWidth="200.0" />
                                        </children>
                                     </VBox>
                                     <VBox>
                                        <children>
-                                          <Label fx:id="labelCognom" text="Cognoms" />
-                                          <TextField fx:id="textFieldCognom1" prefWidth="440.0" />
+                                          <Label fx:id="labelCognoms" text="Cognoms" />
+                                          <TextField fx:id="textFieldCognoms" prefWidth="440.0" />
                                        </children>
                                     </VBox>
                                  </children>
@@ -157,7 +165,7 @@
                                           <VBox>
                                              <children>
                                                 <Label fx:id="labelTelefon" layoutX="357.0" layoutY="179.0" text="Telèfon" />
-                                                <TextField fx:id="textFieldTelefon1" layoutX="407.0" layoutY="175.0" prefWidth="200.0" />
+                                                <TextField fx:id="textFieldTelefon" layoutX="407.0" layoutY="175.0" prefWidth="200.0" />
                                              </children>
                                           </VBox>
                                        </children>

@@ -65,15 +65,17 @@ public class UsuariEdicioController implements Initializable {
     @FXML
     private AnchorPane raiz;    
     @FXML
-    private TextField textFieldNomUsuari;       
+    private TextField textFieldUserName; 
+    @FXML
+    private TextField textFieldNumSoci; 
     @FXML
     private TextField textFieldDNI;    
     @FXML
     private TextField textFieldNom;    
     @FXML
-    private TextField textFieldCognom1;       
+    private TextField textFieldCognoms;       
     @FXML
-    private TextField textFieldTelefon1;        
+    private TextField textFieldTelefon;        
     @FXML
     private TextField textFieldDireccio;    ;    
     @FXML
@@ -119,11 +121,11 @@ public class UsuariEdicioController implements Initializable {
         // Agafem l'usuari i el guardem
         this.usuari = usuari;
         // Omplim els camps de pantalla amb l'usuari
-        textFieldNomUsuari.setText(usuari.getNom_user());        
+        textFieldUserName.setText(usuari.getUser_name());        
         textFieldDNI.setText(usuari.getDni());
         textFieldNom.setText(usuari.getNom());
-        textFieldCognom1.setText(usuari.getCognom1());
-        textFieldTelefon1.setText(usuari.getTelefon1());
+        textFieldCognoms.setText(usuari.getCognoms());
+        textFieldTelefon.setText(usuari.getTelefon());
         textFieldDireccio.setText(usuari.getDireccio());
         textFieldPais.setText(usuari.getPais());
         textFieldCorreu.setText(usuari.getCorreu());
@@ -131,17 +133,19 @@ public class UsuariEdicioController implements Initializable {
         datePickerDataNaixement.setValue(LocalDate.parse(usuari.getData_naixement()));
         textFieldAdminAlta.setText(usuari.getAdmin_Alta()); 
         passwordFieldPassword.setText(usuari.getPassword());
+        textFieldNumSoci.setText(usuari.getNum_soci());
     }
     
     private void esborrarDades(){
         // Esborrem l'usuari de memoria
         usuari = null;
         // Esborrem els camps de pantalla
-        textFieldNomUsuari.setText("");
+        textFieldUserName.setText("");
+        textFieldNumSoci.setText("");
         textFieldDNI.setText("");
         textFieldNom.setText("");
-        textFieldCognom1.setText("");
-        textFieldTelefon1.setText("");
+        textFieldCognoms.setText("");
+        textFieldTelefon.setText("");
         textFieldDireccio.setText("");
         textFieldPais.setText("");
         textFieldCorreu.setText("");
@@ -160,6 +164,7 @@ public class UsuariEdicioController implements Initializable {
         textFieldAdminAlta.setText(AccionsClient.getNom_user_actual());
         // Com es un alta nova desde l'administrador s'han de poder editar tots els camps
         textFieldDNI.setDisable(false);
+        textFieldNumSoci.setDisable(false);
         // Establim al buto de l'accio, l'accio que volem fer (afegir)
         butoAccio.setText("Afegir");
         // Configurem el EventHandler en cas de fer click al boto d'afegir
@@ -207,6 +212,7 @@ public class UsuariEdicioController implements Initializable {
         omplirDades(u);
         // Com es desde l'administrador s'han de poder editar tots els camps
         textFieldDNI.setDisable(false);
+        textFieldNumSoci.setDisable(false);
         // Establim al buto de l'accio, l'accio que volem fer (modificar)
         butoAccio.setText("Modificar");
         // Configurem el EventHandler en cas de fer click al boto de modificar
@@ -267,17 +273,17 @@ public class UsuariEdicioController implements Initializable {
         
         // Creem un usuari obtenint les dades de la pantalla
         Usuari u = new Usuari(
-            new SimpleStringProperty(textFieldNomUsuari.getText()),
+            new SimpleStringProperty(textFieldUserName.getText()),
             new SimpleStringProperty(passwordFieldPassword.getText()),
             new SimpleStringProperty(textFieldDNI.getText()),
-            //new SimpleStringProperty(textFieldDataNaixement.getText()),
+            new SimpleStringProperty(textFieldNumSoci.getText()),
             new SimpleStringProperty(data),
             new SimpleStringProperty(datePickerDataAlta.getValue().toString()),
             new SimpleStringProperty(textFieldNom.getText()),
-            new SimpleStringProperty(textFieldCognom1.getText()),
+            new SimpleStringProperty(textFieldCognoms.getText()),
             new SimpleStringProperty(textFieldDireccio.getText()),
             new SimpleStringProperty(textFieldPais.getText()),
-            new SimpleStringProperty(textFieldTelefon1.getText()),
+            new SimpleStringProperty(textFieldTelefon.getText()),
             new SimpleStringProperty(textFieldCorreu.getText()),
             new SimpleStringProperty(textFieldAdminAlta.getText())            
         );

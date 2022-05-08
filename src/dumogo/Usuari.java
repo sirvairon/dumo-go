@@ -16,28 +16,30 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class Usuari {
     
-    private final SimpleStringProperty nom_user;
+    private final SimpleStringProperty user_name;
     private final SimpleStringProperty password;
     private final SimpleStringProperty dni;
+    private final SimpleStringProperty numero_soci;
     private final SimpleStringProperty data_alta;    
     private final SimpleStringProperty nom;  
-    private final SimpleStringProperty cognom1;  
+    private final SimpleStringProperty cognoms;  
     private final SimpleStringProperty direccio;
     private final SimpleStringProperty pais;
-    private final SimpleStringProperty telefon1;
+    private final SimpleStringProperty telefon;
     private final SimpleStringProperty correu;
     private final SimpleStringProperty data_naixement; 
     private final SimpleStringProperty admin_alta;
     
-    private final String nom_user_label = "Nom d'usuari";
+    private final String user_name_label = "Nom d'usuari";
     private final String password_label = "Password";
     private final String dni_label = "DNI";
+    private final String numero_soci_label = "Núm. soci";
     private final String data_alta_label = "Data d'alta";    
     private final String nom_label = "Nom";  
-    private final String cognom1_label = "Cognoms";  
+    private final String cognoms_label = "Cognoms";  
     private final String direccio_label = "Direcció";
     private final String pais_label = "País";
-    private final String telefon1_label = "Telèfon";
+    private final String telefon_label = "Telèfon";
     private final String correu_label = "Correu";
     private final String data_naixement_label = "Data de Naixement"; 
     private final String admin_alta_label = "Administrador alta";
@@ -45,36 +47,38 @@ public class Usuari {
     static public final Map<String, String> mapaNomCamps = new HashMap<>();
         
     public Usuari(HashMap<String, SimpleStringProperty> map) {
-        this.nom_user = new SimpleStringProperty((String.valueOf(map.get("nom_user"))));
+        this.user_name = new SimpleStringProperty((String.valueOf(map.get("user_name"))));
         this.password = new SimpleStringProperty((String.valueOf(map.get("password"))));
         this.dni = new SimpleStringProperty((String.valueOf(map.get("dni"))));
         this.data_naixement = new SimpleStringProperty((String.valueOf(map.get("data_naixement"))));
+        this.numero_soci = new SimpleStringProperty((String.valueOf(map.get("numero_soci"))));
         this.data_alta = new SimpleStringProperty((String.valueOf(map.get("data_alta"))));
         this.nom = new SimpleStringProperty((String.valueOf(map.get("nom"))));
-        this.cognom1 = new SimpleStringProperty((String.valueOf(map.get("cognom1"))));
+        this.cognoms = new SimpleStringProperty((String.valueOf(map.get("cognoms"))));
         this.direccio = new SimpleStringProperty((String.valueOf(map.get("direccio"))));
         this.pais = new SimpleStringProperty((String.valueOf(map.get("pais"))));
-        this.telefon1 = new SimpleStringProperty((String.valueOf(map.get("telefon1"))));     
+        this.telefon = new SimpleStringProperty((String.valueOf(map.get("telefon"))));     
         this.correu = new SimpleStringProperty((String.valueOf(map.get("correu"))));
         this.admin_alta = new SimpleStringProperty((String.valueOf(map.get("admin_alta"))));   
         generaMapNomCamps();
     }
     
-    //public Usuari(SimpleStringProperty nom_user, SimpleStringProperty num_soci, SimpleStringProperty dni, SimpleStringProperty nom, SimpleStringProperty cognom1, SimpleStringProperty cognom2, SimpleStringProperty direccio, SimpleStringProperty codi_postal, SimpleStringProperty poblacio, SimpleStringProperty provincia, SimpleStringProperty telefon1, SimpleStringProperty telefon2, SimpleStringProperty correu, SimpleStringProperty foto) {  
-    public Usuari(SimpleStringProperty nom_user, SimpleStringProperty password, SimpleStringProperty dni, SimpleStringProperty data_naixement, 
-            SimpleStringProperty data_alta, SimpleStringProperty nom, SimpleStringProperty cognom1, 
-            SimpleStringProperty direccio, SimpleStringProperty pais, SimpleStringProperty telefon1, 
+    //public Usuari(SimpleStringProperty user_name, SimpleStringProperty numero_soci, SimpleStringProperty dni, SimpleStringProperty nom, SimpleStringProperty cognoms, SimpleStringProperty cognom2, SimpleStringProperty direccio, SimpleStringProperty codi_postal, SimpleStringProperty poblacio, SimpleStringProperty provincia, SimpleStringProperty telefon, SimpleStringProperty telefon2, SimpleStringProperty correu, SimpleStringProperty foto) {  
+    public Usuari(SimpleStringProperty user_name, SimpleStringProperty password, SimpleStringProperty dni, SimpleStringProperty data_naixement, SimpleStringProperty numero_soci,
+            SimpleStringProperty data_alta, SimpleStringProperty nom, SimpleStringProperty cognoms, 
+            SimpleStringProperty direccio, SimpleStringProperty pais, SimpleStringProperty telefon, 
             SimpleStringProperty correu, SimpleStringProperty admin_alta) {       
-        this.nom_user = nom_user;
+        this.user_name = user_name;
         this.password = password;
         this.dni = dni;
         this.data_naixement = data_naixement;
+        this.numero_soci = numero_soci;
         this.data_alta = data_alta;
         this.nom = nom;
-        this.cognom1 = cognom1;
+        this.cognoms = cognoms;
         this.direccio = direccio;      
         this.pais = pais;
-        this.telefon1 = telefon1;     
+        this.telefon = telefon;     
         this.correu = correu;
         this.admin_alta = admin_alta;    
         generaMapNomCamps();
@@ -84,20 +88,24 @@ public class Usuari {
         return nom.get();
     }
 
-    public final String getCognom1() {
-        return cognom1.get();
+    public final String getCognoms() {
+        return cognoms.get();
     }
 
-    public final String getNom_user() {
-        return nom_user.get();
+    public final String getUser_name() {
+        return user_name.get();
     }
 
     public final String getDireccio() {
         return direccio.get();
     }
 
-    public final String getTelefon1() {
-        return telefon1.get();
+    public final String getNum_soci() {
+        return numero_soci.get();
+    }
+    
+    public final String getTelefon() {
+        return telefon.get();
     }
 
     public final String getDni() {
@@ -132,20 +140,24 @@ public class Usuari {
         return nom;
     }
 
-    public SimpleStringProperty cognom1() {
-        return cognom1;
+    public SimpleStringProperty cognoms() {
+        return cognoms;
     }
 
-    public SimpleStringProperty nom_user() {
-        return nom_user;
+    public SimpleStringProperty user_name() {
+        return user_name;
     }
 
     public SimpleStringProperty direccio() {
         return direccio;
     }
 
-    public SimpleStringProperty telefon1() {
-        return telefon1;
+    public SimpleStringProperty numero_soci() {
+        return numero_soci;
+    }
+    
+    public SimpleStringProperty telefon() {
+        return telefon;
     }
 
     public SimpleStringProperty dni() {
@@ -177,15 +189,16 @@ public class Usuari {
     }
 
     private void generaMapNomCamps(){
-        mapaNomCamps.put("user_name", nom_user_label);
+        mapaNomCamps.put("user_name", user_name_label);
         mapaNomCamps.put("password", password_label);
         mapaNomCamps.put("DNI", dni_label);
+        mapaNomCamps.put("numero_soci", numero_soci_label);
         mapaNomCamps.put("data_alta", data_alta_label);
         mapaNomCamps.put("nom", nom_label);
-        mapaNomCamps.put("cognom1", cognom1_label);
+        mapaNomCamps.put("cognoms", cognoms_label);
         mapaNomCamps.put("direccio", direccio_label);
         mapaNomCamps.put("pais", pais_label);
-        mapaNomCamps.put("telefon1", telefon1_label);
+        mapaNomCamps.put("telefon", telefon_label);
         mapaNomCamps.put("correu", correu_label);
         mapaNomCamps.put("data_naixement", data_naixement_label);
         mapaNomCamps.put("admin_alta", admin_alta_label);
@@ -195,8 +208,8 @@ public class Usuari {
         return mapaNomCamps;
     }
     
-    public String getNom_user_label() {
-        return nom_user_label;
+    public String getUser_name_label() {
+        return user_name_label;
     }
 
     public String getPassword_label() {
@@ -207,6 +220,10 @@ public class Usuari {
         return dni_label;
     }
 
+    public String getNum_soci_label() {
+        return numero_soci_label;
+    }
+    
     public String getData_alta_label() {
         return data_alta_label;
     }
@@ -215,8 +232,8 @@ public class Usuari {
         return nom_label;
     }
 
-    public String getCognom1_label() {
-        return cognom1_label;
+    public String getCognoms_label() {
+        return cognoms_label;
     }
 
     public String getDireccio_label() {
@@ -227,8 +244,8 @@ public class Usuari {
         return pais_label;
     }
 
-    public String getTelefon1_label() {
-        return telefon1_label;
+    public String getTelefon_label() {
+        return telefon_label;
     }
 
     public String getCorreu_label() {

@@ -192,7 +192,7 @@ public class AdminController implements Initializable {
                             if(element.getClass().getSimpleName().equals("Usuari")){
                                 Usuari usuari_fila = (Usuari) element;                            
                                 alerta.setTitle("Eliminar registre");
-                                alerta.setHeaderText("Vols esborrar el registre " + usuari_fila.getNom_user() + " ?");
+                                alerta.setHeaderText("Vols esborrar el registre " + usuari_fila.getUser_name() + " ?");
                                 alerta.setContentText("S'esborrarà definitivament");
                                 Optional<ButtonType> option = alerta.showAndWait();
                                 if (option.get() == ButtonType.OK) {

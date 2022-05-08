@@ -118,7 +118,7 @@ public class AdminEdicioController implements Initializable {
         msg_in = AccionsClient.obtenirUsuari();
         System.out.println(msg_in.toString());
         // Omplim els labels amb les dades rebudes
-        textFieldNumSoci.setText(msg_in.get("num_soci"));
+        textFieldNumSoci.setText(msg_in.get("numero_soci"));
         textFieldDNI.setText(msg_in.get("dni"));
         textFieldNom.setText(msg_in.get("nom"));
         textFieldCognom1.setText(msg_in.get("cognom1"));
@@ -130,7 +130,7 @@ public class AdminEdicioController implements Initializable {
         textFieldProvincia.setText(msg_in.get("provincia"));
         textFieldCodiPostal.setText(msg_in.get("codi_postal"));
         textFieldCorreu.setText(msg_in.get("correu"));
-        textFieldNomUsuari.setText(msg_in.get("nom_user"));
+        textFieldNomUsuari.setText(msg_in.get("user_name"));
         textFieldAdminAlta.setText(msg_in.get("admin_alta"));
         passwordFieldPassword.setText(msg_in.get("admin_alta"));
     }
@@ -143,13 +143,13 @@ public class AdminEdicioController implements Initializable {
     
     private void omplirDades(Usuari usuari){
         this.usuari = usuari;
-        textFieldNomUsuari.setText(usuari.getNom_user());
+        textFieldNomUsuari.setText(usuari.getUser_name());
         //textFieldNumSoci.setText(usuari.getNum_soci());
         textFieldDNI.setText(usuari.getDni());
         textFieldNom.setText(usuari.getNom());
-        textFieldCognom1.setText(usuari.getCognom1());
+        textFieldCognom1.setText(usuari.getCognoms());
         //textFieldCognom2.setText(usuari.getCognom2());
-        textFieldTelefon1.setText(usuari.getTelefon1());
+        textFieldTelefon1.setText(usuari.getTelefon());
         //textFieldTelefon2.setText(usuari.getTelefon2());
         textFieldDireccio.setText(usuari.getDireccio());
         //textFieldPoblacio.setText(usuari.getPoblacio());
@@ -274,7 +274,7 @@ public class AdminEdicioController implements Initializable {
             new SimpleStringProperty(textFieldNomUsuari.getText()),
             new SimpleStringProperty(textFieldDNI.getText()),
             new SimpleStringProperty(textFieldDataNaixement.getText()),
-            //new SimpleStringProperty(textFieldNumSoci.getText()),
+            new SimpleStringProperty(textFieldNumSoci.getText()),
             //new SimpleStringProperty(choiceBoxTipusSoci.getValue().toString()),
             new SimpleStringProperty(textFieldDataAlta.getText()),
             new SimpleStringProperty(textFieldNom.getText()),

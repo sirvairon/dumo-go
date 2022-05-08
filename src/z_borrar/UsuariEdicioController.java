@@ -129,12 +129,12 @@ public class UsuariEdicioController implements Initializable {
         // Agafem l'usuari i el guardem
         this.usuari = usuari;
         // Omplim els camps de pantalla amb l'usuari
-        textFieldNomUsuari.setText(usuari.getNom_user());
+        textFieldNomUsuari.setText(usuari.getUser_name());
         
         textFieldDNI.setText(usuari.getDni());
         textFieldNom.setText(usuari.getNom());
-        textFieldCognom1.setText(usuari.getCognom1());
-        textFieldTelefon1.setText(usuari.getTelefon1());
+        textFieldCognom1.setText(usuari.getCognoms());
+        textFieldTelefon1.setText(usuari.getTelefon());
         textFieldDireccio.setText(usuari.getDireccio());
         textFieldPais.setText(usuari.getPais());
         textFieldCorreu.setText(usuari.getCorreu());
@@ -297,7 +297,7 @@ public class UsuariEdicioController implements Initializable {
             new SimpleStringProperty(passwordFieldPassword.getText()),
             new SimpleStringProperty(textFieldDNI.getText()),
             new SimpleStringProperty(textFieldDataNaixement.getText()),
-            //new SimpleStringProperty(textFieldNumSoci.getText()),
+            new SimpleStringProperty(textFieldNumSoci.getText()),
             //new SimpleStringProperty(choiceBoxTipusSoci.getValue().toString()),
             new SimpleStringProperty(datePickerDataAlta.getValue().toString()),
             new SimpleStringProperty(textFieldNom.getText()),
