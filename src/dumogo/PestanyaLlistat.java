@@ -41,7 +41,7 @@ public final class PestanyaLlistat extends Tab {
 
     private final static String USUARI_CASE = "usuaris";
     private final static String ADMINISTRADOR_CASE = "administradors";
-    private final static String LLIBRES_CASE = "llibres";
+    private final static String LLIBRE_CASE = "llibres";
     private final String tipusLlista;
     
     private final TableView taulaLlistat;
@@ -52,9 +52,12 @@ public final class PestanyaLlistat extends Tab {
     private final ChoiceBox opcioFiltre;
     private ObservableList<String> llistaFiltre;
     private final Button butoActualitzar, butoAfegir, butoModificar, butoEliminar, butoFiltre;    
-    private ArrayList<Usuari> llista;
-    private ObservableList<Usuari> data;
-    private FilteredList<Usuari> data_filtrada;
+    private ArrayList<Usuari> llista_usuaris;
+    private ArrayList<Llibre> llista_llibres;
+    private ObservableList<Usuari> data_usuaris;
+    private ObservableList<Llibre> data_llibres;
+    private FilteredList<Usuari> data_filtrada_usuaris;
+    private FilteredList<Llibre> data_filtrada_llibres;
     private Map<String, String> mapaNomCamps;
     
     public PestanyaLlistat(String nomLlista, String tipusLlista) throws ClassNotFoundException {
@@ -140,30 +143,43 @@ public final class PestanyaLlistat extends Tab {
         switch(tipusLlista){
             case USUARI_CASE:
                 // Esborrem l'informacio per carregar-la de nou
-                data = null;
+                data_usuaris = null;
 
                 // Obtenim el llistat_d'elements
-                llista = AccionsClient.obtenirLlistat(tipusLlista);         
+                llista_usuaris = AccionsClient.obtenirLlistat(tipusLlista);         
 
                 // El transformem en una ObservableList
-                data = FXCollections.observableArrayList(llista); 
+                data_usuaris = FXCollections.observableArrayList(llista_usuaris); 
                 
                 // Obtenim el nom dels camps per columnes, filtre,...
                 mapaNomCamps = Usuari.mapaNomCamps;
                 break;
             case ADMINISTRADOR_CASE:
                 // Esborrem l'informacio per carregar-la de nou
-                data = null;
+                data_usuaris = null;
 
                 // Obtenim el llistat_d'elements
-                llista = AccionsClient.obtenirLlistat(tipusLlista);         
+                llista_usuaris = AccionsClient.obtenirLlistat(tipusLlista);         
 
                 // El transformem en una ObservableList
-                data = FXCollections.observableArrayList(llista); 
+                data_usuaris = FXCollections.observableArrayList(llista_usuaris); 
 
                 // Obtenim el nom dels camps per columnes, filtre,...
                 mapaNomCamps = Usuari.mapaNomCamps;
-                break;            
+                break;       
+            case LLIBRE_CASE:
+                // Esborrem l'informacio per carregar-la de nou
+                data_llibres = null;
+
+                // Obtenim el llistat_d'elements
+                llista_llibres = AccionsClient.obtenirLlistat(tipusLlista);         
+
+                // El transformem en una ObservableList
+                data_llibres = FXCollections.observableArrayList(llista_llibres); 
+
+                // Obtenim el nom dels camps per columnes, filtre,...
+                mapaNomCamps = Llibre.mapaNomCamps;
+                break;
         }
     }
         
@@ -217,7 +233,28 @@ public final class PestanyaLlistat extends Tab {
                 // Establim que la label dels resultats posi Administradors
                 resultat.setText("Administradors:");
                 break;
-            case "llibres":
+            case LLIBRE_CASE:
+                mapaNomCamps = Llibre.mapaNomCamps;
+                System.out.println(mapaNomCamps);
+                llistaFiltre = FXCollections.observableArrayList(
+                        mapaNomCamps.get("nom"), 
+                        mapaNomCamps.get("autor"),
+                        mapaNomCamps.get("any_publicacio"),
+                        mapaNomCamps.get("tipus"),
+                        mapaNomCamps.get("data_alta"), 
+                        mapaNomCamps.get("reservat_dni"), 
+                        mapaNomCamps.get("admin_alta"),
+                        mapaNomCamps.get("caratula"), 
+                        mapaNomCamps.get("descripcio"),
+                        mapaNomCamps.get("valoracio"), 
+                        mapaNomCamps.get("vots")
+                        );
+                // Introduim les opcions dins les opcions del filtre
+                opcioFiltre.setItems(llistaFiltre);
+                // Deixem marcada l'opcio del nom del administrador
+                opcioFiltre.setValue(mapaNomCamps.get("nom"));
+                // Establim que la label dels resultats posi Administradors
+                resultat.setText("Llibres:");
                 break;
         }
     }
@@ -228,96 +265,185 @@ public final class PestanyaLlistat extends Tab {
         
         // Obtenim a quin camp volem trobar la paraula
         String opcioFiltreTxt = opcioFiltre.getSelectionModel().getSelectedItem().toString();
+        if(tipusLlista.equals(ADMINISTRADOR_CASE) || tipusLlista.equals(USUARI_CASE)){            
         
-        // Filtrem les dades
-        data_filtrada = new FilteredList<>(data, b -> true);        
-        data_filtrada.setPredicate(usuariFiltrat -> {
-                // Si no hi ha paraula a filtrar/buscar mostrem tot
-                if(paraulaFiltre.isEmpty() || paraulaFiltre == null){
-                    return true;
-                }
-                
-                if(opcioFiltreTxt.equals(mapaNomCamps.get("DNI"))){
-                    if(usuariFiltrat.getDni().toLowerCase().indexOf(paraulaFiltre) > -1){
+            //data_filtrada_llibres
+            // Filtrem les dades
+            data_filtrada_usuaris = new FilteredList<>(data_usuaris, b -> true);        
+            data_filtrada_usuaris.setPredicate(usuariFiltrat -> {
+                    // Si no hi ha paraula a filtrar/buscar mostrem tot
+                    if(paraulaFiltre.isEmpty() || paraulaFiltre == null){
                         return true;
-                    } else {
-                        return false;
                     }
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("user_name"))){
-                    if(usuariFiltrat.getUser_name().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("numero_soci"))){
-                    if(usuariFiltrat.getNum_soci().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data_alta"))){
-                    if(usuariFiltrat.getData_Alta().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("nom"))){
-                    if(usuariFiltrat.getNom().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("cognoms"))){
-                    if(usuariFiltrat.getCognoms().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data_naixement"))){
-                    if(usuariFiltrat.getData_naixement().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("direccio"))){
-                    if(usuariFiltrat.getDireccio().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("pais"))){
-                    if(usuariFiltrat.getPais().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("telefon"))){
-                    if(usuariFiltrat.getTelefon().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("correu"))){
-                    if(usuariFiltrat.getCorreu().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
-                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("admin_alta"))){
-                    if(usuariFiltrat.getAdmin_Alta().toLowerCase().indexOf(paraulaFiltre) > -1){
-                        return true;
-                    } else {
-                        return false;
-                    }                    
-                }
-                // No s'ha trobat res
-                return false;
-            });
+
+                    if(opcioFiltreTxt.equals(mapaNomCamps.get("DNI"))){
+                        if(usuariFiltrat.getDni().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("user_name"))){
+                        if(usuariFiltrat.getUser_name().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("numero_soci"))){
+                        if(usuariFiltrat.getNum_soci().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data_alta"))){
+                        if(usuariFiltrat.getData_Alta().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("nom"))){
+                        if(usuariFiltrat.getNom().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("cognoms"))){
+                        if(usuariFiltrat.getCognoms().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data_naixement"))){
+                        if(usuariFiltrat.getData_naixement().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("direccio"))){
+                        if(usuariFiltrat.getDireccio().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("pais"))){
+                        if(usuariFiltrat.getPais().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("telefon"))){
+                        if(usuariFiltrat.getTelefon().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("correu"))){
+                        if(usuariFiltrat.getCorreu().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("admin_alta"))){
+                        if(usuariFiltrat.getAdmin_Alta().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }
+                    // No s'ha trobat res
+                    return false;
+                });
+
+            // Introduim l'informació filtrada (SortedList) a la taula
+            taulaLlistat.setItems(data_filtrada_usuaris);
+            // Obtenim el numero total de registres i la fiquem al label
+            resultatValor.setText(String.valueOf(data_filtrada_usuaris.size()));
+        }else if(tipusLlista.equals(LLIBRE_CASE)){            
         
-        // Introduim l'informació filtrada (SortedList) a la taula
-        taulaLlistat.setItems(data_filtrada);
-        // Obtenim el numero total de registres i la fiquem al label
-        resultatValor.setText(String.valueOf(data_filtrada.size()));
+            //data_filtrada_llibres
+            // Filtrem les dades
+            data_filtrada_llibres = new FilteredList<>(data_llibres, b -> true);        
+            data_filtrada_llibres.setPredicate(llibreFiltrat -> {
+                    // Si no hi ha paraula a filtrar/buscar mostrem tot
+                    if(paraulaFiltre.isEmpty() || paraulaFiltre == null){
+                        return true;
+                    }
+
+                    if(opcioFiltreTxt.equals(mapaNomCamps.get("nom"))){
+                        if(llibreFiltrat.getNom().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("autor"))){
+                        if(llibreFiltrat.getAutor().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("any_publicacio"))){
+                        if(llibreFiltrat.getAny_Publicacio().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("tipus"))){
+                        if(llibreFiltrat.getTipus().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data_alta"))){
+                        if(llibreFiltrat.getData_alta().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("reservat_dni"))){
+                        if(llibreFiltrat.getReservat_DNI().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("admin_alta"))){
+                        if(llibreFiltrat.getAdmin_alta().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("caratula"))){
+                        if(llibreFiltrat.getCaratula().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("descripcio"))){
+                        if(llibreFiltrat.getDescripcio().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("valoracio"))){
+                        if(llibreFiltrat.getValoracio().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("vots"))){
+                        if(llibreFiltrat.getVots().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }
+                    // No s'ha trobat res
+                    return false;
+                });
+
+            // Introduim l'informació filtrada (SortedList) a la taula
+            taulaLlistat.setItems(data_filtrada_llibres);
+            // Obtenim el numero total de registres i la fiquem al label
+            resultatValor.setText(String.valueOf(data_filtrada_llibres.size()));
+        }
     }
     
     public void actualitzarDades() throws ClassNotFoundException {        
@@ -407,6 +533,74 @@ public final class PestanyaLlistat extends Tab {
                 return p.getValue().admin_alta();
         }}); 
         
+        // Per crear totes les columnes de la taula llibres
+        
+        TableColumn<Llibre,String> col_NomLlibre = new TableColumn<Llibre,String>(mapaNomCamps.get("nom"));
+        col_NomLlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Llibre,String> p) {
+                return p.getValue().nom();
+        }}); 
+        
+        TableColumn<Llibre,String> col_AutorLlibre = new TableColumn<Llibre,String>(mapaNomCamps.get("autor"));
+        col_AutorLlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Llibre,String> p) {
+                return p.getValue().autor();
+        }});
+        
+        TableColumn<Llibre,String> col_AnyPublicacioLlibre = new TableColumn<Llibre,String>(mapaNomCamps.get("any_publicacio"));
+        col_AnyPublicacioLlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Llibre,String> p) {
+                return p.getValue().any_publicacio();
+        }});
+        
+        TableColumn<Llibre,String> col_TipusLlibre = new TableColumn<Llibre,String>(mapaNomCamps.get("tipus"));
+        col_TipusLlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Llibre,String> p) {
+                return p.getValue().tipus();
+        }});
+        
+        TableColumn<Llibre,String> col_DataAltaLlibre = new TableColumn<Llibre,String>(mapaNomCamps.get("data_alta"));
+        col_DataAltaLlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Llibre,String> p) {
+                return p.getValue().data_alta();
+        }});
+        
+        TableColumn<Llibre,String> col_ReservatDNILlibre = new TableColumn<Llibre,String>(mapaNomCamps.get("reservat_dni"));
+        col_ReservatDNILlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Llibre,String> p) {
+                return p.getValue().reservat_dni();
+        }});
+        
+        TableColumn<Llibre,String> col_AdminAltaLlibre = new TableColumn<Llibre,String>(mapaNomCamps.get("admin_alta"));
+        col_AdminAltaLlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Llibre,String> p) {
+                return p.getValue().admin_alta();
+        }});
+        
+        TableColumn<Llibre,String> col_CaratulaLlibre = new TableColumn<Llibre,String>(mapaNomCamps.get("caratula"));
+        col_CaratulaLlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Llibre,String> p) {
+                return p.getValue().caratula();
+        }});
+        
+        TableColumn<Llibre,String> col_DescripcioLlibre = new TableColumn<Llibre,String>(mapaNomCamps.get("descripcio"));
+        col_DescripcioLlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Llibre,String> p) {
+                return p.getValue().descripcio();
+        }});
+        
+        TableColumn<Llibre,String> col_ValoracioLlibre = new TableColumn<Llibre,String>(mapaNomCamps.get("valoracio"));
+        col_ValoracioLlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Llibre,String> p) {
+                return p.getValue().valoracio();
+        }});
+        
+        TableColumn<Llibre,String> col_VotsLlibre = new TableColumn<Llibre,String>(mapaNomCamps.get("vots"));
+        col_VotsLlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Llibre,String> p) {
+                return p.getValue().vots();
+        }});
+        
         // Afegim les columnes a la taula    
         switch(tipusLlista){
             case USUARI_CASE:
@@ -439,6 +633,21 @@ public final class PestanyaLlistat extends Tab {
                         col_Telefon, 
                         col_Correu, 
                         col_AdminAlta 
+                        );    
+                break;
+            case LLIBRE_CASE:
+                taulaLlistat.getColumns().addAll(
+                        col_NomLlibre,
+                        col_AutorLlibre,
+                        col_AnyPublicacioLlibre, 
+                        col_TipusLlibre, 
+                        col_DataAltaLlibre, 
+                        col_ReservatDNILlibre, 
+                        col_AdminAltaLlibre, 
+                        col_CaratulaLlibre,  
+                        col_DescripcioLlibre, 
+                        col_ValoracioLlibre, 
+                        col_VotsLlibre
                         );    
                 break;
         }

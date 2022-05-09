@@ -49,8 +49,8 @@
                   </MenuButton>
                   <MenuButton mnemonicParsing="false" text="Biblioteca">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Action 1" />
-                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                      <MenuItem mnemonicParsing="false" text="Afegir llibre" />
+                      <MenuItem fx:id="llibres" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Llistat de llibres" />
                     </items>
                      <font>
                         <Font size="14.0" />

@@ -10,12 +10,9 @@
         </group>
         <group name="DUMO-GO">
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/AdminController.java</file>
-            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/UsuariEdicioController.java</file>
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/AccionsClient.java</file>
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/PestanyaLlistat.java</file>
-            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/LogInController.java</file>
-            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/AdminEdicioController.java</file>
-            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/Usuari.java</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/Llibre.java</file>
         </group>
     </open-files>
 </project-private>

@@ -39,6 +39,9 @@ public class AccionsClient {
     private static ObjectInputStream mapInputStream;
     private static HashMap<String, String> msg_out;
     private static HashMap<String, String> msg_in;
+    private final static String USUARI_CASE = "usuaris";
+    private final static String ADMINISTRADOR_CASE = "administradors";
+    private final static String LLIBRE_CASE = "llibres";
     
     public static String getNom_user_actual() {
         return nom_user_actual;
@@ -460,15 +463,17 @@ public class AccionsClient {
             ArrayList llistat = new ArrayList<Usuari>();
             
             switch(tipus){
-                case "usuaris":                    
+                case USUARI_CASE:                    
                     // Omplim el HasMap amb l'accio, i el codi de connexio
                     msg_out.put("accio", "llista_usuaris");
                     break;
-                case "administradors":
+                case ADMINISTRADOR_CASE:
                     // Omplim el HasMap amb l'accio, i el codi de connexio
                     msg_out.put("accio", "llista_admins");
                     break;
-                case "llibres":
+                case LLIBRE_CASE:
+                    // Omplim el HasMap amb l'accio, i el codi de connexio
+                    msg_out.put("accio", "llista_llibres");
                     break;
                     
             }
@@ -478,11 +483,20 @@ public class AccionsClient {
             mapOutputStream.writeObject(msg_out);            
             llistat_hashmaps = (List) mapInputStream.readObject();
 
-            // Omplim el llistat d'usuaris amb els usuaris de cada HashMap dins d'el List tornat
-            for (HashMap obj:llistat_hashmaps) {
-                Usuari u = new Usuari(obj);
-                llistat.add(u);
-            }  
+            if(tipus.equals(USUARI_CASE) || tipus.equals(ADMINISTRADOR_CASE)){
+                // Omplim el llistat d'usuaris amb els usuaris de cada HashMap dins d'el List tornat
+                for (HashMap obj:llistat_hashmaps) {
+                    Usuari u = new Usuari(obj);
+                    llistat.add(u);
+                }
+            }else if(tipus.equals(LLIBRE_CASE)){
+                // Omplim el llistat d'usuaris amb els usuaris de cada HashMap dins d'el List tornat
+                for (HashMap obj:llistat_hashmaps) {
+                    Llibre ll = new Llibre(obj);
+                    llistat.add(ll);
+                }   
+            }
+            
 
             // Tanquem connexio
             yourOutputStream.close();
@@ -525,6 +539,21 @@ public class AccionsClient {
         //hashmap.put("observacions", usuari.getObservacions());   
         hashmap.put("admin_alta", usuari.getAdmin_Alta());
         hashmap.put("password", usuari.getPassword());
+    }
+    
+    public static void llibreAHashmap(HashMap hashmap, Llibre llibre){        
+        // Afegim les dades de l'usuari al hashmap
+        hashmap.put("nom", llibre.getNom());
+        hashmap.put("autor", llibre.getAutor());
+        hashmap.put("any_publicacio", llibre.getAny_Publicacio());
+        hashmap.put("tipus", llibre.getTipus());
+        hashmap.put("data_alta", llibre.getData_alta());
+        hashmap.put("reservat_dni", llibre.getReservat_DNI());
+        hashmap.put("admin_alta", llibre.getAdmin_alta());       
+        hashmap.put("caratula", llibre.getCaratula());
+        hashmap.put("descripcio", llibre.getDescripcio());     
+        hashmap.put("valoracio", llibre.getValoracio());  
+        hashmap.put("vots", llibre.getVots());
     }
 
 }

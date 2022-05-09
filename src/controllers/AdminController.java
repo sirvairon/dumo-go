@@ -94,7 +94,7 @@ public class AdminController implements Initializable {
     private void crearPestanyaLlistat(ActionEvent event)throws IOException, ClassNotFoundException {
         // Comprobem la seleccio del menu
         MenuItem menuItem = (MenuItem)event.getSource();
-        String tipus_pestanya = menuItem.getId(); // Exemple: ususari o administrador
+        String tipus_pestanya = menuItem.getId(); // Exemple: usuari o administrador
         String titol_pestanya = menuItem.getText(); // Exemple: Llistat d'usuaris o Llistat d'administradors
         
         // Comprobem si ja esta creada
