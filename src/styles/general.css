@@ -7,8 +7,8 @@
 /* tot */
 
 .root {
-    -fx-font: 14px "Tahoma";
-    -fx-font-family: "Tahoma", Arial, sans-serif;
+    -fx-font: 14px "System";
+    -fx-font-family: "System", Arial, sans-serif;
     -fx-font-weight: normal;
     -fx-font-style: normal;
     -fx-font-size: 14px;

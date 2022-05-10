@@ -8,6 +8,7 @@ package controllers;
 import dumogo.AccionsClient;
 import dumogo.Buscador;
 import dumogo.CodiErrors;
+import dumogo.Llibre;
 import dumogo.PestanyaLlistat;
 import dumogo.Usuari;
 import java.io.IOException;
@@ -65,9 +66,10 @@ public class AdminController implements Initializable {
     private Usuari usuariTemp;
     private Object element_temp;
     private Date tempsUltimClick;
-    private Stage stageUsuari, stageBuscar;
+    private Stage stageUsuari, stageBuscar, stageLlibre;
     private UsuariEdicioController usuariEdicioControlador;
-    //private UsuariBuscarController UsuariBuscarController;
+    private LlibreEdicioController llibreEdicioControlador;
+    private LlibreVistaController llibreVistaControlador;
     private HashMap<String, String> msg_in;
     private String codi_resposta;
     private String significat_codi_resposta;
@@ -283,6 +285,15 @@ public class AdminController implements Initializable {
     }
     
     @FXML
+    private void afegirLlibre() throws IOException{
+        // Obrim la finestra usuari
+        obrirFinestraLlibre();
+        stageLlibre.setTitle("Afegir llibre");
+        // Esborrem dades en cas de que hi hagi alguna
+        llibreEdicioControlador.afegirLlibre();
+    }
+    
+    @FXML
     private void buscarUsuari() throws IOException{
         
         Usuari usuari;
@@ -346,6 +357,23 @@ public class AdminController implements Initializable {
         usuariEdicioControlador.modificarUsuari(usuari);
     }
     
+    private void modificarElement(Object obj) throws IOException{ 
+        
+        if(obj.getClass().getSimpleName().equals("Usuari")){
+            // Obrim la finestra usuari 
+            obrirFinestraUsuari();
+            // Actualitzem el controlador (finestra usuari) per mijtà del mètode dins del controlador
+            usuariEdicioControlador.modificarUsuari((Usuari)obj);
+        }else if(obj.getClass().getSimpleName().equals("Llibre")){
+            // Obrim la finestra llibre 
+            obrirFinestraLlibre();
+            // Actualitzem el controlador (finestra llibre) per mijtà del mètode dins del controlador
+            llibreEdicioControlador.modificarLlibre((Llibre)obj);
+            //llibreVistaControlador.mostrarLlibre((Llibre)obj);
+        }
+        
+    }
+    
     private void eliminarUsuari(Usuari usuari) throws IOException, ClassNotFoundException, InterruptedException{      
         // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
         alerta.setTitle("Eliminar usuari");
@@ -399,6 +427,31 @@ public class AdminController implements Initializable {
         }
     }
     
+    private void obrirFinestraLlibre() throws IOException{ // Per modificar
+        // En cas de que no s'hagi creat el stage (finestra oberta) el creem
+        if (stageLlibre == null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/LlibreEdicio.fxml"));
+            Parent root = (Parent) loader.load();
+            llibreEdicioControlador = loader.getController();
+            stageLlibre = new Stage();
+            stageLlibre.setScene(new Scene(root));
+            Image icon = new Image("/resources/usuari_icon.png");
+            stageLlibre.getIcons().add(icon);
+            stageLlibre.setTitle("Llibre");
+            stageLlibre.setResizable(false);
+
+            // Quan es tanqui esborrem el stage de memòria                    
+            stageLlibre.setOnHiding(we -> stageLlibre = null);
+
+            // Mostrem la finestra del usuari a editar
+            stageLlibre.show();   
+            
+        // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
+        }else{
+            stageLlibre.toFront();
+        }
+    }
+    
     private void clickTaula(TableView tb) throws IOException {
         // Mirem l'element clickat
         Object element = tb.getSelectionModel().getSelectedItem();
@@ -418,6 +471,9 @@ public class AdminController implements Initializable {
                 if(element.getClass().getSimpleName().equals("Usuari")){
                     // Obrim la finestra usuari 
                     modificarUsuari((Usuari)element);
+                }else if(element.getClass().getSimpleName().equals("Llibre")){
+                    // Obrim la finestra usuari 
+                    modificarElement((Llibre)element);
                 }
             } else {
                 // Si no, actualitzem el temps

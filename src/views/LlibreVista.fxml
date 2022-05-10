@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="raiz" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LlibreEdicioController">
+   <children>
+        <HBox alignment="TOP_RIGHT">
+           <children>
+              <ImageView fx:id="imageViewCaratula" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                 <image>
+                    <Image url="@../resources/book.jpg" />
+                 </image>
+              </ImageView>
+              <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                 <children>
+              <VBox>
+                 <children>
+                          <Label fx:id="labelTitol" styleClass="titolLlibre" text="INTRODUCCIÓN A LA BASE DE DATOS RELACIONAL" />
+                          <Label fx:id="labelAutor" styleClass="autorLlibre" text="Autor" />
+                 </children>
+              </VBox>
+                    <HBox>
+                       <children>
+                          <VBox>
+                             <children>
+                                <Label text="Any de publicació" />
+                              <Label fx:id="labelAnyPublicacio" text="1985" />
+                             </children>
+                          </VBox>
+                          <VBox HBox.hgrow="ALWAYS">
+                             <children>
+                                <Label layoutX="327.0" layoutY="38.0" text="Tipus" />
+                              <Label fx:id="labelTipus" text="Informàtica" />
+                             </children>
+                          </VBox>
+                          <VBox styleClass="valoracioLlibre">
+                             <children>
+                                <Label text="Valoració" />
+                              <Label fx:id="labelValoracio" text="5/5" />
+                             </children>
+                          </VBox>
+                          <VBox styleClass="votsLlibre">
+                             <children>
+                                <Label text="Vots" />
+                              <Label fx:id="labelVots" text="524" />
+                             </children>
+                          </VBox>
+                       </children>
+                    </HBox>
+                 </children>
+              </VBox>
+           </children>
+        </HBox>
+      <HBox>
+         <children>
+            <VBox HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="labelDescripcio" layoutX="35.0" layoutY="217.0" text="Descripció" />
+                  <HBox spacing="40.0">
+                     <children>
+                        <VBox fx:id="vBoxAdminAlta">
+                           <children>
+                              <Label fx:id="labelAdminAlta" text="Administrador alta" />
+                              <TextField fx:id="textFieldAdminAlta" disable="true" prefWidth="200.0" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label fx:id="labelDataAlta" layoutX="327.0" layoutY="38.0" text="Data d'alta" />
+                              <DatePicker fx:id="datePickerDataAlta" disable="true" prefHeight="23.0" prefWidth="200.0" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label fx:id="labelReservatDNI" text="Reservat per" />
+                              <TextField fx:id="textFieldReservatDNI" disable="true" prefWidth="200.0" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" styleClass="hboxBotones">
+         <children>
+            <Button fx:id="butoAccio" mnemonicParsing="false" text="Accio" />
+            <Button fx:id="ButtonVolver" mnemonicParsing="false" onAction="#tancarFinestra" text="Sortir" />
+         </children>
+      </HBox>
+   </children>
+   <stylesheets>
+      <URL value="@../styles/general.css" />
+      <URL value="@../styles/usuari_llibre_edicio.css" />
+   </stylesheets>
+</VBox>

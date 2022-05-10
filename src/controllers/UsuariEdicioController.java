@@ -63,7 +63,7 @@ public class UsuariEdicioController implements Initializable {
     private HashMap<String, String> msg_in;
     
     @FXML
-    private AnchorPane raiz;    
+    private VBox raiz;    
     @FXML
     private TextField textFieldUserName; 
     @FXML
@@ -77,7 +77,7 @@ public class UsuariEdicioController implements Initializable {
     @FXML
     private TextField textFieldTelefon;        
     @FXML
-    private TextField textFieldDireccio;    ;    
+    private TextField textFieldDireccio;   
     @FXML
     private TextField textFieldPais;    
     @FXML
@@ -138,7 +138,7 @@ public class UsuariEdicioController implements Initializable {
     
     private void esborrarDades(){
         // Esborrem l'usuari de memoria
-        usuari = null;
+        this.usuari = null;
         // Esborrem els camps de pantalla
         textFieldUserName.setText("");
         textFieldNumSoci.setText("");
@@ -175,7 +175,7 @@ public class UsuariEdicioController implements Initializable {
                         // Creem el HashMap on rebrem el codi de resposta
                         HashMap<String, String> msg_in;
                         // Fem l'accio d'afegir usuari
-                        msg_in = AccionsClient.agefirUsuari(usuari);
+                        msg_in = AccionsClient.afegirUsuari(usuari);
                         // Obtenim el codi de resposta
                         codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
                         // Obtenim el sinificat del codi de resposta
@@ -198,7 +198,7 @@ public class UsuariEdicioController implements Initializable {
                             alerta.show();
                         }
                     } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
                         Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -248,7 +248,7 @@ public class UsuariEdicioController implements Initializable {
 
 
                 } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
                     Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -364,7 +364,7 @@ public class UsuariEdicioController implements Initializable {
                         
                         
                     } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
                         Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                     }

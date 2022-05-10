@@ -51,4 +51,6 @@
 
 .hboxBotones {
     -fx-padding: 1.666666em 0.0em 0.0em 1.333333em;
+    -fx-alignment: CENTER;
+    -fx-spacing: 40;
 }

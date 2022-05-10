@@ -202,7 +202,7 @@ public class UsuariEdicioController implements Initializable {
                         // Creem el HashMap on rebrem el codi de resposta
                         HashMap<String, String> msg_in;
                         // Fem l'accio d'afegir usuari
-                        msg_in = AccionsClient.agefirUsuari(usuari);
+                        msg_in = AccionsClient.afegirUsuari(usuari);
                         // Obtenim el codi de resposta
                         codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
                         codi_resposta = "10";
@@ -225,7 +225,7 @@ public class UsuariEdicioController implements Initializable {
                             alerta.show();
                         }
                     } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
                     Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -277,7 +277,7 @@ public class UsuariEdicioController implements Initializable {
 
 
                 } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
                     Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -442,7 +442,7 @@ public class UsuariEdicioController implements Initializable {
                         
                         
                     } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
                         Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                     }

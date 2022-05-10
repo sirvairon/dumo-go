@@ -207,7 +207,7 @@ public class AdminEdicioController implements Initializable {
                         // Creem HashMap<String, String> msg_in;el HashMap on rebrem el codi de resposta
                         HashMap<String, String> msg_in;
 
-                        msg_in = AccionsClient.agefirUsuari(usuari);
+                        msg_in = AccionsClient.afegirUsuari(usuari);
                         codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
                         significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
                         System.out.println("Codi de resposta:" + codi_resposta + " - " + significat_codi_resposta);

@@ -188,7 +188,7 @@ public class AccionsClient {
         return msg_in;        
     }  
         
-    public static HashMap agefirUsuari(Usuari usuari) throws ClassNotFoundException{
+    public static HashMap afegirUsuari(Usuari usuari) throws ClassNotFoundException{
         
         try {
             // Establim connexio
@@ -232,6 +232,50 @@ public class AccionsClient {
         return null;        
     }  
     
+    public static HashMap afegirLlibre(Llibre llibre) throws ClassNotFoundException{
+        
+        try {
+            // Establim connexio
+            if(establirConnexio() == -1){
+                msg_in.put(STRING_CODI_RESPOSTA, "-1");
+                return msg_in;
+            }
+
+            // Creem els HashMaps per enviar i rebre les dades per fer la accio
+            msg_out = new HashMap<>();
+            msg_in = new HashMap<>();
+
+            // Omplim el HasMap accio i el codi de connexio
+            msg_out.put("accio", "afegir_llibre");
+            msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
+                   
+            // Afegim les dades de l'usuari al hashmap
+            llibreAHashmap(msg_out, llibre);
+            
+            System.out.println("LLIBRE A ENVIAR:");
+            System.out.println(msg_out);
+            
+            // Enviem i rebem la informacio
+            mapOutputStream.writeObject(msg_out);     
+            codi_resposta = (int) mapInputStream.readObject();
+            msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
+            
+            // Establim connexio
+            yourOutputStream.close();
+            mapInputStream.close();
+            
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            return msg_in;            
+            
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;        
+    }  
+
     public static HashMap obtenirUsuari() throws ClassNotFoundException{
         
         try {
@@ -408,6 +452,54 @@ public class AccionsClient {
         return null;        
     }  
 
+    public static HashMap modificarLlibre(Llibre llibre, String titol_antic) throws ClassNotFoundException{
+        
+        try {
+            // Establim connexio
+            if(establirConnexio() == -1){
+                msg_in.put(STRING_CODI_RESPOSTA, "-1");
+                return msg_in;
+            }
+
+            // Creem els HashMaps per enviar i rebre les dades per fer la accio
+            msg_out = new HashMap<>();
+            msg_in = new HashMap<>();
+
+            // Omplim el HasMap accio i el codi de connexio
+            msg_out.put("accio", "modifica_llibre");
+            msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
+                   
+            // Afegim les dades de l'usuari al hashmap
+            llibreAHashmap(msg_out, llibre);
+            // Canviem el valor de "nom" per el nom antic ja que es l'identificador
+            msg_out.replace("nom", titol_antic);
+            // Afegim "nom_nou" el texte del titol del llibre que estem modificant
+            msg_out.put("nou_nom", llibre.getNom()); 
+            
+            System.out.println("LLIBRE A MODIDIFICAR:");
+            System.out.println(msg_out);
+            
+            // Enviem i rebem la informacio
+            mapOutputStream.writeObject(msg_out);     
+            codi_resposta = (int) mapInputStream.readObject();
+            msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
+            
+            // Establim connexio
+            yourOutputStream.close();
+            mapInputStream.close();
+            
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            return msg_in;            
+            
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;        
+    }  
+
     public static HashMap modificarPassword(String password) throws ClassNotFoundException {
         
         try {
@@ -554,6 +646,7 @@ public class AccionsClient {
         hashmap.put("descripcio", llibre.getDescripcio());     
         hashmap.put("valoracio", llibre.getValoracio());  
         hashmap.put("vots", llibre.getVots());
+        System.out.println("HASHMAP: " + hashmap);
     }
 
 }

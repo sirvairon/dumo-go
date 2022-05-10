@@ -183,7 +183,28 @@ public class CodiErrors {
             case "1510":
                 significat = "No s'ha trobat llibre amb aquest id";
                 break;
+                
+            /* accio = mostra_llibre */
+            case "1600":
+                significat = "Retorna les dades del llibre";
+                break;
+            case "1610":
+                significat = "Llibre no trobat";
+                break;
+                
+            /* accio = llista_llibres */
+            case "1700":
+                significat = "Llista retornada correctament";
+
             
+            /* accio = modifica_llibre */
+            case "1800":
+                significat = "Modificaciò realitzada";
+                break;
+            case "1810":
+                significat = "Cap llibre amb aquest nom";
+                break;
+                
             /* accio = tancar_sessio */
             case "20":
                 significat = "Sessio tancada correctament";
