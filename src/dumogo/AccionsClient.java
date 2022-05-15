@@ -17,9 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 /**
  *
@@ -35,15 +32,16 @@ public class AccionsClient {
     private static final String STRING_ID_LLIBRE = "id";
     private static int codi_resposta;
     private static final String STRING_CODI_RESPOSTA = "codi_retorn";
+    private final static String USUARI_CASE = "usuaris";
+    private final static String ADMINISTRADOR_CASE = "administradors";
+    private final static String LLIBRE_CASE = "llibres";
     private static OutputStream yourOutputStream;
     private static ObjectOutputStream mapOutputStream;
     private static InputStream yourInputStream;
     private static ObjectInputStream mapInputStream;
     private static HashMap<String, String> msg_out;
     private static HashMap<String, String> msg_in;
-    private final static String USUARI_CASE = "usuaris";
-    private final static String ADMINISTRADOR_CASE = "administradors";
-    private final static String LLIBRE_CASE = "llibres";
+
     
     public static String getNom_user_actual() {
         return nom_user_actual;
@@ -188,85 +186,7 @@ public class AccionsClient {
         msg_in.put(STRING_CODI_RESPOSTA, "0");
         return msg_in;        
     } 
-        
-    public static HashMap obtenirUsuari() throws ClassNotFoundException{
-        
-        try {
-            // Establim connexio
-            if(establirConnexio() == -1){
-                msg_in.put(STRING_CODI_RESPOSTA, "-1");
-                return msg_in;
-            }
-
-            // Creem els HashMaps per enviar i rebre les dades per fer la accio
-            msg_out = new HashMap<>();
-
-            // Omplim el HasMap amb l'accio, l'usuari i el codi de connexio 
-            msg_out.put("accio", "mostra_usuari");
-            msg_out.put(STRING_NOM_USUARI, nom_user_actual);
-            msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
-            
-            // Enviem i rebem la informacio
-            mapOutputStream.writeObject(msg_out);           
-            msg_in = (HashMap) mapInputStream.readObject(); 
-            System.out.println(msg_in.toString()); 
-            
-            // Establim connexio
-            yourOutputStream.close();
-            mapInputStream.close();
-            
-            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
-            //return msg_in; 
-            return msg_in; 
-            
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return null;        
-    } 
-    
-    public static HashMap buscarUsuari(String nom_usuari) throws ClassNotFoundException{
-        
-        try {
-            // Establim connexio
-            if(establirConnexio() == -1){
-                msg_in.put(STRING_CODI_RESPOSTA, "-1");
-                return msg_in;
-            }
-
-            // Creem els HashMaps per enviar i rebre les dades per fer la accio
-            msg_out = new HashMap<>();
-
-            // Omplim el HasMap amb l'accio, l'usuari i el codi de connexio 
-            msg_out.put("accio", "mostra_usuari");
-            msg_out.put(STRING_NOM_USUARI, nom_usuari);
-            msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
-            
-            // Enviem i rebem la informacio
-            mapOutputStream.writeObject(msg_out);           
-            msg_in = (HashMap) mapInputStream.readObject(); 
-            System.out.println(msg_in.toString()); 
-            
-            // Establim connexio
-            yourOutputStream.close();
-            mapInputStream.close();
-            
-            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
-            //return msg_in; 
-            return msg_in; 
-            
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return null;        
-    }  
-    
+                
     public static HashMap buscarElement(String paraula, String tipus_busqueda) throws ClassNotFoundException{
         
         try {

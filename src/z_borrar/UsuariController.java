@@ -4,22 +4,17 @@
  */
 package z_borrar;
 
-import controllers.UsuariEdicioController;
 import dumogo.AccionsClient;
 import dumogo.CodiErrors;
-import dumogo.Usuari;
+import controllers.*;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.HPos;
-import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -28,12 +23,7 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -42,7 +32,7 @@ import javafx.stage.StageStyle;
  *
  * @author marcd
  */
-public class MainController implements Initializable {
+public class UsuariController implements Initializable {
 
     /**
      * Initializes the controller class.
@@ -50,7 +40,7 @@ public class MainController implements Initializable {
     private HashMap<String, String> msg_in;
     private String codi_resposta;
     private String significat_codi_resposta;
-    private static final String STRING_CODI_RESPOSTA = "codi_resposta";
+    private static final String STRING_CODI_RESPOSTA = "codi_retorn";
     private Alert alerta;
     private UsuariEdicioController usuariEdicioControlador;
     private Stage stageUsuari;
@@ -107,38 +97,43 @@ public class MainController implements Initializable {
     }    
     
     @FXML
-    private void tancarSessioButtonAction(ActionEvent event) throws IOException{
+    private void ferLogout(ActionEvent event) throws IOException{
+        // Fem l'accio de fer tancar sessio
         msg_in = AccionsClient.ferLogOut();
+        // Obtenim codi de resposta
         codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
-        significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-        alerta.setTitle("Tancar sessió");
-        alerta.setContentText("");
-        if(codi_resposta.equals("20") || codi_resposta.equals("10")){
+        // Obtenim significat del codi de resposta
+        significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);        
+        // Comprobem si ha sigut correcte tancar sessio
+        if(codi_resposta.equals("20")){
             ((Node) (event.getSource())).getScene().getWindow().hide();
             Parent parent = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));
             Stage stage = new Stage();
             Scene scene = new Scene(parent);
             stage.setScene(scene);
-            Image icon = new Image("/resources/icon.png");
+            Image icon = new Image("/resources/dumogo_icon_neg_35.png");
             stage.getIcons().add(icon);
             stage.setTitle("Dumo-Go");
             stage.setResizable(false);
             stage.show();      
         }else{
+            // Configurem l'alerta per indicar que hi ha hagut un error
+            alerta.setTitle("Tancar sessió");
+            alerta.setContentText("");
             alerta.setAlertType(Alert.AlertType.ERROR);
             alerta.setHeaderText(significat_codi_resposta);
             alerta.show();
         }
     }
     
-        @FXML
+    @FXML
     private void veureUsuariButtonAction(ActionEvent event) throws IOException {
         ((Node) (event.getSource())).getScene().getWindow().hide();
         Parent parent = FXMLLoader.load(getClass().getResource("/views/Usuari.fxml"));
         Stage stage = new Stage();
         Scene scene = new Scene(parent);
         stage.setScene(scene);
-        Image icon = new Image("/resources/icon.png");
+        Image icon = new Image("/resources/usuari_icon_neg.png");
         stage.getIcons().add(icon);
         stage.setTitle("Dumo-Go");
         stage.setResizable(false);

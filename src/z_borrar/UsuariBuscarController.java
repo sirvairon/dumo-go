@@ -72,8 +72,8 @@ public class UsuariBuscarController implements Initializable {
         // Creem el HashMap on rebrem el codi de resposta
         HashMap<String, String> msg_in;
         // Fem l'accio de buscar usuari
-        msg_in = AccionsClient.buscarUsuari(nom_usuari);
-        System.out.println(msg_in.toString());   
+        //msg_in = AccionsClient.buscarUsuari(nom_usuari);
+        //System.out.println(msg_in.toString());   
     }
     
     @FXML

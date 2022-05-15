@@ -15,9 +15,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -29,15 +26,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -222,40 +216,6 @@ public class UsuariEdicioController implements Initializable {
                 }
             }
         });
-    }
-    
-    public void mostrarPerfil(){
-        try {
-            /** PER MODIFICAR PERFIL DESDE L'USUARI**/
-            // Creem el HashMap on rebrem el codi de resposta
-            HashMap<String, String> msg_in;
-            // Fem l'accio de modificar usuari
-            msg_in = AccionsClient.obtenirUsuari();
-            // Obtenim el codi de resposta
-            codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
-            // Obtenim el sinificat del codi de resposta
-            significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-            if(!codi_resposta.equals("5000")){
-                // Configurem l'alerta que ens confirmara que hi ha hagut error a l'obtenir les dades de perfil
-                alerta.setTitle("Mostrar perfil");
-                alerta.setHeaderText(significat_codi_resposta);  
-                alerta.setAlertType(Alert.AlertType.ERROR);
-                // La mostrem i esperem click
-                alerta.showAndWait();
-                // Tanquem finestra
-                butoAccio.getScene().getWindow().hide();
-            }else{
-                msg_in.remove(STRING_CODI_RESPOSTA);
-                //HashMap<String, SimpleStringProperty> msg_in2 = (HashMap)msg_in;
-                Usuari u = new Usuari((HashMap)msg_in);
-                // Omplim les dades per les dades obtingudes de l'usuari
-                omplirDades(u);
-                // Amagem camps que no ha de veure l'usuari
-                vBoxAdminAlta.setVisible(false);
-            }
-        } catch (ClassNotFoundException ex) {
-                Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
     
     private Usuari obtenirUsuariPantalla(){

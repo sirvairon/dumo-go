@@ -1,144 +1,169 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.image.*?>
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox id="AnchorPane" fx:id="raiz" styleClass="mainFxmlClass" stylesheets="@../styles/usuari.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UsuariController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" styleClass="mainFxmlClass" stylesheets="@../styles/general.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UsuariController">
    <children>
-      <HBox alignment="CENTER" styleClass="menuTop">
+      <HBox alignment="CENTER_LEFT" styleClass="menuTop">
          <children>
-            <Button mnemonicParsing="false" onAction="#ferLogout" styleClass="menuButton" />
-            <VBox alignment="CENTER" styleClass="logo_titol" HBox.hgrow="ALWAYS">
+            <VBox styleClass="vBoxLogo_titol">
                <children>
                   <ImageView fitHeight="150.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../resources/name_icon.png" />
+                        <Image url="@../resources/dumogo_name_icon.png" />
                      </image>
                   </ImageView>
                </children>
             </VBox>
-            <Button fx:id="tancarSessio21" contentDisplay="TOP" mnemonicParsing="false" onAction="#mostrarPerfil" styleClass="butoUsuari">
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../resources/baseline_power_settings_new_black_18dp.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-         </children>
-      </HBox>
-      <HBox alignment="CENTER_LEFT" styleClass="menuTop">
-         <children>
-            <Button mnemonicParsing="false" styleClass="butoTancaSessio" text="Button" />
-            <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <HBox alignment="BOTTOM_LEFT" spacing="10.0">
                <children>
-                  <MenuButton mnemonicParsing="false" styleClass="menuButton" text="Usuaris">
-                     <items>
-                        <MenuItem fx:id="usuaris" mnemonicParsing="false" text="Llistat d'usuaris" />
-                        <MenuItem fx:id="administradors" mnemonicParsing="false" text="Llistat d'administradors" />
-                        <MenuItem mnemonicParsing="false" text="Afegir usuari" />
-                        <MenuItem mnemonicParsing="false" text="Afegir administrador" />
-                     </items>
-                  </MenuButton>
-                  <MenuButton mnemonicParsing="false" styleClass="menuButton" text="Biblioteca">
+                  <MenuButton mnemonicParsing="false" text="Biblioteca">
+                    <items>
+                        <MenuItem fx:id="llibres" mnemonicParsing="false" onAction="#obrirFinestraBusqueda" text="Buscar llibre" />
+                      <MenuItem fx:id="llibres" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Llistat de llibres" />
+                        <MenuItem fx:id="llibres" mnemonicParsing="false" onAction="#crearPestanyaVistaLlibres" text="Llistat de llibres (Vista)" />
+                    </items>
                      <font>
                         <Font size="14.0" />
                      </font>
-                     <items>
-                        <MenuItem mnemonicParsing="false" text="Action 1" />
-                        <MenuItem mnemonicParsing="false" text="Action 2" />
-                     </items>
                   </MenuButton>
-                  <MenuButton mnemonicParsing="false" styleClass="menuButton" text="Prèstecs">
-                     <items>
-                        <MenuItem mnemonicParsing="false" text="Action 1" />
-                        <MenuItem mnemonicParsing="false" text="Action 2" />
-                     </items>
+                  <MenuButton mnemonicParsing="false" text="Prèstecs">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                    </items>
                   </MenuButton>
                </children>
+               <padding>
+                  <Insets left="60.0" />
+               </padding>
             </HBox>
             <Pane HBox.hgrow="ALWAYS" />
-            <VBox styleClass="logo_titol">
-               <children>
-                  <ImageView fitHeight="150.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../resources/name_icon.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </VBox>
+            <MenuButton mnemonicParsing="false" styleClass="butoPerfilUsuari" text="Usuari">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#modificarPerfil" text="Modificar perfil" />
+                <MenuItem mnemonicParsing="false" onAction="#ferLogout" text="Tancar sessió" />
+              </items>
+            </MenuButton>
+         </children>
+      </HBox>
+      <TabPane fx:id="tabPaneGeneral" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="Infinity" tabMaxWidth="Infinity" tabMinHeight="8.0" tabMinWidth="8.0" VBox.vgrow="ALWAYS">
+        <tabs>
+          <Tab closable="false" text="Inici">
+               <content>
+                  <VBox alignment="CENTER">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="200.0">
+                           <children>
+                              <Button mnemonicParsing="false" text="Button" />
+                              <Button mnemonicParsing="false" text="Button" />
+                              <Button mnemonicParsing="false" text="Button" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="200.0">
+                           <children>
+                              <Button mnemonicParsing="false" text="Button" />
+                              <Button mnemonicParsing="false" text="Button" />
+                              <Button mnemonicParsing="false" text="Button" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="200.0">
+                           <children>
+                              <Button mnemonicParsing="false" text="Button" />
+                              <Button mnemonicParsing="false" text="Button" />
+                              <Button mnemonicParsing="false" text="Button" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+            <Tab closable="false" text="Biblioteca">
+               <content>
+                  <VBox alignment="CENTER">
+                     <children>
+                        <GridPane alignment="CENTER" hgap="20.0" prefWidth="1200.0" vgap="20.0" VBox.vgrow="ALWAYS">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                 <children>
+                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label text="Label" />
+                                    <Label text="Label" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                                 <children>
+                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label text="Label" />
+                                    <Label text="Label" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                                 <children>
+                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label text="Label" />
+                                    <Label text="Label" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label text="Label" />
+                                    <Label text="Label" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
+                                 <children>
+                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label text="Label" />
+                                    <Label text="Label" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <children>
+                                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                    <Label text="Label" />
+                                    <Label text="Label" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+      <HBox alignment="CENTER" prefWidth="200.0" styleClass="hBoxFooter">
+         <children>
+            <Label text="Dumo-Go  App. 2022" />
             <Pane HBox.hgrow="ALWAYS" />
-            <Button fx:id="tancarSessio2" contentDisplay="TOP" mnemonicParsing="false" onAction="#ferLogout" styleClass="butoTancaSessio" text="Tancar sessió">
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../resources/baseline_power_settings_new_black_18dp.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
+            <Label text="v. 1.0" />
          </children>
       </HBox>
-      <HBox alignment="CENTER_LEFT">
-         <children>
-            <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="17.0">
-               <children>
-                  <Button fx:id="buttonUsuari" alignment="CENTER" mnemonicParsing="false" onAction="#mostrarPerfil" prefHeight="40.0" prefWidth="40.0" styleClass="test2" text="U" textAlignment="CENTER">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Button>
-                  <Button alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="39.0" prefWidth="146.0" styleClass="test1" text="Usuari">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Button>
-               </children>
-            </HBox>
-            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="412.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../resources/name_icon.png" />
-               </image>
-            </ImageView>
-            <Button layoutX="954.0" layoutY="16.0" mnemonicParsing="false" styleClass="test1">
-                <graphic>
-                    <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../resources/menu_icnon.png" />
-                        </image>
-                    </ImageView>
-                </graphic>
-            </Button>
-         </children>
-      </HBox>
-      <ScrollPane layoutY="78.0" prefHeight="670.0" prefWidth="1024.0">
-         <content>
-            <GridPane fx:id="grid_libros" alignment="TOP_CENTER" prefWidth="1024.0">
-              <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-            </GridPane>
-         </content>
-      </ScrollPane>
-      <Label alignment="CENTER" layoutX="426.0" layoutY="499.0" prefHeight="46.0" prefWidth="172.0" text="MAIN" />
-      <AnchorPane prefHeight="80.0" prefWidth="1024.0">
-         <children>
-            <Button fx:id="tancarSessio" layoutX="751.0" layoutY="27.0" mnemonicParsing="false" onAction="#ferLogout" text="Tancar Sessió" />
-         </children>
-      </AnchorPane>
    </children>
 </VBox>

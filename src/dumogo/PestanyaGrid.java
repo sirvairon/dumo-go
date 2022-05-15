@@ -13,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -22,9 +23,15 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
@@ -32,14 +39,15 @@ import javafx.util.Callback;
  *
  * @author marcd
  */
-public final class PestanyaLlistat extends Tab {
+// public final class PestanyaGrid extends Tab {
+public final class PestanyaGrid extends Tab {
 
     private final static String USUARI_CASE = "usuaris";
     private final static String ADMINISTRADOR_CASE = "administradors";
     private final static String LLIBRE_CASE = "llibres";
     private final String tipusLlista;
     
-    private final TableView taulaLlistat;
+    //private final TableView taulaLlistat;
     private final HBox hbResultat, hbButons, hbFiltre;
     private final VBox vbContigut;
     private final Label resultat, resultatValor;
@@ -64,12 +72,29 @@ public final class PestanyaLlistat extends Tab {
     
     private Alert alerta;
     
-    public PestanyaLlistat(String nomLlista, String tipusLlista) throws ClassNotFoundException {
-        super(nomLlista);
+    private static final double ELEMENT_SIZE = 100;
+    private static final double GAP = ELEMENT_SIZE / 10;
+
+    private TilePane tilePane;
+    private Group display;
+    private int nRows;
+    private int nCols;
         
-        this.tipusLlista = tipusLlista;
-        taulaLlistat = new TableView();
-        taulaLlistat.setPlaceholder(new Label("No hi ha registres"));
+    
+    public PestanyaGrid(String nomLlista, String tipusLlista) throws ClassNotFoundException {
+        //super(nomLlista);
+        
+        this.tipusLlista = tipusLlista;        
+        this.tilePane = new TilePane();
+        this.display = new Group(tilePane);        
+        this.nRows = 4; 
+        this.nCols = 4;
+        
+        tilePane.setHgap(GAP);
+        tilePane.setVgap(GAP);
+        setColumns(nCols);
+        setRows(nRows);
+        
         
         // Creem el HBox que contindrà els labels amb informació del resultat total
         hbResultat = new HBox();
@@ -85,9 +110,11 @@ public final class PestanyaLlistat extends Tab {
         opcioFiltre = new ChoiceBox();
         textFiltre = new TextField();
         // Apliquem un listener per si canvia el camp del text del filtre que apliqui el filtre
+        /*
         textFiltre.textProperty().addListener((observable, oldValue, newValue) -> {
             aplicarFiltre();
         });
+        */
         hbFiltre.setHgrow(hbFiltre, Priority.ALWAYS);
         hbFiltre.getChildren().addAll(butoFiltre, opcioFiltre, textFiltre);
         
@@ -103,8 +130,8 @@ public final class PestanyaLlistat extends Tab {
         // Creem el VBox que contindra la taula i els dos HBox que hem creat
         vbContigut = new VBox();
         vbContigut.getStyleClass().add("vbLlistat");
-        vbContigut.setVgrow(taulaLlistat, Priority.ALWAYS);
-        vbContigut.getChildren().addAll(hbButons, taulaLlistat, hbResultat);
+        vbContigut.setVgrow(tilePane, Priority.ALWAYS);
+        vbContigut.getChildren().addAll(hbButons, tilePane, hbResultat);
         
         // Afegim el VBox que conte tot a la pestanya l'arrel
         this.setContent(vbContigut);
@@ -114,7 +141,9 @@ public final class PestanyaLlistat extends Tab {
         alerta.initStyle(StageStyle.UNDECORATED);
         DialogPane dialogPane = alerta.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
-            
+        
+        
+        
         // Obtenim les dades
         obtenirDades();
         // Creem el filtre
@@ -122,11 +151,46 @@ public final class PestanyaLlistat extends Tab {
         // Apliquem el filtre
         aplicarFiltre();
         // Creem les columnes de la taula
-        crearColumnesTaula();                
+        //crearColumnesTaula();   
+        
+
+    }        
+
+    public void setColumns(int newColumns) {
+        nCols = newColumns;
+        tilePane.setPrefColumns(nCols);
+        //createElements();
+    }
+
+    public void setRows(int newRows) {
+        nRows = newRows;
+        tilePane.setPrefRows(nRows);
+        //createElements();
+    }
+
+    public Group getDisplay() {
+        return display;
+    }
+
+    private void createElements() {
+        tilePane.getChildren().clear();
+        for (int i = 0; i < nCols; i++) {
+            for (int j = 0; j < nRows; j++) {
+                tilePane.getChildren().add(createElement());
+            }
         }
+    }
+
+    private Rectangle createElement() {
+        Rectangle rectangle = new Rectangle(ELEMENT_SIZE, ELEMENT_SIZE);
+        rectangle.setStroke(Color.ORANGE);
+        rectangle.setFill(Color.STEELBLUE);
+
+        return rectangle;
+    }   
   
-    public TableView getTaula() {
-        return taulaLlistat;
+    public TilePane getTilePane() {
+        return tilePane;
     }
     
     public Button getButoModificar() {
@@ -152,51 +216,6 @@ public final class PestanyaLlistat extends Tab {
     private void crearFiltre(){
         // Actualitzem les opcions del filtre en funcio del tipus de llista i mostrem en la label el tipus de resultats tornats
         switch(tipusLlista){
-            case USUARI_CASE:  
-                // Carreguem les opcions dins la llista de les opcions del filtre
-                llistaFiltre = FXCollections.observableArrayList(
-                        mapaNomCamps.get("DNI"), 
-                        mapaNomCamps.get("user_name"),
-                        mapaNomCamps.get("numero_soci"),
-                        mapaNomCamps.get("data_alta"),
-                        mapaNomCamps.get("nom"), 
-                        mapaNomCamps.get("cognoms"), 
-                        mapaNomCamps.get("data_naixement"),
-                        mapaNomCamps.get("direccio"), 
-                        mapaNomCamps.get("pais"),
-                        mapaNomCamps.get("telefon"), 
-                        mapaNomCamps.get("correu"),
-                        mapaNomCamps.get("admin_alta")
-                        );
-                // Introduim les opcions dins les opcions del filtre
-                opcioFiltre.setItems(llistaFiltre);
-                // Deixem marcada l'opcio del DNI
-                opcioFiltre.setValue(mapaNomCamps.get("DNI"));
-                // Establim que la label dels resultats posi Usuaris
-                resultat.setText("Usuaris:");
-                break;
-            case ADMINISTRADOR_CASE:
-                mapaNomCamps = Administrador.mapaNomCamps;
-                System.out.println(mapaNomCamps);
-                llistaFiltre = FXCollections.observableArrayList(
-                        mapaNomCamps.get("DNI"), 
-                        mapaNomCamps.get("nom_admin"),
-                        mapaNomCamps.get("nom"), 
-                        mapaNomCamps.get("cognoms"), 
-                        mapaNomCamps.get("data_naixement"),
-                        mapaNomCamps.get("direccio"), 
-                        mapaNomCamps.get("pais"),
-                        mapaNomCamps.get("telefon"), 
-                        mapaNomCamps.get("correu"),
-                        mapaNomCamps.get("admin_alta")
-                        );
-                // Introduim les opcions dins les opcions del filtre
-                opcioFiltre.setItems(llistaFiltre);
-                // Deixem marcada l'opcio del nom del administrador
-                opcioFiltre.setValue(mapaNomCamps.get("nom_admin"));
-                // Establim que la label dels resultats posi Administradors
-                resultat.setText("Administradors:");
-                break;
             case LLIBRE_CASE:
                 mapaNomCamps = Llibre.mapaNomCamps;
                 System.out.println(mapaNomCamps);
@@ -325,11 +344,20 @@ public final class PestanyaLlistat extends Tab {
 		
             // Ara que tenim una SortedList separada, hem de vincular la classificació d'aquesta llista a la TableView. 
             // Enllaçem el comparador de la llista ordenada (SortedList) al comparador de la taula (taulaLlistat)
-            sortedData.comparatorProperty().bind(taulaLlistat.comparatorProperty());
+            //sortedData.comparatorProperty().bind(tilepane.comparatorProperty());
 		
             // Fiquem la llista ordenada (i filtrada) a les dades de la taula (taulaLlistat)
-            taulaLlistat.setItems(sortedData);
+            //taulaLlistat.setItems(sortedData);
 
+            tilePane.getChildren().clear();
+            int total = sortedData.size();
+            Label text = new Label();
+            for (int i = 0; i < total; i++) {
+                text.setText(sortedData.get(i).getCognoms());
+                tilePane.getChildren().add(text);
+            }
+           
+        
             // Obtenim el numero total de registres i la fiquem al label
             resultatValor.setText(String.valueOf(data_filtrada_usuaris.size()));
             
@@ -416,10 +444,10 @@ public final class PestanyaLlistat extends Tab {
 		
             // Ara que tenim una SortedList separada, hem de vincular la classificació d'aquesta llista a la TableView. 
             // Enllaçem el comparador de la llista ordenada (SortedList) al comparador de la taula (taulaLlistat)
-            sortedData.comparatorProperty().bind(taulaLlistat.comparatorProperty());
+            //sortedData.comparatorProperty().bind(taulaLlistat.comparatorProperty());
 		
             // Fiquem la llista ordenada (i filtrada) a les dades de la taula (taulaLlistat)
-            taulaLlistat.setItems(sortedData);
+            //taulaLlistat.setItems(sortedData);
 
             // Obtenim el numero total de registres i la fiquem al label
             resultatValor.setText(String.valueOf(data_filtrada_administradors.size()));
@@ -514,16 +542,26 @@ public final class PestanyaLlistat extends Tab {
 		
             // Ara que tenim una SortedList separada, hem de vincular la classificació d'aquesta llista a la TableView. 
             // Enllaçem el comparador de la llista ordenada (SortedList) al comparador de la taula (taulaLlistat)
-            sortedData.comparatorProperty().bind(taulaLlistat.comparatorProperty());
+            //sortedData.comparatorProperty().bind(taulaLlistat.comparatorProperty());
 		
             // Fiquem la llista ordenada (i filtrada) a les dades de la taula (taulaLlistat)
-            taulaLlistat.setItems(sortedData);
+            //taulaLlistat.setItems(sortedData);
 
+            tilePane.getChildren().clear();
+            int total = data_filtrada_llibres.size();
+            Label text;
+            for (int i = 0; i < total; i++) {
+                VBox vbox = vBoxLlibre(data_filtrada_llibres.get(i));
+                //text = new Label();
+                //text.setText(data_filtrada_llibres.get(i).getNom());
+                tilePane.getChildren().add(vbox);
+            }
+            
             // Obtenim el numero total de registres i la fiquem al label
             resultatValor.setText(String.valueOf(data_filtrada_llibres.size()));
         }
     }
- 
+    
     private void obtenirDades() throws ClassNotFoundException{
         // En cas de retornar null hi hagut problemes al obtenir el llistat
         try{
@@ -574,10 +612,28 @@ public final class PestanyaLlistat extends Tab {
             alerta.setAlertType(Alert.AlertType.ERROR);
             alerta.setHeaderText("Error al carregar les dades dels " + tipusLlista);
             alerta.show();
-            Logger.getLogger(PestanyaLlistat.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PestanyaGrid.class.getName()).log(Level.SEVERE, null, ex);
         }
     }       
 
+    private VBox vBoxLlibre(Llibre ll){
+        VBox vbox_llibre = new VBox();
+        vbox_llibre.getStyleClass().add("vBoxLlibre");
+        Label titol = new Label(ll.getNom());
+        Label autor = new Label(ll.getAutor());
+        Label vots = new Label(ll.getVots());
+        Label valoracio = new Label(ll.getValoracio());
+        Label disponibilitat = new Label(ll.getReservat_DNI());        
+        Image i = new Image("/resources/book.jpg");
+        ImageView caratula = new ImageView(i);
+        
+        vbox_llibre.getChildren().addAll(caratula,titol, autor, vots, disponibilitat);
+        
+        vbox_llibre.setOnMouseClicked(e -> System.out.println(ll.getNom()));
+        
+        return vbox_llibre;
+    }
+    
     public void actualitzarDades() throws ClassNotFoundException {        
         // Obtenim les dades
         obtenirDades();
@@ -585,6 +641,7 @@ public final class PestanyaLlistat extends Tab {
         aplicarFiltre();        
     }
     
+    /*
     private void crearColumnesTaula() {               
         
         //switch(tipusLlista){
@@ -844,4 +901,6 @@ public final class PestanyaLlistat extends Tab {
         }
         taulaLlistat.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
+    */
+    
 }

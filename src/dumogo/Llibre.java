@@ -4,7 +4,6 @@
  */
 package dumogo;
 
-import static dumogo.Usuari.mapaNomCamps;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.beans.property.SimpleStringProperty;
