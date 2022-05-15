@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="raiz" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminEdicioController">
+   <children>
+      <VBox>
+         <children>
+            <Label text="Dades d'administrador" />
+            <HBox alignment="TOP_RIGHT">
+               <children>
+                  <VBox alignment="CENTER" styleClass="usuariImage" HBox.hgrow="ALWAYS">
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../resources/nouser.jpg" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox alignment="CENTER_LEFT">
+                     <children>
+                        <HBox />
+                        <HBox>
+                           <children>
+                              <VBox>
+                                 <children>
+                                    <Label fx:id="labelUserName" text="Nom d'administrador" />
+                                    <TextField fx:id="textFieldAdminName" prefWidth="200.0" />
+                                 </children>
+                              </VBox>
+                              <VBox HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label fx:id="labelPassword" layoutX="327.0" layoutY="38.0" text="Password" />
+                                    <HBox>
+                                       <children>
+                                          <PasswordField fx:id="passwordFieldPassword" disable="true" editable="false" prefWidth="150.0" HBox.hgrow="ALWAYS" />
+                                          <Button mnemonicParsing="false" onAction="#modificarPassword">
+                                             <HBox.margin>
+                                                <Insets left="5.0" />
+                                             </HBox.margin>
+                                             <styleClass>
+                                                <String fx:value="botoPetit" />
+                                                <String fx:value="botoEditar" />
+                                             </styleClass>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <HBox fx:id="hBoxAdministrador" spacing="40.0">
+                           <children>
+                              <VBox fx:id="vBoxAdminAlta">
+                                 <children>
+                                    <Label fx:id="labelAdminAlta" text="Administrador alta" />
+                                    <TextField fx:id="textFieldAdminAlta" disable="true" prefWidth="200.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox>
+         <children>
+            <Label text="Dades personals" />
+            <HBox>
+               <children>
+                  <VBox alignment="BOTTOM_LEFT">
+                     <children>
+                        <HBox>
+                           <children>
+                              <VBox>
+                                 <children>
+                                    <Label fx:id="labelDNI" text="DNI" />
+                                    <TextField fx:id="textFieldDNI" disable="true" prefWidth="200.0" />
+                                 </children>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <Label text="Data de naixement" />
+                                    <DatePicker fx:id="datePickerDataNaixement" prefHeight="23.0" prefWidth="200.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <HBox>
+                           <children>
+                              <VBox>
+                                 <children>
+                                    <Label fx:id="labelNom" text="Nom" />
+                                    <TextField fx:id="textFieldNom" prefWidth="200.0" />
+                                 </children>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <Label fx:id="labelCognoms" text="Cognoms" />
+                                    <TextField fx:id="textFieldCognoms" prefWidth="440.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <VBox>
+                           <children>
+                              <HBox spacing="40.0">
+                                 <children>
+                                    <VBox>
+                                       <children>
+                                          <Label fx:id="labelDireccio" layoutX="35.0" layoutY="217.0" text="Direcció" />
+                                          <TextField fx:id="textFieldDireccio" layoutX="31.0" layoutY="238.0" prefHeight="23.0" prefWidth="680.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox spacing="40.0">
+                                 <children>
+                                    <VBox>
+                                       <children>
+                                          <Label fx:id="labelPais" layoutX="32.0" layoutY="273.0" text="País" />
+                                          <TextField fx:id="textFieldPais" layoutX="31.0" layoutY="290.0" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox>
+                                       <children>
+                                          <Label fx:id="labelCorreu" layoutX="301.0" layoutY="244.0" text="Correu" />
+                                          <TextField fx:id="textFieldCorreu" layoutX="330.0" layoutY="240.0" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox>
+                                       <children>
+                                          <Label fx:id="labelTelefon" layoutX="357.0" layoutY="179.0" text="Telèfon" />
+                                          <TextField fx:id="textFieldTelefon" layoutX="407.0" layoutY="175.0" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets top="10.0" />
+                                 </padding>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <HBox fx:id="hboxBotones" alignment="CENTER" spacing="40.0" styleClass="hboxBotones">
+         <children>
+            <Button fx:id="butoAccio" mnemonicParsing="false" text="Accio" />
+            <Button fx:id="ButtonVolver" mnemonicParsing="false" onAction="#tancarFinestra" text="Sortir" />
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets top="20.0" />
+         </padding>
+      </HBox>
+   </children>
+   <stylesheets>
+      <URL value="@../styles/general.css" />
+      <URL value="@../styles/usuari_llibre_edicio.css" />
+   </stylesheets>
+</VBox>

@@ -89,6 +89,9 @@
     -fx-text-fill: #ffffff;
 }
 
+.menu-button .arrow-button {
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em;
+}
 .menu-button .arrow-button > .arrow {
     -fx-background-color: #ffffff;
 }
@@ -106,8 +109,8 @@
     -fx-font-size: 16px;
 }
 
-.butoTancaSessio {
-    -fx-graphic: url(../resources/tanca_sessio_iconldpi.png);
+.butoTancaSessio {    
+    -fx-graphic: url(../resources/tanca_sessio_icon_pos_20.png);
     -fx-graphic-text-gap: 4;
 }
 
@@ -141,7 +144,7 @@
 }
 
 .tab-pane .hBoxFiltre .choice-box {
-    -fx-pref-width: 150;
+    -fx-pref-width: 200;
 }   
 
 .tab-pane .hBoxFiltre .text-field {
@@ -158,5 +161,17 @@
 }
 
 .botoEditar {
-    -fx-graphic: url(../resources/editar_icon_pos.png);
+    -fx-graphic: url(../resources/editar_icon_pos_16.png);
+}
+
+TableView {
+}
+
+TableView .column-header {
+    /*-fx-pref-width: 150; */
+}
+
+TableView .column-header > .label {
+    -fx-font-weight: normal;
+
 }

@@ -32,145 +32,137 @@ public class CodiErrors {
                 significat = "Usuari no vàlid";
                 break;
             case "1020":
-                significat = "contrasenya no valida";
+                significat = "Contrasenya no vàlida";
                 break;
             case "1030":
-                significat = "Format DNI Incorrecte";
+                significat = "Format del DNI incorrecte";
                 break;
             case "1031":
-                significat = "DNI Repetit";
+                significat = "El DNI està repetit";
                 break;
             case "1040":
-                significat = "email incorrecte";
+                significat = "Email incorrecte";
                 break;
             case "1041":
-                significat = "email ja existeix";
+                significat = "L'email ja existeix";
                 break;
                 
             /* accio = afegir_admin */
             case "2000":
-                significat = "Admin afegit correctament";
+                significat = "Administrador afegit correctament";
                 break;
             case "2010":
-                significat = "Usuari no vàlid";
+                significat = "Administrador no vàlid";
                 break;
             case "2020":
-                significat = "contrasenya no valida";
+                significat = "Contrasenya no vàlida";
                 break;
             case "2030":
-                significat = "Format DNI Incorrecte";
+                significat = "Format del DNI incorrecte";
                 break;
             case "2031":
-                significat = "DNI Repetit";
+                significat = "El DNI està repetit";
                 break;
             case "2040":
-                significat = "email incorrecte";
+                significat = "Email incorrecte";
                 break;
             case "2041":
-                significat = "email ja existeix";
+                significat = "L'email ja existeix";
                 break;
                 
             /* accio = esborrar_usuari */
             case "3000":
-                significat = "Esborrat correctament";
+                significat = "Usuari esborrat correctament";
                 break;
             case "3010":
-                significat = "usuari inexistent";
-                break;
-            case "3020":
-                significat = "ERROR: no s'ha pogut esborrar";
-                break;      
+                significat = "L'usuari no existeix";
+                break;   
                 
             /* accio = esborrar_admin */
             case "4000":
-                significat = "admin esborrat";
+                significat = "Administrador esborrat correctament";
                 break;
             case "4010":
-                significat = "usuari inexistent";
-                break;
-            case "4020":
-                significat = "ERROR: no s'ha pogut esborrar";
+                significat = "L'administrador no existeix";
                 break;
                 
-            /* accio = modificar_usuari */
+            /* accio = mostra_usuari */
             case "5000":
-                significat = "usuari modificat correctament";
+                significat = "Usuari retornat correctament";
                 break;
             case "5010":
-                significat = "dades no vàlides";
-                break;
-            case "5020":
-                significat = "ERROR: no s'ha pogut modificar";
+                significat = "Les dades de l'usuari no son vàlides";
                 break;
                 
-            /* accio = modificar_admin */
+            /* accio = mostra_admin */
             case "6000":
-                significat = "Modificat correctament";
+                significat = "Administrador retornat correctament";
                 break;
             case "6010":
-                significat = "dades no vàlides";
-                break;
-            case "6020":
-                significat = "ERROR: no s'ha pogut modificar";
+                significat = "Les dades de l'administrador no son vàlides";
                 break;
                 
             /* accio = comprobar_admin */
             case "7000":
-                significat = "login ok";
+                significat = "Administrador connectat correctament";
                 break;
             case "7010":
-                significat = "admin no existent";
+                significat = "No existeix l'administrador";
                 break;
             case "7020":
-                significat = "contrasenya incorrecte";
+                significat = "Contrasenya incorrecte";
                 break;
             case "7030":
-                significat = "admin ja connectat";
+                significat = "Administrador ja connectat";
                 break;
                 
             /* accio = comprobar_usuari */
             case "8000":
-                significat = "login ok";
+                significat = "Usuari connectat correctament";
                 break;
             case "8010":
-                significat = "usuari no existent";
+                significat = "No existeix l'usuari";
                 break;
             case "8020":
-                significat = "contrasenya incorrecte";
+                significat = "Contrasenya incorrecte";
                 break;
             case "8030":
-                significat = "usuari ja connectat";
-                break;
-                
-            /* accio = llista_usuaris */
-            case "1100":
-                significat = "Llista retornada correctament";
-                break;
-            
-            /* accio = llista_admins */
-            case "1200":
-                significat = "Llista retornada correctament";
-                break;
-                
-            /* accio = modifica_usuari/admin */
-            case "1300":
-                significat = "Usuari Modificat";
-                break;
-            case "1310":
-                significat = "Format_email_incorrecte";
-                break;
-            case "1320":
-                significat = "format_dni_incorrecte";
-                break;
-            case "1330":
-                significat = "format_password_incorrecte";
+                significat = "Usuari ja connectat";
                 break;
                 
             /* accio = canvia_password */
             case "9000":
-                significat = "Canvi realitzat";
+                significat = "Contrasenya canviada correctament";
+                break;
+            case "9010":
+                significat = "Contrasenya no vàlida";
                 break;
                 
+            /* accio = llista_usuaris */
+            case "1100":
+                significat = "Llista d'usuaris retornada correctament";
+                break;
+            
+            /* accio = llista_admins */
+            case "1200":
+                significat = "Llista d'administradors retornada correctament";
+                break;
+                
+            /* accio = modifica_usuari/admin */
+            case "1300":
+                significat = "Usuari/Administrador modificat correctament";
+                break;
+            case "1310":
+                significat = "Email incorrecte";
+                break;
+            case "1320":
+                significat = "Format del DNI incorrecte";
+                break;
+            case "1330":
+                significat = "Contrasenya no vàlida";
+                break;
+                
+
             /* accio = afegir_llibre */
             case "1400":
                 significat = "Llibre afegit";
@@ -181,37 +173,46 @@ public class CodiErrors {
                 significat = "Llibre esborrat";
                 break;
             case "1510":
-                significat = "No s'ha trobat llibre amb aquest id";
+                significat = "No s'ha trobat el llibre";
                 break;
                 
             /* accio = mostra_llibre */
             case "1600":
-                significat = "Retorna les dades del llibre";
+                significat = "Dades retornades correctament";
                 break;
             case "1610":
-                significat = "Llibre no trobat";
+                significat = "No s'ha trobat el llibre";
                 break;
                 
             /* accio = llista_llibres */
             case "1700":
-                significat = "Llista retornada correctament";
+                significat = "Llista de llibres retornada correctament";
 
-            
             /* accio = modifica_llibre */
             case "1800":
-                significat = "Modificaciò realitzada";
+                significat = "Modificaciò del llibre realitzada correctament";
                 break;
             case "1810":
-                significat = "Cap llibre amb aquest nom";
+                significat = "No s'ha trobat cap llibre amb aquest nom";
+                break;
+            
+            /* accio = puntua_llibre */
+            case "1900":
+                significat = "Valoracio afegida";
+                break;
+                
+            /* accio = puntua_llibre */
+            case "2100":
+                significat = "Llibre reservat";
                 break;
                 
             /* accio = tancar_sessio */
             case "20":
-                significat = "Sessio tancada correctament";
+                significat = "Desconnectat correctament";
                 break;
                 
             case "10":
-                significat = "Sessio caducada";
+                significat = "Sessió caducada";
                 break;
                 
             default:

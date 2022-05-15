@@ -11,6 +11,7 @@ import dumogo.CodiErrors;
 import dumogo.Llibre;
 import dumogo.PestanyaLlistat;
 import dumogo.Usuari;
+import dumogo.Administrador;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -66,20 +68,19 @@ public class AdminController implements Initializable {
     private Usuari usuariTemp;
     private Object element_temp;
     private Date tempsUltimClick;
-    private Stage stageUsuari, stageBuscar, stageLlibre;
+    private Stage stageUsuari, stageAdministrador, stageBuscar, stageLlibre, stage1;
     private UsuariEdicioController usuariEdicioControlador;
+    private AdminEdicioController adminEdicioControlador;    
     private LlibreEdicioController llibreEdicioControlador;
     private LlibreVistaController llibreVistaControlador;
     private HashMap<String, String> msg_in;
     private String codi_resposta;
     private String significat_codi_resposta;
-    private static final String STRING_CODI_RESPOSTA = "codi_resposta";
+    private static final String STRING_CODI_RESPOSTA = "codi_retorn";
     private Alert alerta;
-    
-    
-    
-    //@FXML
-    //private TableView tableViewUsuaris;
+    private final static String USUARI_CASE = "usuaris";
+    private final static String ADMINISTRADOR_CASE = "administradors";
+    private final static String LLIBRE_CASE = "llibres";
     
     @FXML
     private TabPane tabPaneGeneral;
@@ -116,24 +117,31 @@ public class AdminController implements Initializable {
 
             // Obtenim els elements per controlar els clicks en els elements de la pestantya
             TableView tb = pt.getTaula();
+            tb.setId(tipus_pestanya);
             Button butoModificar = pt.getButoModificar();
+            butoModificar.setId(tipus_pestanya);
             Button butoAfegir = pt.getButoAfegir();
+            butoAfegir.setId(tipus_pestanya);
             Button butoEliminar = pt.getButoEliminar();
+            butoEliminar.setId(tipus_pestanya);
             Button butoActualitzar = pt.getButoActualitzar();
+            butoActualitzar.setId(tipus_pestanya);
             Button butoFiltre = pt.getButoFiltre();
 
+            
             // Configurem el EventHandler en cas de fer click a la taula
             tb.setOnMouseClicked( new EventHandler() {
                 @Override
                 public void handle(Event event) {
                     try {
-                        clickTaula(tb);
+                        System.out.println(event.getSource().getClass().getSimpleName());
+                        clickTaula(tb, tipus_pestanya);
                     } catch (IOException ex) {
                         Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             });
-
+            
             // Configurem el EventHandler en cas de fer click al boto actualitzar
             butoActualitzar.setOnMouseClicked( new EventHandler() {
                 @Override
@@ -164,10 +172,7 @@ public class AdminController implements Initializable {
                             alerta.setContentText("Es necessari seleccionar un element");
                             alerta.show();
                         }else{
-                            if(element.getClass().getSimpleName().equals("Usuari")){
-                                // Obrim la finestra usuari 
-                                modificarUsuari((Usuari)element);
-                            }
+                            modificarElement(element);
                         }
                     } catch (IOException ex) {
                         Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
@@ -190,18 +195,7 @@ public class AdminController implements Initializable {
                             alerta.setContentText("Es necessari seleccionar un element"); 
                             alerta.show();
                         }else{
-                            alerta.setAlertType(AlertType.CONFIRMATION);
-                            if(element.getClass().getSimpleName().equals("Usuari")){
-                                Usuari usuari_fila = (Usuari) element;                            
-                                alerta.setTitle("Eliminar registre");
-                                alerta.setHeaderText("Vols esborrar el registre " + usuari_fila.getUser_name() + " ?");
-                                alerta.setContentText("S'esborrarà definitivament");
-                                Optional<ButtonType> option = alerta.showAndWait();
-                                if (option.get() == ButtonType.OK) {
-                                    //this.label.setText("File deleted!");
-                                    eliminarUsuari(usuari_fila);
-                                }
-                            }
+                            eliminarElement(element, event);
                         }
                     } catch (IOException ex) {
                         Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
@@ -218,8 +212,7 @@ public class AdminController implements Initializable {
                 @Override
                 public void handle(Event event) {
                     try {
-                        //Usuari usuari_fila = (Usuari) tb.getSelectionModel().getSelectedItem();
-                        afegirUsuari();
+                        afegirElement(event);
                     } catch (IOException ex) {
                         Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -260,7 +253,7 @@ public class AdminController implements Initializable {
             Stage stage = new Stage();
             Scene scene = new Scene(parent);
             stage.setScene(scene);
-            Image icon = new Image("/resources/icon.png");
+            Image icon = new Image("/resources/dumogo_icon_neg_35.png");
             stage.getIcons().add(icon);
             stage.setTitle("Dumo-Go");
             stage.setResizable(false);
@@ -276,33 +269,33 @@ public class AdminController implements Initializable {
     }
     
     @FXML
-    private void afegirUsuari() throws IOException{
-        // Obrim la finestra usuari
-        obrirFinestraUsuari();
-        stageUsuari.setTitle("Afegir usuari");
-        // Esborrem dades en cas de que hi hagi alguna
-        usuariEdicioControlador.afegirUsuari();
-    }
-    
-    @FXML
-    private void afegirLlibre() throws IOException{
-        // Obrim la finestra usuari
-        obrirFinestraLlibre();
-        stageLlibre.setTitle("Afegir llibre");
-        // Esborrem dades en cas de que hi hagi alguna
-        llibreEdicioControlador.afegirLlibre();
-    }
-    
-    @FXML
-    private void buscarUsuari() throws IOException{
+    private void buscarElement(ActionEvent event) throws IOException{
+        // Comprobem la seleccio del menu
+        MenuItem menuItem = (MenuItem)event.getSource();
+        String tipus_busqueda = menuItem.getId(); // Exemple: usuari o administrador
+        String titol_busqueda = menuItem.getText(); // Exemple: Buscar usuari o Buscar d'administrador
         
         Usuari usuari;
+        Image icon = null;
+        //Buscador buscador = null;
         
         // En cas de que no s'hagi creat el stage (finestra oberta) el creem
         if (stageBuscar == null) { 
-            
+            stageBuscar = new Stage();
+            switch(tipus_busqueda){
+                case USUARI_CASE:
+                    icon = new Image("/resources/usuari_icon_neg_16.png");
+                    break;
+                case ADMINISTRADOR_CASE:
+                    icon = new Image("/resources/usuari_icon_neg_16.png");
+                    break;
+                case LLIBRE_CASE:
+                    icon = new Image("/resources/llibre_icon_neg_16.png");
+                    break;
+            }
+                    
             // Creem un buscador en funcio del tipus
-            Buscador buscador = new Buscador("usuari");
+            Buscador buscador = new Buscador(tipus_busqueda);
  
             // Obtenim els elements per controlar els clicks del buscador
             Button butoBuscar = buscador.getButoBuscar();
@@ -313,13 +306,46 @@ public class AdminController implements Initializable {
                 @Override
                 public void handle(Event event) {
                     try {
-                        String nom_usuari = buscador.getParaula();
-                        if(nom_usuari != null){
-                            msg_in = AccionsClient.buscarUsuari(nom_usuari);
-                            System.out.println("buscarUsuari msg_in:");
+                        String paraula_busqueda = buscador.getParaula();
+                        if(paraula_busqueda != null){
+                            msg_in = AccionsClient.buscarElement(paraula_busqueda, tipus_busqueda);
+                            System.out.println("RESULTAT BUSQUEDA:");
                             System.out.println(msg_in.toString());
+
+                            //Obtenim el codi de resposta
+                            codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
+                            // Comprobem el text del codi de resposta
+                            significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
+                            // Sessio caducada
+                            if(codi_resposta.equals("10")){
+                                sessioCaducada();
+                            // Usuari eliminat correctament
+                            }else if(codi_resposta.equals("5000") || codi_resposta.equals("6000") || codi_resposta.equals("1600")){
+                                stageBuscar.close();
+                                switch(tipus_busqueda){
+                                    case USUARI_CASE:
+                                        modificarElement(new Usuari((HashMap)msg_in)); 
+                                        break;
+                                    case ADMINISTRADOR_CASE:
+                                        modificarElement(new Administrador((HashMap)msg_in)); 
+                                        //Administrador u = new Administrador((HashMap)msg_in);
+                                        break;
+                                    case LLIBRE_CASE:
+                                        modificarElement(new Llibre((HashMap)msg_in)); 
+                                        //Llibre u = new Llibre((HashMap)msg_in);
+                                        break;
+                                }
+                               // modificarElement(new Usuari((HashMap)msg_in));                               
+                            // Error al trobar usuari
+                            }else{
+                                alerta.setAlertType(Alert.AlertType.ERROR);
+                                alerta.setHeaderText(significat_codi_resposta);
+                                alerta.show();
+                            }
                         }
                     } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
                         Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -335,9 +361,9 @@ public class AdminController implements Initializable {
             
             stageBuscar = new Stage();
             stageBuscar.initModality(Modality.WINDOW_MODAL);
-            Image icon = new Image("/resources/usuari_icon.png");
+            //Image icon = new Image("/resources/usuari_icon_neg_16.png");
             stageBuscar.getIcons().add(icon);
-            stageBuscar.setTitle("Buscar usuari");
+            stageBuscar.setTitle(titol_busqueda);
             stageBuscar.setResizable(false);
             stageBuscar.setScene(new Scene(buscador));
             stageBuscar.initOwner( tabPaneGeneral.getScene().getWindow() );
@@ -350,112 +376,198 @@ public class AdminController implements Initializable {
         }
     }
     
-    private void modificarUsuari(Usuari usuari) throws IOException{ 
-         // Obrim la finestra usuari 
-        obrirFinestraUsuari();
-        // Actualitzem el controlador (finestra usuari) per mijtà del mètode dins del controlador
-        usuariEdicioControlador.modificarUsuari(usuari);
+    @FXML
+    private void afegirElement(Event event) throws IOException{
+        String tipus = "";
+        if(event.getSource() instanceof Button){
+            Button menuItem = (Button)event.getSource();
+            tipus = menuItem.getId();
+        }else if(event.getSource() instanceof MenuItem){
+            MenuItem menuItem = (MenuItem)event.getSource();
+            tipus = menuItem.getId();
+        }
+        switch(tipus){
+            case USUARI_CASE:
+                // Obrim la finestra usuari
+                obrirFinestraElement(tipus);
+                stageUsuari.setTitle("Afegir usuari");
+                usuariEdicioControlador.afegirUsuari();
+                break;
+            case ADMINISTRADOR_CASE:
+                // Obrim la finestra usuari
+                obrirFinestraElement(tipus);
+                stageAdministrador.setTitle("Afegir administrador");
+                adminEdicioControlador.afegirAdministrador();
+                break;
+            case LLIBRE_CASE:
+                // Obrim la finestra usuari
+                obrirFinestraElement(tipus);
+                stageLlibre.setTitle("Afegir llibre");
+                llibreEdicioControlador.afegirLlibre();
+                break;
+        }
     }
-    
+
     private void modificarElement(Object obj) throws IOException{ 
-        
-        if(obj.getClass().getSimpleName().equals("Usuari")){
+        if(obj instanceof Usuari){
             // Obrim la finestra usuari 
-            obrirFinestraUsuari();
+            obrirFinestraElement(USUARI_CASE);
             // Actualitzem el controlador (finestra usuari) per mijtà del mètode dins del controlador
             usuariEdicioControlador.modificarUsuari((Usuari)obj);
-        }else if(obj.getClass().getSimpleName().equals("Llibre")){
+        }else if(obj instanceof Administrador){
+            // Obrim la finestra ud'administradorsuari 
+            obrirFinestraElement(ADMINISTRADOR_CASE);
+            // Actualitzem el controlador (finestra usuari) per mijtà del mètode dins del controlador
+            adminEdicioControlador.modificarAdministrador((Administrador)obj);;
+        }else if(obj instanceof Llibre){
             // Obrim la finestra llibre 
-            obrirFinestraLlibre();
+            obrirFinestraElement(LLIBRE_CASE);
             // Actualitzem el controlador (finestra llibre) per mijtà del mètode dins del controlador
             llibreEdicioControlador.modificarLlibre((Llibre)obj);
-            //llibreVistaControlador.mostrarLlibre((Llibre)obj);
         }
+    }
+    
+    private void eliminarElement(Object obj, Event event) throws IOException, ClassNotFoundException, InterruptedException{
+        
+        alerta.setAlertType(AlertType.CONFIRMATION);
+        
+        Button menuItem = (Button)event.getSource();
+        String tipus = menuItem.getId();
+        
+        switch(tipus){
+            case USUARI_CASE:
+                Usuari u = (Usuari)obj;
+                // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
+                alerta.setTitle("Eliminar usuari");   
+                alerta.setHeaderText("Vols esborrar l'usuari " + u.getUser_name() + " ?");
+                alerta.setContentText("S'esborrarà definitivament");
+                break;
+            case ADMINISTRADOR_CASE:
+                Administrador a = (Administrador)obj;
+                // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
+                alerta.setTitle("Eliminar administrador"); 
+                alerta.setHeaderText("Vols esborrar l'administrador " + a.getNom_Admin() + " ?");
+                alerta.setContentText("S'esborrarà definitivament");
+                break;
+            case LLIBRE_CASE:
+                Llibre ll = (Llibre)obj;
+                // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
+                alerta.setTitle("Eliminar llibre");      
+                alerta.setHeaderText("Vols esborrar el llibre " + ll.getNom() + " ?");
+                alerta.setContentText("S'esborrarà definitivament");
+                break;
+        }
+        
+        Optional<ButtonType> option = alerta.showAndWait();
+        if (option.get() == ButtonType.OK) {                
+            // Fem l'accio d'eliminar l'element
+            msg_in = AccionsClient.eliminarElement(obj);
+            //Obtenim el codi de resposta
+            codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
+            // codi_resposta = "10";
+            // Comprobem el text del codi de resposta
+            significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
+            // Sessio caducada
+            if(codi_resposta.equals("10")){
+                sessioCaducada();
+            // Usuari eliminat correctament
+            }else if(codi_resposta.equals("3000") || codi_resposta.equals("4000") || codi_resposta.equals("1500")){
+                alerta.setAlertType(Alert.AlertType.INFORMATION);
+                alerta.setHeaderText(significat_codi_resposta);
+                alerta.show();
+            // Error al eliminar usuari
+            }else{
+                alerta.setAlertType(Alert.AlertType.ERROR);
+                alerta.setHeaderText(significat_codi_resposta);
+                alerta.show();
+            }
+        }
+        
         
     }
     
-    private void eliminarUsuari(Usuari usuari) throws IOException, ClassNotFoundException, InterruptedException{      
-        // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
-        alerta.setTitle("Eliminar usuari");
-        alerta.setContentText("");
-        // Fem l'accio d'eliminar usuari
-        msg_in = AccionsClient.eliminarUsuari(usuari);
-        //Obtenim el codi de resposta
-        codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
-        // codi_resposta = "10";
-        // Comprobem el text del codi de resposta
-        significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-        // Sessio caducada
-        if(codi_resposta.equals("10")){
-            sessioCaducada();
-        // Usuari eliminat correctament
-        }else if(codi_resposta.equals("3000")){
-            alerta.setAlertType(Alert.AlertType.INFORMATION);
-            alerta.setHeaderText(significat_codi_resposta);
-            alerta.show();
-        // Error al eliminar usuari
-        }else{
-            alerta.setAlertType(Alert.AlertType.ERROR);
-            alerta.setHeaderText(significat_codi_resposta);
-            alerta.show();
+    private void obrirFinestraElement(String tipus) throws IOException{                    
+        switch(tipus){
+            case USUARI_CASE:
+                // En cas de que no s'hagi creat el stage (finestra oberta) el creem
+                if (stageUsuari == null) {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/UsuariEdicio.fxml"));
+                    Parent root = (Parent) loader.load();
+                    usuariEdicioControlador = loader.getController();
+                    stageUsuari = new Stage();
+                    stageUsuari.setScene(new Scene(root));
+                    Image icon = new Image("/resources/usuari_icon_neg_20.png");
+                    stageUsuari.getIcons().add(icon);
+                    stageUsuari.setTitle("Usuari");
+                    stageUsuari.setResizable(false);
+
+                    // Quan es tanqui esborrem el stage de memòria                    
+                    stageUsuari.setOnHiding(we -> stageUsuari = null);
+
+                    // Mostrem la finestra del usuari a editar
+                    stageUsuari.show();   
+
+                // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
+                }else{
+                    stageUsuari.toFront();
+                }
+                break;
+            case ADMINISTRADOR_CASE:
+                // En cas de que no s'hagi creat el stage (finestra oberta) el creem
+                if (stageAdministrador == null) {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/AdminEdicio.fxml"));
+                    Parent root = (Parent) loader.load();
+                    adminEdicioControlador = loader.getController();
+                    stageAdministrador = new Stage();
+                    stageAdministrador.setScene(new Scene(root));
+                    Image icon = new Image("/resources/usuari_icon_neg_16.png");
+                    stageAdministrador.getIcons().add(icon);
+                    stageAdministrador.setTitle("Administrador");
+                    stageAdministrador.setResizable(false);
+
+                    // Quan es tanqui esborrem el stage de memòria                    
+                    stageAdministrador.setOnHiding(we -> stageAdministrador = null);
+
+                    // Mostrem la finestra de l'administrador a editar
+                    stageAdministrador.show();   
+
+                // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
+                }else{
+                    stageAdministrador.toFront();
+                }
+                break;
+            case LLIBRE_CASE:
+                // En cas de que no s'hagi creat el stage (finestra oberta) el creem
+                if (stageLlibre == null) {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/LlibreEdicio.fxml"));
+                    Parent root = (Parent) loader.load();
+                    llibreEdicioControlador = loader.getController();
+                    stageLlibre = new Stage();
+                    stageLlibre.setScene(new Scene(root));
+                    Image icon = new Image("/resources/usuari_icon_neg_16.png");
+                    stageLlibre.getIcons().add(icon);
+                    stageLlibre.setTitle("Llibre");
+                    stageLlibre.setResizable(false);
+
+                    // Quan es tanqui esborrem el stage de memòria                    
+                    stageLlibre.setOnHiding(we -> stageLlibre = null);
+
+                    // Mostrem la finestra del usuari a editar
+                    stageLlibre.show();   
+
+                // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
+                }else{
+                    stageLlibre.toFront();
+                }
+                break;
         }
         
+        
     }
-    
-    private void obrirFinestraUsuari() throws IOException{ // Per modificar
-        // En cas de que no s'hagi creat el stage (finestra oberta) el creem
-        if (stageUsuari == null) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/UsuariEdicio.fxml"));
-            Parent root = (Parent) loader.load();
-            usuariEdicioControlador = loader.getController();
-            stageUsuari = new Stage();
-            stageUsuari.setScene(new Scene(root));
-            Image icon = new Image("/resources/usuari_icon.png");
-            stageUsuari.getIcons().add(icon);
-            stageUsuari.setTitle("Usuari");
-            stageUsuari.setResizable(false);
 
-            // Quan es tanqui esborrem el stage de memòria                    
-            stageUsuari.setOnHiding(we -> stageUsuari = null);
-
-            // Mostrem la finestra del usuari a editar
-            stageUsuari.show();   
-            
-        // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
-        }else{
-            stageUsuari.toFront();
-        }
-    }
-    
-    private void obrirFinestraLlibre() throws IOException{ // Per modificar
-        // En cas de que no s'hagi creat el stage (finestra oberta) el creem
-        if (stageLlibre == null) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/LlibreEdicio.fxml"));
-            Parent root = (Parent) loader.load();
-            llibreEdicioControlador = loader.getController();
-            stageLlibre = new Stage();
-            stageLlibre.setScene(new Scene(root));
-            Image icon = new Image("/resources/usuari_icon.png");
-            stageLlibre.getIcons().add(icon);
-            stageLlibre.setTitle("Llibre");
-            stageLlibre.setResizable(false);
-
-            // Quan es tanqui esborrem el stage de memòria                    
-            stageLlibre.setOnHiding(we -> stageLlibre = null);
-
-            // Mostrem la finestra del usuari a editar
-            stageLlibre.show();   
-            
-        // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
-        }else{
-            stageLlibre.toFront();
-        }
-    }
-    
-    private void clickTaula(TableView tb) throws IOException {
+    private void clickTaula(TableView tb, String tipus) throws IOException {
         // Mirem l'element clickat
         Object element = tb.getSelectionModel().getSelectedItem();
-
         // Si està buit tornem
         if (element == null) return;
         // Si fem click un altre vegada comparem si es el mateix element clickat i generem un temps desde aquest click
@@ -468,13 +580,7 @@ public class AdminController implements Initializable {
             long diff = now.getTime() - tempsUltimClick.getTime();
             // Si ha sigut rapid (300 millis) es doble click
             if (diff < 300){ 
-                if(element.getClass().getSimpleName().equals("Usuari")){
-                    // Obrim la finestra usuari 
-                    modificarUsuari((Usuari)element);
-                }else if(element.getClass().getSimpleName().equals("Llibre")){
-                    // Obrim la finestra usuari 
-                    modificarElement((Llibre)element);
-                }
+                modificarElement(element);
             } else {
                 // Si no, actualitzem el temps
                 tempsUltimClick = new Date();
@@ -501,7 +607,7 @@ public class AdminController implements Initializable {
         Stage stage = new Stage();
         Scene scene = new Scene(parent);
         stage.setScene(scene);
-        Image icon = new Image("/resources/icon.png");
+        Image icon = new Image("/resources/dumogo_icon_neg_35.png");
         stage.getIcons().add(icon);
         stage.setTitle("Dumo-Go");
         stage.setResizable(false);

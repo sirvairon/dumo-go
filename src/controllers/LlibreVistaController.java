@@ -50,7 +50,7 @@ public class LlibreVistaController implements Initializable {
     private Llibre llibre;
     private String codi_resposta;
     private String significat_codi_resposta;
-    private static final String STRING_CODI_RESPOSTA = "codi_resposta";
+    private static final String STRING_CODI_RESPOSTA = "codi_retorn";
     private Alert alerta;
     private HashMap<String, String> msg_in;
     
@@ -298,7 +298,7 @@ public class LlibreVistaController implements Initializable {
         Stage stage1 = new Stage();
         Scene scene = new Scene(parent);
         stage1.setScene(scene);
-        Image icon = new Image("/resources/icon.png");
+        Image icon = new Image("/resources/dumogo_icon_neg_35.png");
         stage1.getIcons().add(icon);
         stage1.setTitle("Dumo-Go");
         stage1.setResizable(false);

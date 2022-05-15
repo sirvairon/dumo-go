@@ -48,9 +48,10 @@ public class LlibreEdicioController implements Initializable {
 
     private Stage stage;
     private Llibre llibre;
+    private String nom_llibre_actual;
     private String codi_resposta;
     private String significat_codi_resposta;
-    private static final String STRING_CODI_RESPOSTA = "codi_resposta";
+    private static final String STRING_CODI_RESPOSTA = "codi_retorn";
     private Alert alerta;
     private HashMap<String, String> msg_in;
     
@@ -112,6 +113,7 @@ public class LlibreEdicioController implements Initializable {
         textFieldAdminAlta.setText(llibre.getAdmin_alta());
         datePickerDataAlta.setValue(LocalDate.parse(llibre.getData_alta()));
         textFieldReservatDNI.setText(llibre.getReservat_DNI());
+        nom_llibre_actual = llibre.getNom();
     }
     
     private void esborrarDades(){
@@ -128,6 +130,7 @@ public class LlibreEdicioController implements Initializable {
         textFieldAdminAlta.setText("");
         datePickerDataAlta.setValue(LocalDate.now());
         textFieldReservatDNI.setText("");
+        nom_llibre_actual = null;
     }
     
     public void afegirLlibre(){
@@ -145,12 +148,15 @@ public class LlibreEdicioController implements Initializable {
         butoAccio.setOnMouseClicked( new EventHandler() {
             @Override
             public void handle(Event event) {
+                    // Obtenim el llibre de pantalla
                     llibre = obtenirLlibrePantalla();
+                    // Establim que el nom_antic i el nom siguien el mateix
+                    llibre.setNom_Antic(llibre.getNom());
                     try {
                         // Creem el HashMap on rebrem el codi de resposta
                         HashMap<String, String> msg_in;
                         // Fem l'accio d'afegir el llibre
-                        msg_in = AccionsClient.afegirLlibre(llibre);
+                        msg_in = AccionsClient.afegirElement(llibre);
                         // Obtenim el codi de resposta
                         codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
                         // Obtenim el sinificat del codi de resposta
@@ -193,15 +199,17 @@ public class LlibreEdicioController implements Initializable {
         butoAccio.setOnMouseClicked( new EventHandler() {
             @Override
             public void handle(Event event) {
-                // Abans d'obtenir les dades del llibre guardem el seu nom ja que s'erveix d'identificador
-                String titol_antic = llibre.getNom();
+                // Abans d'obtenir les dades del llibre guardem el seu nom ja que serveix d'identificador
+                //String titol_antic = llibre.getNom();                
                 // Obtenim les dades del llibre amb les dades de la pantalla
                 llibre = obtenirLlibrePantalla();
+                System.out.println("nom_llibre_actual: "+ nom_llibre_actual);
+                llibre.setNom_Antic(nom_llibre_actual);
                 try {
                     // Creem el HashMap on rebrem el codi de resposta
                     HashMap<String, String> msg_in;
-                    // Fem l'accio de modificar usuari
-                    msg_in = AccionsClient.modificarLlibre(llibre, titol_antic);
+                    // Fem l'accio de modificar el llibre
+                    msg_in = AccionsClient.modificarElement(llibre);
                     // Obtenim el codi de resposta
                     codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
                     // Obtenim el sinificat del codi de resposta
@@ -212,7 +220,7 @@ public class LlibreEdicioController implements Initializable {
                     // Sessio caducada
                     if(codi_resposta.equals("10")){
                         sessioCaducada();
-                    // Usuari modificat correctament
+                    // Llibre modificat correctament
                     }else if(codi_resposta.equals("1800")){
                         alerta.setAlertType(Alert.AlertType.INFORMATION);
                         alerta.showAndWait();
@@ -241,6 +249,7 @@ public class LlibreEdicioController implements Initializable {
     private Llibre obtenirLlibrePantalla(){
         // Creem un llibre obtenint les dades de la pantalla
         Llibre ll = new Llibre (
+            new SimpleStringProperty(""), // ID
             new SimpleStringProperty(textFieldTitol.getText()),
             new SimpleStringProperty(textFieldAutor.getText()),
             new SimpleStringProperty(textFieldAnyPublicacio.getText()),
@@ -253,7 +262,7 @@ public class LlibreEdicioController implements Initializable {
             new SimpleStringProperty(textFieldValoracio.getText()),            
             new SimpleStringProperty(textFieldVots.getText())
         );
-        System.out.println();
+        //ll.setNom_Antic("");
         // Tornem el llibre creat
         return ll;
     }
@@ -286,7 +295,7 @@ public class LlibreEdicioController implements Initializable {
         Stage stage1 = new Stage();
         Scene scene = new Scene(parent);
         stage1.setScene(scene);
-        Image icon = new Image("/resources/icon.png");
+        Image icon = new Image("/resources/dumogo_icon_window.png");
         stage1.getIcons().add(icon);
         stage1.setTitle("Dumo-Go");
         stage1.setResizable(false);

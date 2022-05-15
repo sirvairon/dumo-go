@@ -24,7 +24,7 @@ public class DumoGo extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));        
         Scene scene = new Scene(root);
         // Establim icono aplicació
-        Image icon = new Image("/resources/icon.png");
+        Image icon = new Image("/resources/dumogo_window_icon.png");
         stage.getIcons().add(icon);
         // Establim titol aplicació i altres propietats
         stage.setTitle("Dumo-Go");
@@ -32,6 +32,7 @@ public class DumoGo extends Application {
         // L'afegim a l'stage i la mostrem
         stage.setScene(scene);
         stage.show();
+        System.out.println(System.getProperties());
     }
 
     /**

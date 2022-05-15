@@ -54,7 +54,7 @@ public class UsuariController implements Initializable {
     private HashMap<String, String> msg_in;
     private String codi_resposta;
     private String significat_codi_resposta;
-    private static final String STRING_CODI_RESPOSTA = "codi_resposta";
+    private static final String STRING_CODI_RESPOSTA = "codi_retorn";
     private Alert alerta;
     private UsuariEdicioController usuariEdicioControlador;
     private Stage stageUsuari;
@@ -125,7 +125,7 @@ public class UsuariController implements Initializable {
             Stage stage = new Stage();
             Scene scene = new Scene(parent);
             stage.setScene(scene);
-            Image icon = new Image("/resources/icon.png");
+            Image icon = new Image("/resources/dumogo_icon_neg_35.png");
             stage.getIcons().add(icon);
             stage.setTitle("Dumo-Go");
             stage.setResizable(false);
@@ -147,7 +147,7 @@ public class UsuariController implements Initializable {
         Stage stage = new Stage();
         Scene scene = new Scene(parent);
         stage.setScene(scene);
-        Image icon = new Image("/resources/icon.png");
+        Image icon = new Image("/resources/usuari_icon_neg.png");
         stage.getIcons().add(icon);
         stage.setTitle("Dumo-Go");
         stage.setResizable(false);

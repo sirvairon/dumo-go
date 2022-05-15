@@ -22,8 +22,11 @@ public class Buscador extends VBox {
     private final Label tipus;
     private final TextField paraula;
     private final Button butoBuscar, butoCancelar;
+    private final static String USUARI_CASE = "usuaris";
+    private final static String ADMINISTRADOR_CASE = "administradors";
+    private final static String LLIBRE_CASE = "llibres";
     
-    public Buscador(String concepte_busqueda) {
+    public Buscador(String tipus_busqueda) {
         //vbContigut = new VBox();
         vbBusqueda = new VBox();
         hbButons = new HBox();   
@@ -32,23 +35,27 @@ public class Buscador extends VBox {
         butoBuscar = new Button("Buscar");
         butoCancelar = new Button("Cancelar");
         
-        if(concepte_busqueda.equals("usuari")){
-            tipus.setText("Nom de usuari");
+        switch(tipus_busqueda){
+            case USUARI_CASE:
+                tipus.setText("Nom de l'usuari");
+                break;
+            case ADMINISTRADOR_CASE:
+                tipus.setText("Nom de l'administrador");
+                break;
+            case LLIBRE_CASE:
+                tipus.setText("ID del llibre");
+                break;
         }
         
         vbBusqueda.getChildren().addAll(tipus, paraula);
         hbButons.getChildren().addAll(butoBuscar, butoCancelar);
         
         this.getStyleClass().add("buscador");
-        //this.getStyleClass().addAll("root","mainFxmlClass");
         this.getChildren().addAll(vbBusqueda, hbButons);
         String cssFile1 = this.getClass().getResource("/styles/general.css").toExternalForm();
         String cssFile2 = this.getClass().getResource("/styles/buscador.css").toExternalForm();
         
         this.getStylesheets().addAll(cssFile1,cssFile2);
-        //this.getStylesheets().add(cssFile2);
-        
-        //vbContigut.getChildren().addAll(vbBusqueda, hbButons);
     }
 
     public Button getButoBuscar() {

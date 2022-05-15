@@ -20,8 +20,10 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
@@ -31,6 +33,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 /**
@@ -51,14 +54,23 @@ public final class PestanyaLlistat extends Tab {
     private final TextField textFiltre;
     private final ChoiceBox opcioFiltre;
     private ObservableList<String> llistaFiltre;
-    private final Button butoActualitzar, butoAfegir, butoModificar, butoEliminar, butoFiltre;    
+    private final Button butoActualitzar, butoAfegir, butoModificar, butoEliminar, butoFiltre;  
+    
     private ArrayList<Usuari> llista_usuaris;
+    private ArrayList<Administrador> llista_administradors;
     private ArrayList<Llibre> llista_llibres;
+    
     private ObservableList<Usuari> data_usuaris;
+    private ObservableList<Administrador> data_administradors;
     private ObservableList<Llibre> data_llibres;
+    
     private FilteredList<Usuari> data_filtrada_usuaris;
+    private FilteredList<Administrador> data_filtrada_administradors;
     private FilteredList<Llibre> data_filtrada_llibres;
+    
     private Map<String, String> mapaNomCamps;
+    
+    private Alert alerta;
     
     public PestanyaLlistat(String nomLlista, String tipusLlista) throws ClassNotFoundException {
         super(nomLlista);
@@ -105,6 +117,12 @@ public final class PestanyaLlistat extends Tab {
         // Afegim el VBox que conte tot a la pestanya l'arrel
         this.setContent(vbContigut);
         
+        // Configurem l'alerta en cas d'error o informar
+        alerta = new Alert(Alert.AlertType.NONE);
+        alerta.initStyle(StageStyle.UNDECORATED);
+        DialogPane dialogPane = alerta.getDialogPane();
+        dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
+            
         // Obtenim les dades
         obtenirDades();
         // Creem el filtre
@@ -138,51 +156,7 @@ public final class PestanyaLlistat extends Tab {
     public Button getButoFiltre() {
         return butoFiltre;
     }
- 
-    private void obtenirDades() throws ClassNotFoundException{
-        switch(tipusLlista){
-            case USUARI_CASE:
-                // Esborrem l'informacio per carregar-la de nou
-                data_usuaris = null;
-
-                // Obtenim el llistat_d'elements
-                llista_usuaris = AccionsClient.obtenirLlistat(tipusLlista);         
-
-                // El transformem en una ObservableList
-                data_usuaris = FXCollections.observableArrayList(llista_usuaris); 
-                
-                // Obtenim el nom dels camps per columnes, filtre,...
-                mapaNomCamps = Usuari.mapaNomCamps;
-                break;
-            case ADMINISTRADOR_CASE:
-                // Esborrem l'informacio per carregar-la de nou
-                data_usuaris = null;
-
-                // Obtenim el llistat_d'elements
-                llista_usuaris = AccionsClient.obtenirLlistat(tipusLlista);         
-
-                // El transformem en una ObservableList
-                data_usuaris = FXCollections.observableArrayList(llista_usuaris); 
-
-                // Obtenim el nom dels camps per columnes, filtre,...
-                mapaNomCamps = Usuari.mapaNomCamps;
-                break;       
-            case LLIBRE_CASE:
-                // Esborrem l'informacio per carregar-la de nou
-                data_llibres = null;
-
-                // Obtenim el llistat_d'elements
-                llista_llibres = AccionsClient.obtenirLlistat(tipusLlista);         
-
-                // El transformem en una ObservableList
-                data_llibres = FXCollections.observableArrayList(llista_llibres); 
-
-                // Obtenim el nom dels camps per columnes, filtre,...
-                mapaNomCamps = Llibre.mapaNomCamps;
-                break;
-        }
-    }
-        
+    
     private void crearFiltre(){
         // Actualitzem les opcions del filtre en funcio del tipus de llista i mostrem en la label el tipus de resultats tornats
         switch(tipusLlista){
@@ -210,13 +184,11 @@ public final class PestanyaLlistat extends Tab {
                 resultat.setText("Usuaris:");
                 break;
             case ADMINISTRADOR_CASE:
-                mapaNomCamps = Usuari.mapaNomCamps;
+                mapaNomCamps = Administrador.mapaNomCamps;
                 System.out.println(mapaNomCamps);
                 llistaFiltre = FXCollections.observableArrayList(
                         mapaNomCamps.get("DNI"), 
-                        mapaNomCamps.get("user_name"),
-                        mapaNomCamps.get("numero_soci"),
-                        mapaNomCamps.get("data_alta"),
+                        mapaNomCamps.get("nom_admin"),
                         mapaNomCamps.get("nom"), 
                         mapaNomCamps.get("cognoms"), 
                         mapaNomCamps.get("data_naixement"),
@@ -229,7 +201,7 @@ public final class PestanyaLlistat extends Tab {
                 // Introduim les opcions dins les opcions del filtre
                 opcioFiltre.setItems(llistaFiltre);
                 // Deixem marcada l'opcio del nom del administrador
-                opcioFiltre.setValue(mapaNomCamps.get("user_name"));
+                opcioFiltre.setValue(mapaNomCamps.get("nom_admin"));
                 // Establim que la label dels resultats posi Administradors
                 resultat.setText("Administradors:");
                 break;
@@ -265,7 +237,7 @@ public final class PestanyaLlistat extends Tab {
         
         // Obtenim a quin camp volem trobar la paraula
         String opcioFiltreTxt = opcioFiltre.getSelectionModel().getSelectedItem().toString();
-        if(tipusLlista.equals(ADMINISTRADOR_CASE) || tipusLlista.equals(USUARI_CASE)){            
+        if(tipusLlista.equals(USUARI_CASE)){            
         
             //data_filtrada_llibres
             // Filtrem les dades
@@ -353,10 +325,113 @@ public final class PestanyaLlistat extends Tab {
                     return false;
                 });
 
-            // Introduim l'informació filtrada (SortedList) a la taula
-            taulaLlistat.setItems(data_filtrada_usuaris);
+            // Normalment, quan fem click al header de la columna canvia l'ordre de la TableView pero como ara te una FilteredList
+            // no es pot modificar, per lo que no es pot canviar l'ordre. Hem de ficar-la dins una SortedList per porder ordenar-la.
+
+            // Fiquem la llistra filtrada (FilteredList) dins la llista ordenada (SortedList)
+            SortedList<Usuari> sortedData = new SortedList<>(data_filtrada_usuaris);
+		
+            // Ara que tenim una SortedList separada, hem de vincular la classificació d'aquesta llista a la TableView. 
+            // Enllaçem el comparador de la llista ordenada (SortedList) al comparador de la taula (taulaLlistat)
+            sortedData.comparatorProperty().bind(taulaLlistat.comparatorProperty());
+		
+            // Fiquem la llista ordenada (i filtrada) a les dades de la taula (taulaLlistat)
+            taulaLlistat.setItems(sortedData);
+
             // Obtenim el numero total de registres i la fiquem al label
             resultatValor.setText(String.valueOf(data_filtrada_usuaris.size()));
+            
+        }else if(tipusLlista.equals(ADMINISTRADOR_CASE)){            
+        
+            //data_filtrada_llibres
+            // Filtrem les dades
+            data_filtrada_administradors = new FilteredList<>(data_administradors, b -> true);        
+            data_filtrada_administradors.setPredicate(adminFiltrat -> {
+                    // Si no hi ha paraula a filtrar/buscar mostrem tot
+                    if(paraulaFiltre.isEmpty() || paraulaFiltre == null){
+                        return true;
+                    }
+
+                    if(opcioFiltreTxt.equals(mapaNomCamps.get("DNI"))){
+                        if(adminFiltrat.getDni().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("nom_admin"))){
+                        if(adminFiltrat.getNom_Admin().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("nom"))){
+                        if(adminFiltrat.getNom().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("cognoms"))){
+                        if(adminFiltrat.getCognoms().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data_naixement"))){
+                        if(adminFiltrat.getData_naixement().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("direccio"))){
+                        if(adminFiltrat.getDireccio().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("pais"))){
+                        if(adminFiltrat.getPais().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("telefon"))){
+                        if(adminFiltrat.getTelefon().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("correu"))){
+                        if(adminFiltrat.getCorreu().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("admin_alta"))){
+                        if(adminFiltrat.getAdmin_Alta().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }
+                    // No s'ha trobat res
+                    return false;
+                });
+            // Normalment, quan fem click al header de la columna canvia l'ordre de la TableView pero como ara te una FilteredList
+            // no es pot modificar, per lo que no es pot canviar l'ordre. Hem de ficar-la dins una SortedList per porder ordenar-la.
+
+            // Fiquem la llistra filtrada (FilteredList) dins la llista ordenada (SortedList)
+            SortedList<Administrador> sortedData = new SortedList<>(data_filtrada_administradors);
+		
+            // Ara que tenim una SortedList separada, hem de vincular la classificació d'aquesta llista a la TableView. 
+            // Enllaçem el comparador de la llista ordenada (SortedList) al comparador de la taula (taulaLlistat)
+            sortedData.comparatorProperty().bind(taulaLlistat.comparatorProperty());
+		
+            // Fiquem la llista ordenada (i filtrada) a les dades de la taula (taulaLlistat)
+            taulaLlistat.setItems(sortedData);
+
+            // Obtenim el numero total de registres i la fiquem al label
+            resultatValor.setText(String.valueOf(data_filtrada_administradors.size()));
+            
         }else if(tipusLlista.equals(LLIBRE_CASE)){            
         
             //data_filtrada_llibres
@@ -439,13 +514,78 @@ public final class PestanyaLlistat extends Tab {
                     return false;
                 });
 
-            // Introduim l'informació filtrada (SortedList) a la taula
-            taulaLlistat.setItems(data_filtrada_llibres);
+            // Normalment, quan fem click al header de la columna canvia l'ordre de la TableView pero como ara te una FilteredList
+            // no es pot modificar, per lo que no es pot canviar l'ordre. Hem de ficar-la dins una SortedList per porder ordenar-la.
+
+            // Fiquem la llistra filtrada (FilteredList) dins la llista ordenada (SortedList)
+            SortedList<Llibre> sortedData = new SortedList<>(data_filtrada_llibres);
+		
+            // Ara que tenim una SortedList separada, hem de vincular la classificació d'aquesta llista a la TableView. 
+            // Enllaçem el comparador de la llista ordenada (SortedList) al comparador de la taula (taulaLlistat)
+            sortedData.comparatorProperty().bind(taulaLlistat.comparatorProperty());
+		
+            // Fiquem la llista ordenada (i filtrada) a les dades de la taula (taulaLlistat)
+            taulaLlistat.setItems(sortedData);
+
             // Obtenim el numero total de registres i la fiquem al label
             resultatValor.setText(String.valueOf(data_filtrada_llibres.size()));
         }
     }
-    
+ 
+    private void obtenirDades() throws ClassNotFoundException{
+        // En cas de retornar null hi hagut problemes al obtenir el llistat
+        try{
+            switch(tipusLlista){
+                case USUARI_CASE:
+                    // Esborrem l'informacio per carregar-la de nou
+                    data_usuaris = null;
+
+                    // Obtenim el llistat_d'elements
+                    llista_usuaris = AccionsClient.obtenirLlistat(tipusLlista);         
+
+                    // El transformem en una ObservableList
+                    data_usuaris = FXCollections.observableArrayList(llista_usuaris); 
+
+                    // Obtenim el nom dels camps per columnes, filtre,...
+                    mapaNomCamps = Usuari.mapaNomCamps;
+                    break;
+                case ADMINISTRADOR_CASE:
+                    // Esborrem l'informacio per carregar-la de nou
+                    data_administradors = null;
+
+                    // Obtenim el llistat_d'elements
+                    llista_administradors = AccionsClient.obtenirLlistat(tipusLlista);         
+
+                    // El transformem en una ObservableList
+                    data_administradors = FXCollections.observableArrayList(llista_administradors); 
+
+                    // Obtenim el nom dels camps per columnes, filtre,...
+                    mapaNomCamps = Administrador.mapaNomCamps;
+                    break;       
+                case LLIBRE_CASE:
+                    // Esborrem l'informacio per carregar-la de nou
+                    data_llibres = null;
+
+                    // Obtenim el llistat_d'elements
+                    llista_llibres = AccionsClient.obtenirLlistat(tipusLlista);         
+
+                    // El transformem en una ObservableList
+                    data_llibres = FXCollections.observableArrayList(llista_llibres); 
+
+                    // Obtenim el nom dels camps per columnes, filtre,...
+                    mapaNomCamps = Llibre.mapaNomCamps;
+                    break;
+            }
+        } catch (NullPointerException ex) {
+            alerta.setTitle("Error al carregar dades");
+            alerta.setContentText("");
+            alerta.setAlertType(Alert.AlertType.ERROR);
+            alerta.setHeaderText("Error al carregar les dades dels " + tipusLlista);
+            alerta.show();
+            Logger.getLogger(PestanyaLlistat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }       
+
     public void actualitzarDades() throws ClassNotFoundException {        
         // Obtenim les dades
         obtenirDades();
@@ -465,7 +605,6 @@ public final class PestanyaLlistat extends Tab {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari,String> p) {
                 return p.getValue().nom();
         }});
-        //col_Nom.setCellValueFactory(new PropertyValueFactory<>("nom"));
 
         TableColumn<Usuari,String> col_Cognom = new TableColumn<Usuari,String>(mapaNomCamps.get("cognoms"));
         col_Cognom.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari,String>, ObservableValue<String>>() {
@@ -532,6 +671,68 @@ public final class PestanyaLlistat extends Tab {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari,String> p) {
                 return p.getValue().admin_alta();
         }}); 
+        
+        // Per crear totes les columnes de la taula d'administradors
+        
+        TableColumn<Administrador,String> col_NomAdmin = new TableColumn<Administrador,String>(mapaNomCamps.get("nom"));        
+        col_NomAdmin.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Administrador,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Administrador,String> p) {
+                return p.getValue().nom();
+        }});
+
+        TableColumn<Administrador,String> col_CognomAdmin = new TableColumn<Administrador,String>(mapaNomCamps.get("cognoms"));
+        col_CognomAdmin.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Administrador,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Administrador,String> p) {
+                return p.getValue().cognoms();
+        }});
+
+        TableColumn<Administrador,String> col_Nom_Admin = new TableColumn<Administrador,String>(mapaNomCamps.get("nom_admin"));
+        col_Nom_Admin.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Administrador,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Administrador,String> p) {
+                return p.getValue().nom_admin();
+        }});     
+
+        TableColumn<Administrador,String> col_TelefonAdmin = new TableColumn<Administrador,String>(mapaNomCamps.get("telefon"));
+        col_TelefonAdmin.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Administrador,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Administrador,String> p) {
+                return p.getValue().telefon();
+        }});
+
+        TableColumn<Administrador,String> col_DNIAdmin = new TableColumn<Administrador,String>(mapaNomCamps.get("DNI"));
+        col_DNIAdmin.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Administrador,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Administrador,String> p) {
+                return p.getValue().dni();
+        }});
+
+        TableColumn<Administrador,String> col_CorreuAdmin = new TableColumn<Administrador,String>(mapaNomCamps.get("correu"));
+        col_CorreuAdmin.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Administrador,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Administrador,String> p) {
+                return p.getValue().correu();
+        }});
+
+        TableColumn<Administrador,String> col_PaisAdmin = new TableColumn<Administrador,String>(mapaNomCamps.get("pais"));
+        col_PaisAdmin.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Administrador,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Administrador,String> p) {
+                return p.getValue().pais();
+        }}); 
+        
+        TableColumn<Administrador,String> col_DataNaixamentAdmin = new TableColumn<Administrador,String>(mapaNomCamps.get("data_naixement"));
+        col_DataNaixamentAdmin.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Administrador,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Administrador,String> p) {
+                return p.getValue().data_naixement();
+        }});   
+        
+        TableColumn<Administrador,String> col_AdminAltaAdmin = new TableColumn<Administrador,String>(mapaNomCamps.get("admin_alta"));
+        col_AdminAltaAdmin.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Administrador,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Administrador,String> p) {
+                return p.getValue().admin_alta();
+        }});
+        
+        TableColumn<Administrador,String> col_DireccioAdmin = new TableColumn<Administrador,String>(mapaNomCamps.get("direccio"));
+        col_DireccioAdmin.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Administrador,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Administrador,String> p) {
+                return p.getValue().direccio();
+        }});  
         
         // Per crear totes les columnes de la taula llibres
         
@@ -621,18 +822,16 @@ public final class PestanyaLlistat extends Tab {
                 break;
             case ADMINISTRADOR_CASE:
                 taulaLlistat.getColumns().addAll(
-                        col_NumSoci,
-                        col_NomUsuari,
-                        col_DNI, 
-                        col_DataAlta, 
-                        col_Nom, 
-                        col_Cognom, 
-                        col_DataNaixament, 
-                        col_Direccio,  
-                        col_Pais, 
-                        col_Telefon, 
-                        col_Correu, 
-                        col_AdminAlta 
+                        col_Nom_Admin,
+                        col_DNIAdmin, 
+                        col_NomAdmin, 
+                        col_CognomAdmin, 
+                        col_DataNaixamentAdmin, 
+                        col_DireccioAdmin,  
+                        col_PaisAdmin, 
+                        col_TelefonAdmin, 
+                        col_CorreuAdmin, 
+                        col_AdminAltaAdmin 
                         );    
                 break;
             case LLIBRE_CASE:
@@ -651,5 +850,6 @@ public final class PestanyaLlistat extends Tab {
                         );    
                 break;
         }
+        taulaLlistat.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 }

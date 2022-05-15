@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -27,7 +29,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
@@ -40,7 +44,7 @@ public class LogInController implements Initializable {
     
     private String codi_resposta;
     private String significat_codi_resposta;
-    private static final String STRING_CODI_RESPOSTA = "codi_resposta";
+    private static final String STRING_CODI_RESPOSTA = "codi_retorn";
     
     @FXML
     private Label labelLogInMissatge;
@@ -52,9 +56,14 @@ public class LogInController implements Initializable {
     private TextField textFieldUsuari;
     @FXML
     private ToggleButton buttonOpcioEntrada;
-            
+       
     @FXML
     private void logInButtonAction(ActionEvent event) throws IOException, ClassNotFoundException {
+        logIn();
+    }
+
+    @FXML
+    private void logIn() throws IOException, ClassNotFoundException {
         
         // Obtenim les dades d'usuari i password
         String usuari = textFieldUsuari.getText();
@@ -72,7 +81,7 @@ public class LogInController implements Initializable {
         // En cas d'error comprobem el significat i mostrem l'error en la label destinada per aquest us
         if(codi_resposta.equals("8000")){
             
-            ((Node) (event.getSource())).getScene().getWindow().hide();
+            ((Node) labelLogInMissatge).getScene().getWindow().hide();
             
             Parent parent;            
             if(tipus_inici.equals("Administrador")){
@@ -97,7 +106,7 @@ public class LogInController implements Initializable {
             );
             
             //stage.setResizable(false);
-            Image icon = new Image("/resources/icon.png");
+            Image icon = new Image("/resources/dumogo_window_icon.png");
             stage.getIcons().add(icon);
             stage.setTitle("Dumo-Go");
             stage.setMaximized(true);
@@ -129,10 +138,24 @@ public class LogInController implements Initializable {
             buttonOpcioEntrada.setText("Usuari");
         }
     }
-    
+   
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        EventHandler enter = new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent ke) {
+            if (ke.getCode().equals(KeyCode.ENTER)) {
+                try {
+                    logIn();
+                } catch (IOException ex) {
+                    Logger.getLogger(LogInController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(LogInController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }};
+        textFieldUsuari.setOnKeyPressed(enter);
+        passwordFieldPassword.setOnKeyPressed(enter);
     }    
     
 }

@@ -14,7 +14,9 @@ import javafx.beans.property.SimpleStringProperty;
  * @author marcd
  */
 public class Llibre {
+    private final SimpleStringProperty id;
     private final SimpleStringProperty nom;
+    private SimpleStringProperty nom_antic;
     private final SimpleStringProperty autor;
     private final SimpleStringProperty any_publicacio;
     private final SimpleStringProperty tipus;
@@ -26,6 +28,7 @@ public class Llibre {
     private final SimpleStringProperty valoracio;
     private final SimpleStringProperty vots;
     
+    private final String id_label = "ID";
     private final String nom_label = "Títol";
     private final String autor_label = "Autor";
     private final String any_publicacio_label = "Any publicació";
@@ -41,7 +44,9 @@ public class Llibre {
     static public final Map<String, String> mapaNomCamps = new HashMap<>();
         
     public Llibre(HashMap<String, SimpleStringProperty> map) {
+        this.id = new SimpleStringProperty((String.valueOf(map.get("id"))));
         this.nom = new SimpleStringProperty((String.valueOf(map.get("nom"))));
+        this.nom_antic = null;
         this.autor = new SimpleStringProperty((String.valueOf(map.get("autor"))));
         this.any_publicacio = new SimpleStringProperty((String.valueOf(map.get("any_publicacio"))));
         this.tipus = new SimpleStringProperty((String.valueOf(map.get("tipus"))));
@@ -55,11 +60,13 @@ public class Llibre {
         generaMapNomCamps();
     }
     
-    public Llibre(SimpleStringProperty nom, SimpleStringProperty autor, SimpleStringProperty any_publicacio, SimpleStringProperty tipus,
+    public Llibre(SimpleStringProperty id, SimpleStringProperty nom, SimpleStringProperty autor, SimpleStringProperty any_publicacio, SimpleStringProperty tipus,
             SimpleStringProperty data_alta, SimpleStringProperty reservat_dni, SimpleStringProperty admin_alta, 
             SimpleStringProperty caratula, SimpleStringProperty descripcio, SimpleStringProperty valoracio, 
-            SimpleStringProperty vots) {       
+            SimpleStringProperty vots) {   
+        this.id = id;
         this.nom = nom;
+        this.nom_antic = null;
         this.autor = autor;
         this.any_publicacio = any_publicacio;
         this.tipus = tipus;
@@ -73,8 +80,16 @@ public class Llibre {
         generaMapNomCamps();
     }
 
+    public final String getID() {
+        return id.get();
+    }
+    
     public final String getNom() {
         return nom.get();
+    }
+    
+    public final String getNom_Antic() {
+        return nom_antic.get();
     }
     
     public final String getAutor() {
@@ -117,8 +132,20 @@ public class Llibre {
         return vots.get();
     }
     
+    public void setNom_Antic(String nom1) {
+        this.nom_antic = new SimpleStringProperty(nom1);
+    }
+    
+    public SimpleStringProperty id() {
+        return id;
+    }
+    
     public SimpleStringProperty nom() {
         return nom;
+    }
+    
+    public SimpleStringProperty nom_antic() {
+        return nom_antic;
     }
 
     public SimpleStringProperty autor() {
@@ -162,6 +189,7 @@ public class Llibre {
     }
 
     private void generaMapNomCamps(){
+        mapaNomCamps.put("id", id_label);
         mapaNomCamps.put("nom", nom_label);
         mapaNomCamps.put("autor", autor_label);
         mapaNomCamps.put("any_publicacio", any_publicacio_label);
@@ -173,6 +201,10 @@ public class Llibre {
         mapaNomCamps.put("descripcio", descripcio_label);
         mapaNomCamps.put("valoracio", valoracio_label);
         mapaNomCamps.put("vots", vots_label);
+    }
+    
+    public String getID_label() {
+        return id_label;
     }
     
     public String getNom_label() {

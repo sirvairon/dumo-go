@@ -17,6 +17,7 @@ import javafx.beans.property.SimpleStringProperty;
 public class Usuari {
     
     private final SimpleStringProperty user_name;
+    private SimpleStringProperty user_name_antic;
     private final SimpleStringProperty password;
     private final SimpleStringProperty dni;
     private final SimpleStringProperty numero_soci;
@@ -45,9 +46,10 @@ public class Usuari {
     private final String admin_alta_label = "Administrador alta";
 
     static public final Map<String, String> mapaNomCamps = new HashMap<>();
-        
+
     public Usuari(HashMap<String, SimpleStringProperty> map) {
         this.user_name = new SimpleStringProperty((String.valueOf(map.get("user_name"))));
+        this.user_name_antic = null;
         this.password = new SimpleStringProperty((String.valueOf(map.get("password"))));
         this.dni = new SimpleStringProperty((String.valueOf(map.get("dni"))));
         this.data_naixement = new SimpleStringProperty((String.valueOf(map.get("data_naixement"))));
@@ -59,7 +61,7 @@ public class Usuari {
         this.pais = new SimpleStringProperty((String.valueOf(map.get("pais"))));
         this.telefon = new SimpleStringProperty((String.valueOf(map.get("telefon"))));     
         this.correu = new SimpleStringProperty((String.valueOf(map.get("correu"))));
-        this.admin_alta = new SimpleStringProperty((String.valueOf(map.get("admin_alta"))));   
+        this.admin_alta = new SimpleStringProperty((String.valueOf(map.get("admin_alta"))));  
         generaMapNomCamps();
     }
     
@@ -69,6 +71,7 @@ public class Usuari {
             SimpleStringProperty direccio, SimpleStringProperty pais, SimpleStringProperty telefon, 
             SimpleStringProperty correu, SimpleStringProperty admin_alta) {       
         this.user_name = user_name;
+        this.user_name_antic = null;
         this.password = password;
         this.dni = dni;
         this.data_naixement = data_naixement;
@@ -80,10 +83,10 @@ public class Usuari {
         this.pais = pais;
         this.telefon = telefon;     
         this.correu = correu;
-        this.admin_alta = admin_alta;    
+        this.admin_alta = admin_alta; 
         generaMapNomCamps();
     }  
-
+    
     public final String getNom() {
         return nom.get();
     }
@@ -94,6 +97,10 @@ public class Usuari {
 
     public final String getUser_name() {
         return user_name.get();
+    }
+    
+    public final String getUser_name_antic() {
+        return user_name_antic.get();
     }
 
     public final String getDireccio() {
@@ -147,6 +154,10 @@ public class Usuari {
     public SimpleStringProperty user_name() {
         return user_name;
     }
+    
+    public SimpleStringProperty user_name_antic() {
+        return user_name_antic;
+    }
 
     public SimpleStringProperty direccio() {
         return direccio;
@@ -187,6 +198,10 @@ public class Usuari {
     public SimpleStringProperty password() {
         return password;
     }
+    
+    public void setUser_name_antic(String nom1) {
+        this.user_name_antic = new SimpleStringProperty(nom1);
+    }
 
     private void generaMapNomCamps(){
         mapaNomCamps.put("user_name", user_name_label);
@@ -207,7 +222,7 @@ public class Usuari {
     public Map getNomCamps(){
         return mapaNomCamps;
     }
-    
+       
     public String getUser_name_label() {
         return user_name_label;
     }

@@ -38,7 +38,7 @@ public class PasswordController extends UsuariEdicioController implements Initia
     private HashMap<String, String> msg_in;
     private String codi_resposta;
     private String significat_codi_resposta;
-    private static final String STRING_CODI_RESPOSTA = "codi_resposta";
+    private static final String STRING_CODI_RESPOSTA = "codi_retorn";
     
     @FXML
     private PasswordField passwordFieldPassword1;
@@ -64,7 +64,7 @@ public class PasswordController extends UsuariEdicioController implements Initia
         alerta.setContentText("");        
         if(pass1.equals(pass2)){
             sessioCaducada();
-            msg_in = AccionsClient.modificarPassword(pass1);
+            //msg_in = AccionsClient.modificarPassword(pass1);
             codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
             // Comprobem el text del codi de resposta
             significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);

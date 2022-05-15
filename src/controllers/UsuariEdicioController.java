@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -56,9 +57,10 @@ public class UsuariEdicioController implements Initializable {
      
     private Stage stage;
     private Usuari usuari;
+    private String user_name_actual;
     private String codi_resposta;
     private String significat_codi_resposta;
-    private static final String STRING_CODI_RESPOSTA = "codi_resposta";
+    private static final String STRING_CODI_RESPOSTA = "codi_retorn";
     private Alert alerta;
     private HashMap<String, String> msg_in;
     
@@ -100,13 +102,9 @@ public class UsuariEdicioController implements Initializable {
     private PasswordField passwordFieldPassword;
     @FXML
     private VBox vBoxAdminAlta;
-/*            
-    public void recuperarDades(){
-        stage = (Stage) this.raiz.getScene().getWindow();
-        usuari = (Usuari) stage.getUserData();
-        omplirDades(usuari);               
-    }
-*/
+    @FXML
+    private HBox hBoxAdministrador;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // Creem l'alerta que farem servir per informar d'errors o accions correctes
@@ -116,45 +114,7 @@ public class UsuariEdicioController implements Initializable {
         dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
         alerta.initStyle(StageStyle.UNDECORATED);
     } 
-    
-    private void omplirDades(Usuari usuari){
-        // Agafem l'usuari i el guardem
-        this.usuari = usuari;
-        // Omplim els camps de pantalla amb l'usuari
-        textFieldUserName.setText(usuari.getUser_name());        
-        textFieldDNI.setText(usuari.getDni());
-        textFieldNom.setText(usuari.getNom());
-        textFieldCognoms.setText(usuari.getCognoms());
-        textFieldTelefon.setText(usuari.getTelefon());
-        textFieldDireccio.setText(usuari.getDireccio());
-        textFieldPais.setText(usuari.getPais());
-        textFieldCorreu.setText(usuari.getCorreu());
-        datePickerDataAlta.setValue(LocalDate.parse(usuari.getData_Alta()));
-        datePickerDataNaixement.setValue(LocalDate.parse(usuari.getData_naixement()));
-        textFieldAdminAlta.setText(usuari.getAdmin_Alta()); 
-        passwordFieldPassword.setText(usuari.getPassword());
-        textFieldNumSoci.setText(usuari.getNum_soci());
-    }
-    
-    private void esborrarDades(){
-        // Esborrem l'usuari de memoria
-        this.usuari = null;
-        // Esborrem els camps de pantalla
-        textFieldUserName.setText("");
-        textFieldNumSoci.setText("");
-        textFieldDNI.setText("");
-        textFieldNom.setText("");
-        textFieldCognoms.setText("");
-        textFieldTelefon.setText("");
-        textFieldDireccio.setText("");
-        textFieldPais.setText("");
-        textFieldCorreu.setText("");
-        datePickerDataAlta.setValue(LocalDate.now());
-        datePickerDataNaixement.setValue(null);
-        textFieldAdminAlta.setText(""); 
-        passwordFieldPassword.setText("");
-    }
-        
+      
     public void afegirUsuari(){
         // Esborrem dades en cas de que hi hagi
         esborrarDades();
@@ -170,12 +130,15 @@ public class UsuariEdicioController implements Initializable {
         butoAccio.setOnMouseClicked( new EventHandler() {
             @Override
             public void handle(Event event) {
+                    // Obtenim l'usuari de pantalla
                     usuari = obtenirUsuariPantalla();
+                    // Establim que el user_name_antic i el user_name siguien el mateix
+                    usuari.setUser_name_antic(usuari.getUser_name());
                     try {
                         // Creem el HashMap on rebrem el codi de resposta
                         HashMap<String, String> msg_in;
                         // Fem l'accio d'afegir usuari
-                        msg_in = AccionsClient.afegirUsuari(usuari);
+                        msg_in = AccionsClient.afegirElement(usuari);
                         // Obtenim el codi de resposta
                         codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
                         // Obtenim el sinificat del codi de resposta
@@ -218,78 +181,49 @@ public class UsuariEdicioController implements Initializable {
         butoAccio.setOnMouseClicked( new EventHandler() {
             @Override
             public void handle(Event event) {
-                // Obtenim les dades del usuari amb les dades de la pantalla
+                // Obtenim les dades de l'administrador amb les dades de la pantalla
                 usuari = obtenirUsuariPantalla();
-                try {
-                    // Creem el HashMap on rebrem el codi de resposta
-                    HashMap<String, String> msg_in;
-                    // Fem l'accio de modificar usuari
-                    msg_in = AccionsClient.modificarUsuari(usuari);
-                    // Obtenim el codi de resposta
-                    codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
-                    // Obtenim el sinificat del codi de resposta
-                    significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-                    // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
-                    alerta.setTitle("Modificar usuari");
-                    alerta.setHeaderText(significat_codi_resposta);
-                    // Sessio caducada
-                    if(codi_resposta.equals("10")){
-                        sessioCaducada();
-                    // Usuari modificat correctament
-                    }else if(codi_resposta.equals("5000")){
-                        alerta.setAlertType(Alert.AlertType.INFORMATION);
-                        alerta.showAndWait();
-                        ((Node) (event.getSource())).getScene().getWindow().hide();
-                    // Error al modificar l'usuari
-                    }else{
-                        alerta.setAlertType(Alert.AlertType.ERROR);
-                        alerta.show();
+                if(usuari!=null){
+                    // Omplim el camp "nom_admin_antic" del Usuari amb el nom anterior
+                    System.out.println("user_name_actual: "+ user_name_actual);
+                    usuari.setUser_name_antic(user_name_actual);
+                    try {
+                        // Creem el HashMap on rebrem el codi de resposta
+                        HashMap<String, String> msg_in = null;
+                        msg_in = AccionsClient.modificarElement(usuari);
+                        // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
+                        alerta.setTitle("Modificar usuari");
+                        // Obtenim el codi de resposta
+                        codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
+                        // Obtenim el sinificat del codi de resposta
+                        significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
+                        alerta.setHeaderText(significat_codi_resposta);
+                        switch (codi_resposta) {
+                            case "10": // Sessio caducada
+                                sessioCaducada();
+                                // Usuari modificat correctament
+                                break;
+                            case "1300": // Correcte
+                                alerta.setAlertType(Alert.AlertType.INFORMATION);
+                                alerta.showAndWait();
+                                ((Node) (event.getSource())).getScene().getWindow().hide();
+                                // Error al modificar l'usuari
+                                break;
+                            default: // Error
+                                alerta.setAlertType(Alert.AlertType.ERROR);
+                                alerta.show();
+                                break;
+                        }
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
-
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
     }
     
-    @FXML
-    private void tancarFinestra(ActionEvent event) throws IOException, ClassNotFoundException {
-        ((Node) (event.getSource())).getScene().getWindow().hide();
-    }
-    
-    private Usuari obtenirUsuariPantalla(){
-        // Comprobem si alguns camps estan buits
-        String data;
-        try{
-            data = datePickerDataNaixement.getValue().toString();
-        }catch (NullPointerException ex) {
-            data = "null";
-        }
-        System.out.println("data: " + data);
-        // Creem un usuari obtenint les dades de la pantalla
-        Usuari u = new Usuari(
-            new SimpleStringProperty(textFieldUserName.getText()),
-            new SimpleStringProperty(passwordFieldPassword.getText()),
-            new SimpleStringProperty(textFieldDNI.getText()),
-            new SimpleStringProperty(data),
-            new SimpleStringProperty(textFieldNumSoci.getText()),            
-            new SimpleStringProperty(datePickerDataAlta.getValue().toString()),
-            new SimpleStringProperty(textFieldNom.getText()),
-            new SimpleStringProperty(textFieldCognoms.getText()),
-            new SimpleStringProperty(textFieldDireccio.getText()),
-            new SimpleStringProperty(textFieldPais.getText()),
-            new SimpleStringProperty(textFieldTelefon.getText()),
-            new SimpleStringProperty(textFieldCorreu.getText()),
-            new SimpleStringProperty(textFieldAdminAlta.getText())            
-        );
-        // Tornem l'usuari creat
-        return u;
-    }
-        
     public void mostrarPerfil(){
         try {
             /** PER MODIFICAR PERFIL DESDE L'USUARI**/
@@ -319,64 +253,90 @@ public class UsuariEdicioController implements Initializable {
                 // Amagem camps que no ha de veure l'usuari
                 vBoxAdminAlta.setVisible(false);
             }
-            
-            
-            
-            
-            
-            
-            /*
-            // Omplim les dades per les dades obtingudes de l'usuari
-            omplirDades(u);
-            // Establim al buto de l'accio, l'accio que volem fer (modificar)
-            butoAccio.setText("Modificar");
-            // Configurem el EventHandler en cas de fer click al boto de modificar
-            butoAccio.setOnMouseClicked( new EventHandler() {
-                @Override
-                public void handle(Event event) {
-                    // Obtenim les dades del usuari amb les dades de la pantalla
-                    usuari = obtenirUsuariPantalla();
-                    try {
-                        // Creem el HashMap on rebrem el codi de resposta
-                        HashMap<String, String> msg_in;
-                        // Fem l'accio de modificar usuari
-                        msg_in = AccionsClient.mostraUsuari();
-                        // Obtenim el codi de resposta
-                        codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
-                        // Obtenim el sinificat del codi de resposta
-                        significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-                        // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
-                        alerta.setTitle("Modificar usuari");
-                        alerta.setHeaderText(significat_codi_resposta);
-                        // Sessio caducada
-                        if(codi_resposta.equals("10")){
-                            sessioCaducada();
-                            // Usuari modificat correctament
-                        }else if(codi_resposta.equals("5000")){
-                            alerta.setAlertType(Alert.AlertType.INFORMATION);
-                            alerta.showAndWait();
-                            ((Node) (event.getSource())).getScene().getWindow().hide();
-                            // Error al modificar l'usuari
-                        }else{
-                            alerta.setAlertType(Alert.AlertType.ERROR);
-                            alerta.show();
-                        }
-                        
-                        
-                    } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            });
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        */
         } catch (ClassNotFoundException ex) {
                 Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    private Usuari obtenirUsuariPantalla(){
+        // Comprobem si alguns camps estan buits
+        String data;
+        if(textFieldUserName.getText().equals("") || textFieldUserName.getText() == null){
+            // Configurem l'alerta que ens confirmara que hi ha hagut error a l'obtenir les dades de l'usuari a pantalla
+            alerta.setTitle("Nom d'usuari");
+            alerta.setHeaderText("Es obligatori introduir un nom d'usuari");  
+            alerta.setAlertType(Alert.AlertType.ERROR);
+            // La mostrem i esperem click
+            alerta.show();
+            return null;
+        }else if(datePickerDataNaixement.getValue() == null){
+            // Configurem l'alerta que ens confirmara que hi ha hagut error a l'obtenir les dades de l'usuari a pantalla
+            alerta.setTitle("Data de naixement");
+            alerta.setHeaderText("Es obligatori introduir la data de naixement");  
+            alerta.setAlertType(Alert.AlertType.ERROR);
+            // La mostrem i esperem click
+            alerta.show();
+            return null;
+        }else{
+            Usuari u = new Usuari(
+                new SimpleStringProperty(textFieldUserName.getText()),
+                new SimpleStringProperty(passwordFieldPassword.getText()),
+                new SimpleStringProperty(textFieldDNI.getText()),
+                new SimpleStringProperty(datePickerDataNaixement.getValue().toString()),
+                new SimpleStringProperty(textFieldNumSoci.getText()),            
+                new SimpleStringProperty(datePickerDataAlta.getValue().toString()),
+                new SimpleStringProperty(textFieldNom.getText()),
+                new SimpleStringProperty(textFieldCognoms.getText()),
+                new SimpleStringProperty(textFieldDireccio.getText()),
+                new SimpleStringProperty(textFieldPais.getText()),
+                new SimpleStringProperty(textFieldTelefon.getText()),
+                new SimpleStringProperty(textFieldCorreu.getText()),
+                new SimpleStringProperty(textFieldAdminAlta.getText())
+            );
+            u.setUser_name_antic("");
+            // Tornem l'usuari creat
+            return u;
+        }
+    }
+    
+    private void omplirDades(Usuari usuari){
+        // Agafem l'usuari i el guardem
+        this.usuari = usuari;
+        // Omplim els camps de pantalla amb l'usuari
+        textFieldUserName.setText(usuari.getUser_name());        
+        textFieldDNI.setText(usuari.getDni());
+        textFieldNom.setText(usuari.getNom());
+        textFieldCognoms.setText(usuari.getCognoms());
+        textFieldTelefon.setText(usuari.getTelefon());
+        textFieldDireccio.setText(usuari.getDireccio());
+        textFieldPais.setText(usuari.getPais());
+        textFieldCorreu.setText(usuari.getCorreu());
+        datePickerDataAlta.setValue(LocalDate.parse(usuari.getData_Alta()));
+        datePickerDataNaixement.setValue(LocalDate.parse(usuari.getData_naixement()));
+        textFieldAdminAlta.setText(usuari.getAdmin_Alta()); 
+        passwordFieldPassword.setText(usuari.getPassword());
+        textFieldNumSoci.setText(usuari.getNum_soci());
+        user_name_actual = usuari.getUser_name();
+    }
+    
+    private void esborrarDades(){
+        // Esborrem l'usuari de memoria
+        this.usuari = null;
+        // Esborrem els camps de pantalla
+        textFieldUserName.setText("");
+        textFieldNumSoci.setText("");
+        textFieldDNI.setText("");
+        textFieldNom.setText("");
+        textFieldCognoms.setText("");
+        textFieldTelefon.setText("");
+        textFieldDireccio.setText("");
+        textFieldPais.setText("");
+        textFieldCorreu.setText("");
+        datePickerDataAlta.setValue(LocalDate.now());
+        datePickerDataNaixement.setValue(null);
+        textFieldAdminAlta.setText(""); 
+        passwordFieldPassword.setText("");
+        user_name_actual = null;
     }
     
     @FXML
@@ -413,7 +373,7 @@ public class UsuariEdicioController implements Initializable {
                             //Comprovem si estem afegint o modificant usuari
                             if(usuari!=null){
                                 // Si la variable usuari no esta buida es que estem modificat el password de l'usuari
-                                msg_in = AccionsClient.modificarPassword(pass1);
+                                msg_in = AccionsClient.modificarPassword(usuari, pass1);
                                 codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
                                 // Comprobem el text del codi de resposta
                                 significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
@@ -444,7 +404,7 @@ public class UsuariEdicioController implements Initializable {
                             label_resultat.setText("La contrasenya no coincideix");
                         }
                     } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
                         Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -471,7 +431,7 @@ public class UsuariEdicioController implements Initializable {
         
         stage = new Stage();
         stage.initModality(Modality.WINDOW_MODAL);
-        Image icon = new Image("/resources/editar_icon_neg.png");
+        Image icon = new Image("/resources/editar_icon_neg_16.png");
         stage.getIcons().add(icon);
         stage.setTitle("Verificar password");
         stage.setResizable(false);
@@ -480,6 +440,11 @@ public class UsuariEdicioController implements Initializable {
         stage.setOnHiding(we -> stage = null);
         stage.show();
         
+    }
+    
+    @FXML
+    private void tancarFinestra(ActionEvent event) throws IOException, ClassNotFoundException {
+        ((Node) (event.getSource())).getScene().getWindow().hide();
     }
     
     public void sessioCaducada() throws IOException {
@@ -510,7 +475,7 @@ public class UsuariEdicioController implements Initializable {
         Stage stage1 = new Stage();
         Scene scene = new Scene(parent);
         stage1.setScene(scene);
-        Image icon = new Image("/resources/icon.png");
+        Image icon = new Image("/resources/dumogo_icon_neg_35.png");
         stage1.getIcons().add(icon);
         stage1.setTitle("Dumo-Go");
         stage1.setResizable(false);
