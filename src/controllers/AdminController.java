@@ -92,6 +92,36 @@ public class AdminController implements Initializable {
         DialogPane dialogPane = alerta.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());        
     }
+    
+    @FXML
+    private void ferLogout(ActionEvent event) throws IOException{
+        // Fem l'accio de fer tancar sessio
+        msg_in = AccionsClient.ferLogOut();
+        // Obtenim codi de resposta
+        codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
+        // Obtenim significat del codi de resposta
+        significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);        
+        // Comprobem si ha sigut correcte tancar sessio
+        if(codi_resposta.equals("20")){
+            tabPaneGeneral.getScene().getWindow().hide();
+            Parent parent = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));
+            Stage stage = new Stage();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            Image icon = new Image("/resources/dumogo_icon_neg_35.png");
+            stage.getIcons().add(icon);
+            stage.setTitle("Dumo-Go");
+            stage.setResizable(false);
+            stage.show();      
+        }else{
+            // Configurem l'alerta per indicar que hi ha hagut un error
+            alerta.setTitle("Tancar sessió");
+            alerta.setContentText("");
+            alerta.setAlertType(Alert.AlertType.ERROR);
+            alerta.setHeaderText(significat_codi_resposta);
+            alerta.show();
+        }
+    }
 
     @FXML
     private void crearPestanyaLlistat(ActionEvent event)throws IOException, ClassNotFoundException {
@@ -239,45 +269,13 @@ public class AdminController implements Initializable {
     }
     
     @FXML
-    private void ferLogout(ActionEvent event) throws IOException{
-        // Fem l'accio de fer tancar sessio
-        msg_in = AccionsClient.ferLogOut();
-        // Obtenim codi de resposta
-        codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
-        // Obtenim significat del codi de resposta
-        significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);        
-        // Comprobem si ha sigut correcte tancar sessio
-        if(codi_resposta.equals("20")){
-            tabPaneGeneral.getScene().getWindow().hide();
-            Parent parent = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));
-            Stage stage = new Stage();
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            Image icon = new Image("/resources/dumogo_icon_neg_35.png");
-            stage.getIcons().add(icon);
-            stage.setTitle("Dumo-Go");
-            stage.setResizable(false);
-            stage.show();      
-        }else{
-            // Configurem l'alerta per indicar que hi ha hagut un error
-            alerta.setTitle("Tancar sessió");
-            alerta.setContentText("");
-            alerta.setAlertType(Alert.AlertType.ERROR);
-            alerta.setHeaderText(significat_codi_resposta);
-            alerta.show();
-        }
-    }
-    
-    @FXML
-    private void buscarElement(ActionEvent event) throws IOException{
+    private void obrirFinestraBusqueda(ActionEvent event) throws IOException{
         // Comprobem la seleccio del menu
         MenuItem menuItem = (MenuItem)event.getSource();
         String tipus_busqueda = menuItem.getId(); // Exemple: usuari o administrador
         String titol_busqueda = menuItem.getText(); // Exemple: Buscar usuari o Buscar d'administrador
         
-        Usuari usuari;
         Image icon = null;
-        //Buscador buscador = null;
         
         // En cas de que no s'hagi creat el stage (finestra oberta) el creem
         if (stageBuscar == null) { 
@@ -308,43 +306,17 @@ public class AdminController implements Initializable {
                     try {
                         String paraula_busqueda = buscador.getParaula();
                         if(paraula_busqueda != null){
-                            msg_in = AccionsClient.buscarElement(paraula_busqueda, tipus_busqueda);
-                            System.out.println("RESULTAT BUSQUEDA:");
-                            System.out.println(msg_in.toString());
-
-                            //Obtenim el codi de resposta
-                            codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
-                            // Comprobem el text del codi de resposta
-                            significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-                            // Sessio caducada
-                            if(codi_resposta.equals("10")){
-                                sessioCaducada();
-                            // Usuari eliminat correctament
-                            }else if(codi_resposta.equals("5000") || codi_resposta.equals("6000") || codi_resposta.equals("1600")){
+                            buscarElement(paraula_busqueda, tipus_busqueda);
+                            /*
+                            if(buscarElement2(paraula_busqueda, tipus_busqueda)){
                                 stageBuscar.close();
-                                switch(tipus_busqueda){
-                                    case USUARI_CASE:
-                                        modificarElement(new Usuari((HashMap)msg_in)); 
-                                        break;
-                                    case ADMINISTRADOR_CASE:
-                                        modificarElement(new Administrador((HashMap)msg_in)); 
-                                        //Administrador u = new Administrador((HashMap)msg_in);
-                                        break;
-                                    case LLIBRE_CASE:
-                                        modificarElement(new Llibre((HashMap)msg_in)); 
-                                        //Llibre u = new Llibre((HashMap)msg_in);
-                                        break;
-                                }
-                               // modificarElement(new Usuari((HashMap)msg_in));                               
-                            // Error al trobar usuari
-                            }else{
-                                alerta.setAlertType(Alert.AlertType.ERROR);
-                                alerta.setHeaderText(significat_codi_resposta);
-                                alerta.show();
                             }
+                            */
+                        }else{
+                            alerta.setAlertType(Alert.AlertType.ERROR);
+                            alerta.setHeaderText("El camp no pot estar buit");
+                            alerta.show();
                         }
-                    } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
                         Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -377,6 +349,12 @@ public class AdminController implements Initializable {
     }
     
     @FXML
+    private void modificarPerfil(ActionEvent event) throws IOException{
+        String paraula_busqueda = AccionsClient.getNom_user_actual();
+        buscarElement(paraula_busqueda, ADMINISTRADOR_CASE);
+    }
+    
+    @FXML
     private void afegirElement(Event event) throws IOException{
         String tipus = "";
         if(event.getSource() instanceof Button){
@@ -406,6 +384,62 @@ public class AdminController implements Initializable {
                 llibreEdicioControlador.afegirLlibre();
                 break;
         }
+    }
+
+    private void buscarElement(String paraula_busqueda, String tipus_busqueda) throws IOException{
+        
+        try {
+            // Comprobem que per buscar un llibre introduim un numero
+            if(tipus_busqueda.equals(LLIBRE_CASE)){
+                int test = Integer.valueOf(paraula_busqueda);
+            }
+            
+            if(paraula_busqueda != null){
+                msg_in = AccionsClient.buscarElement(paraula_busqueda, tipus_busqueda);
+                System.out.println("RESULTAT BUSQUEDA:");
+                System.out.println(msg_in.toString());
+
+                // Obtenim el codi de resposta
+                codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
+                // Comprobem el text del codi de resposta
+                significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
+                // Sessio caducada
+                if(codi_resposta.equals("10")){
+                    sessioCaducada();
+                // Element trobat
+                }else if(codi_resposta.equals("5000") || codi_resposta.equals("6000") || codi_resposta.equals("1600")){
+                    // Si la finestra per buscar esta oberta la tanquem
+                    if(stageBuscar != null){
+                        stageBuscar.close();
+                    }
+                    switch(tipus_busqueda){
+                        case USUARI_CASE:
+                            modificarElement(new Usuari((HashMap)msg_in));
+                            break;
+                        case ADMINISTRADOR_CASE:
+                            modificarElement(new Administrador((HashMap)msg_in)); 
+                            break;
+                        case LLIBRE_CASE:
+                            modificarElement(new Llibre((HashMap)msg_in)); 
+                            break;
+                    }
+                // Error al trobar l'element
+                }else{
+                    alerta.setAlertType(Alert.AlertType.ERROR);
+                    alerta.setHeaderText(significat_codi_resposta);
+                    alerta.show();  
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NumberFormatException ex) {
+            significat_codi_resposta = "Ha de ser un número";
+            alerta.setAlertType(Alert.AlertType.ERROR);
+            alerta.setHeaderText(significat_codi_resposta);
+            alerta.show();
+        }        
     }
 
     private void modificarElement(Object obj) throws IOException{ 
@@ -462,7 +496,7 @@ public class AdminController implements Initializable {
         if (option.get() == ButtonType.OK) {                
             // Fem l'accio d'eliminar l'element
             msg_in = AccionsClient.eliminarElement(obj);
-            //Obtenim el codi de resposta
+            // Obtenim el codi de resposta
             codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
             // codi_resposta = "10";
             // Comprobem el text del codi de resposta

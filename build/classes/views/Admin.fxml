@@ -36,17 +36,17 @@
                <children>
                   <MenuButton mnemonicParsing="false" text="Usuaris">
                     <items>
-                        <MenuItem fx:id="usuaris" mnemonicParsing="false" onAction="#buscarElement" text="Buscar Usuari" />
+                        <MenuItem fx:id="usuaris" mnemonicParsing="false" onAction="#obrirFinestraBusqueda" text="Buscar Usuari" />
                         <MenuItem fx:id="usuaris" mnemonicParsing="false" onAction="#afegirElement" text="Afegir usuari" />
                       <MenuItem fx:id="usuaris" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Llistat d'usuaris" />
-                        <MenuItem fx:id="administradors" mnemonicParsing="false" onAction="#buscarElement" text="Buscar administrador" />
+                        <MenuItem fx:id="administradors" mnemonicParsing="false" onAction="#obrirFinestraBusqueda" text="Buscar administrador" />
                         <MenuItem fx:id="administradors" mnemonicParsing="false" onAction="#afegirElement" text="Afegir administrador" />
                       <MenuItem fx:id="administradors" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Llistat d'administradors" />
                     </items>
                   </MenuButton>
                   <MenuButton mnemonicParsing="false" text="Biblioteca">
                     <items>
-                        <MenuItem fx:id="llibres" mnemonicParsing="false" onAction="#buscarElement" text="Buscar llibre" />
+                        <MenuItem fx:id="llibres" mnemonicParsing="false" onAction="#obrirFinestraBusqueda" text="Buscar llibre" />
                       <MenuItem fx:id="llibres" mnemonicParsing="false" onAction="#afegirElement" text="Afegir llibre" />
                       <MenuItem fx:id="llibres" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Llistat de llibres" />
                     </items>
@@ -68,7 +68,7 @@
             <Pane HBox.hgrow="ALWAYS" />
             <MenuButton mnemonicParsing="false" styleClass="butoTancaSessio" text="Usuari">
               <items>
-                <MenuItem mnemonicParsing="false" text="Modificar perfil" />
+                <MenuItem mnemonicParsing="false" onAction="#modificarPerfil" text="Modificar perfil" />
                 <MenuItem mnemonicParsing="false" onAction="#ferLogout" text="Tancar sessió" />
               </items>
             </MenuButton>
