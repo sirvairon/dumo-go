@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="raiz" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PrestecController">
+   <children>
+      <VBox alignment="CENTER_LEFT">
+         <children>
+            <Label fx:id="labelAutor" text="Prestec" />
+            <HBox>
+               <children>
+                  <HBox>
+                     <children>
+                        <VBox>
+                           <children>
+                              <Label text="Titol" />
+                              <Label fx:id="labelTitol" styleClass="titolLlibre" text="INTRODUCCIÓN A LA BASE DE DATOS RELACIONAL" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <HBox>
+         <children>
+            <HBox>
+               <children>
+                  <VBox>
+                     <children>
+                        <Label text="Data del prèstec" />
+                        <DatePicker fx:id="datePickerDataReserva" disable="true" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox HBox.hgrow="ALWAYS">
+               <children>
+                  <VBox>
+                     <children>
+                        <Label layoutX="327.0" layoutY="38.0" text="Data de retorn previst" />
+                        <DatePicker fx:id="datePickerDataReservaPrevist" disable="true" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <VBox>
+                     <children>
+                        <Label text="Data de retorn" />
+                        <DatePicker fx:id="datePickerDataReservaReal" disable="true" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+      <HBox>
+         <children>
+            <VBox HBox.hgrow="ALWAYS">
+               <children>
+                  <HBox spacing="40.0">
+                     <children>
+                        <VBox>
+                           <children>
+                              <Label fx:id="labelReservatDNI" text="Reservat per" />
+                              <TextField fx:id="textFieldReserva" disable="true" prefWidth="200.0" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox fx:id="hboxBotones" alignment="CENTER" styleClass="hboxBotones">
+         <children>
+            <Button fx:id="butoAccio" disable="true" mnemonicParsing="false" text="Modificar" />
+            <Button fx:id="ButtonVolver" mnemonicParsing="false" onAction="#tancarFinestra" text="Sortir" />
+         </children>
+      </HBox>
+   </children>
+   <stylesheets>
+      <URL value="@../styles/general.css" />
+      <URL value="@../styles/elementvista.css" />
+   </stylesheets>
+</VBox>

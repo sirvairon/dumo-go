@@ -4,19 +4,34 @@
  */
 package controllers;
 
+import dumogo.AccionsClient;
+import dumogo.CodiErrors;
 import dumogo.Llibre;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -35,6 +50,7 @@ public class LlibreVistaController implements Initializable {
     private String codi_resposta;
     private String significat_codi_resposta;
     private static final String STRING_CODI_RESPOSTA = "codi_retorn";
+    private static final String STRING_RESERVA_LLIURE = "LLIURE";
     private Alert alerta;
     private HashMap<String, String> msg_in;
     
@@ -80,6 +96,17 @@ public class LlibreVistaController implements Initializable {
         DialogPane dialogPane = alerta.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
         alerta.initStyle(StageStyle.UNDECORATED);
+        
+        // Establim al buto de l'accio, l'accio que volem fer (fer reserva)
+        butoAccio.setText("Reservar");
+        // Configurem el EventHandler en cas de fer click al boto de fer reserva
+        butoAccio.setOnMouseClicked( new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                //ferReserva();
+                ferReserva();
+            }
+        });
     }    
     
     private void omplirDades(Llibre llibre){
@@ -93,9 +120,19 @@ public class LlibreVistaController implements Initializable {
         labelValoracio.setText(llibre.getValoracio());
         labelVots.setText(llibre.getVots());
         labelDescripcio.setText(llibre.getDescripcio());
-        textFieldAdminAlta.setText(llibre.getAdmin_alta());
-        datePickerDataAlta.setValue(LocalDate.parse(llibre.getData_alta()));
-        textFieldReservatDNI.setText(llibre.getReservat_DNI());
+        //textFieldAdminAlta.setText(llibre.getAdmin_alta());
+        //datePickerDataAlta.setValue(LocalDate.parse(llibre.getData_alta()));
+        textFieldReservatDNI.setText(llibre.getUser_name());
+        
+        String caratula = llibre.getCaratula();
+        if(!caratula.equals("null")){
+            // Per la caratula tenim que decodejar l'string
+            BufferedImage buffer = AccionsClient.decodeToImage(caratula);
+            //BufferedImage buffer = decodeToImage(caratula);
+            Image imatge = SwingFXUtils.toFXImage(buffer, null);
+            imageViewCaratula.setImage(imatge);
+        }
+       
     }
     
     private void esborrarDades(){
@@ -109,156 +146,67 @@ public class LlibreVistaController implements Initializable {
         labelValoracio.setText("");
         labelVots.setText("");
         labelDescripcio.setText("");
-        textFieldAdminAlta.setText("");
-        datePickerDataAlta.setValue(LocalDate.now());
+        //textFieldAdminAlta.setText("");
+        //datePickerDataAlta.setValue(LocalDate.now());
         textFieldReservatDNI.setText("");
     }
     
     public void mostrarLlibre(Llibre ll){
         // Omplim les dades per les dades obtingudes de l'usuari
         omplirDades(ll);
-        // Com es desde l'administrador s'han de poder editar tots els camps
-        //textFieldDNI.setDisable(false);
-        // Establim al buto de l'accio, l'accio que volem fer (modificar)
-        butoAccio.setVisible(false);
+        
+        // Si la reserva esta 'LLIURE' mostrem el boto per poder reservar-lo
+        if(llibre.getUser_name().equals(STRING_RESERVA_LLIURE)){
+            butoAccio.setDisable(false);
+        }else {
+            butoAccio.setDisable(true);
+        }
     }
     
-    /*
-        public void afegirLlibre(){
-        // Esborrem dades en cas de que hi hagi
-        esborrarDades();
-        // Establim per defecte la data d'avui
-        datePickerDataAlta.setValue(LocalDate.now());
-        // Establim l'administrador que esta afegint l'usuari
-        textFieldAdminAlta.setText(AccionsClient.getNom_user_actual());
-        // Com es un alta nova desde l'administrador s'han de poder editar tots els camps
-        //textFieldDNI.setDisable(false);
-        // Establim al buto de l'accio, l'accio que volem fer (afegir)
-        butoAccio.setText("Afegir");
-        // Configurem el EventHandler en cas de fer click al boto d'afegir
-        butoAccio.setOnMouseClicked( new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                    llibre = obtenirLlibrePantalla();
-                    try {
-                        // Creem el HashMap on rebrem el codi de resposta
-                        HashMap<String, String> msg_in;
-                        // Fem l'accio d'afegir usuari
-                        msg_in = AccionsClient.afegirLlibre(llibre);
-                        // Obtenim el codi de resposta
-                        codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
-                        // Obtenim el sinificat del codi de resposta
-                        significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-                        // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
-                        alerta.setTitle("Afegir llibre");
-                        alerta.setHeaderText(significat_codi_resposta);
-                        // Sessio caducada
-                        if(codi_resposta.equals("10")){
-                            sessioCaducada();
-                        // Usuari afegit correctament
-                        }else if(codi_resposta.equals("1400")){
-                            alerta.setAlertType(Alert.AlertType.INFORMATION);
-                            alerta.showAndWait();
-                            ((Node) (event.getSource())).getScene().getWindow().hide();
-                        // Error a l'afegir l'usuari
-                        }else{
-                            llibre = null;
-                            alerta.setAlertType(Alert.AlertType.ERROR);
-                            alerta.show();
-                        }
-                    } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-        });
-    }
-        */
-    /*
-    public void modificarLlibre(Llibre ll){
-        / PER MODIFICAR PERFIL DESDE L'ADMINISTRADOR /
-        // Omplim les dades per les dades obtingudes de l'usuari
-        omplirDades(ll);
-        // Com es desde l'administrador s'han de poder editar tots els camps
-        //textFieldDNI.setDisable(false);
-        // Establim al buto de l'accio, l'accio que volem fer (modificar)
-        butoAccio.setText("Modificar");
-        // Configurem el EventHandler en cas de fer click al boto de modificar
-        butoAccio.setOnMouseClicked( new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                // Obtenim les dades del usuari amb les dades de la pantalla
-                llibre = obtenirLlibrePantalla();
-                try {
-                    // Creem el HashMap on rebrem el codi de resposta
-                    HashMap<String, String> msg_in;
-                    // Fem l'accio de modificar usuari
-                    msg_in = AccionsClient.modificarLlibre(llibre);
-                    // Obtenim el codi de resposta
-                    codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
-                    // Obtenim el sinificat del codi de resposta
-                    significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-                    // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
-                    alerta.setTitle("Modificar llibre");
-                    alerta.setHeaderText(significat_codi_resposta);
-                    // Sessio caducada
-                    if(codi_resposta.equals("10")){
-                        sessioCaducada();
-                    // Usuari modificat correctament
-                    }else if(codi_resposta.equals("1800")){
-                        alerta.setAlertType(Alert.AlertType.INFORMATION);
-                        alerta.showAndWait();
-                        ((Node) (event.getSource())).getScene().getWindow().hide();
-                    // Error al modificar l'usuari
-                    }else{
-                        alerta.setAlertType(Alert.AlertType.ERROR);
-                        alerta.show();
-                    }
-
-
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(UsuariEdicioController.class.getName()).log(Level.SEVERE, null, ex);
-                }
+    public void ferReserva(){
+        try {
+            // Creem el HashMap on rebrem el codi de resposta
+            HashMap<String, String> msg_in;
+            // Fem l'accio de fer la reserva
+            msg_in = AccionsClient.ferReserva(llibre);
+            // Obtenim el codi de resposta
+            codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
+            // Obtenim el sinificat del codi de resposta
+            significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
+            // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
+            alerta.setTitle("Reserva llibre");
+            alerta.setHeaderText(significat_codi_resposta);
+            // Sessio caducada
+            if(codi_resposta.equals("10")){
+                sessioCaducada();
+            // Rserva correcta
+            }else if(codi_resposta.equals("2100")){
+                alerta.setAlertType(Alert.AlertType.INFORMATION);
+                alerta.showAndWait();
+                raiz.getScene().getWindow().hide();
+            // Error al fer la reserva
+            }else{
+                llibre = null;
+                alerta.setAlertType(Alert.AlertType.ERROR);
+                alerta.show();
             }
-        });
-    }
-*/
-    /*
-    private Llibre obtenirLlibrePantalla(){
-        // Comprobem si alguns camps estan buits
-        String data;
-        try{
-            data = datePickerDataPublicacio.getValue().toString();
-        }catch (NullPointerException ex) {
-            data = "null";
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("data: " + data);
-        // Creem un usuari obtenint les dades de la pantalla
-        Llibre ll = new Llibre (
-            new SimpleStringProperty(textFieldTitol.getText()),
-            new SimpleStringProperty(textFieldAutor.getText()),
-            new SimpleStringProperty(datePickerDataPublicacio.getValue().toString()),
-            new SimpleStringProperty(data),//choiceBoxTipus
-            new SimpleStringProperty(datePickerDataAlta.getValue().toString()),
-            new SimpleStringProperty(textFieldReservatDNI.getText()),
-            new SimpleStringProperty(""),//imageViewCaratula
-            new SimpleStringProperty(textFieldAdminAlta.getText()),
-            new SimpleStringProperty(textAreaDescripcio.getText()),
-            new SimpleStringProperty(textFieldValoracio.getText()),            
-            new SimpleStringProperty(textFieldVots.getText())
-        );
-        // Tornem el llibre creat
-        return ll;
+    }
+   
+    @FXML
+    private void tancarFinestra(ActionEvent event) throws IOException, ClassNotFoundException {
+        ((Node) (event.getSource())).getScene().getWindow().hide();
     }
     
     public void sessioCaducada() throws IOException {
         // En cas de retornar codi 10 (sessio caducada)
         // Obtenim el text de l'error
         //significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-                // Creem l'alerta que farem servir per informar d'errors o accions correctes
+        // Creem l'alerta que farem servir per informar d'errors o accions correctes
         alerta = new Alert(Alert.AlertType.NONE);
         // Per poder aplicar estil a les alertes hem de aplicar-les al dialogpane
         DialogPane dialogPane = alerta.getDialogPane();
@@ -287,5 +235,5 @@ public class LlibreVistaController implements Initializable {
         stage1.setTitle("Dumo-Go");
         stage1.setResizable(false);
         stage1.show();    
-*/
+    }
     }   

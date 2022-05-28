@@ -51,7 +51,7 @@ public class Usuari {
         this.password = new SimpleStringProperty((String.valueOf(map.get("password"))));
         this.dni = new SimpleStringProperty((String.valueOf(map.get("dni"))));
         this.data_naixement = new SimpleStringProperty((String.valueOf(map.get("data_naixement"))));
-        this.numero_soci = new SimpleStringProperty((String.valueOf(map.get("numero_soci"))));
+        this.numero_soci = new SimpleStringProperty((String.valueOf(map.get("id"))));
         this.data_alta = new SimpleStringProperty((String.valueOf(map.get("data_alta"))));
         this.nom = new SimpleStringProperty((String.valueOf(map.get("nom"))));
         this.cognoms = new SimpleStringProperty((String.valueOf(map.get("cognoms"))));

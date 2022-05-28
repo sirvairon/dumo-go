@@ -11,6 +11,7 @@ import dumogo.Llibre;
 import dumogo.PestanyaLlistat;
 import dumogo.Usuari;
 import dumogo.Administrador;
+import dumogo.Prestec;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
@@ -51,11 +52,11 @@ public class AdminController implements Initializable {
     private Usuari usuariTemp;
     private Object element_temp;
     private Date tempsUltimClick;
-    private Stage stageUsuari, stageAdministrador, stageBuscar, stageLlibre, stage1;
+    private Stage stageUsuari, stageAdministrador, stageBuscar, stageLlibre, stagePrestec;
     private UsuariEdicioController usuariEdicioControlador;
     private AdminEdicioController adminEdicioControlador;    
     private LlibreEdicioController llibreEdicioControlador;
-    private LlibreVistaController llibreVistaControlador;
+    private PrestecController prestecEdicioControlador;
     private HashMap<String, String> msg_in;
     private String codi_resposta;
     private String significat_codi_resposta;
@@ -64,6 +65,10 @@ public class AdminController implements Initializable {
     private final static String USUARI_CASE = "usuaris";
     private final static String ADMINISTRADOR_CASE = "administradors";
     private final static String LLIBRE_CASE = "llibres";
+    private final static String PRESTEC_CASE = "prestecs";
+    private final static String PRESTEC_USUARI_CASE = "prestecs_usuari";
+    private final static String PRESTEC_NO_TORNATS_CASE = "prestecs_no_tornats";
+    private final static String PRESTEC_LLEGITS_CASE = "prestecs_llegits";
     
     @FXML
     private TabPane tabPaneGeneral;
@@ -147,7 +152,6 @@ public class AdminController implements Initializable {
                 @Override
                 public void handle(Event event) {
                     try {
-                        System.out.println(event.getSource().getClass().getSimpleName());
                         clickTaula(tb, tipus_pestanya);
                     } catch (IOException ex) {
                         Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
@@ -441,6 +445,11 @@ public class AdminController implements Initializable {
             obrirFinestraElement(LLIBRE_CASE);
             // Actualitzem el controlador (finestra llibre) per mijtà del mètode dins del controlador
             llibreEdicioControlador.modificarLlibre((Llibre)obj);
+        }else if(obj instanceof Prestec){
+            // Obrim la finestra llibre 
+            obrirFinestraElement(PRESTEC_CASE);
+            // Actualitzem el controlador (finestra llibre) per mijtà del mètode dins del controlador
+            prestecEdicioControlador.modificarPrestec((Prestec)obj);
         }
     }
     
@@ -577,9 +586,31 @@ public class AdminController implements Initializable {
                     stageLlibre.toFront();
                 }
                 break;
+            case PRESTEC_CASE:
+                // En cas de que no s'hagi creat el stage (finestra oberta) el creem
+                if (stagePrestec == null) {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Prestec.fxml"));
+                    Parent root = (Parent) loader.load();
+                    prestecEdicioControlador = loader.getController();
+                    stagePrestec = new Stage();
+                    stagePrestec.setScene(new Scene(root));
+                    Image icon = new Image("/resources/usuari_icon_neg_16.png");
+                    stagePrestec.getIcons().add(icon);
+                    stagePrestec.setTitle("Prestec");
+                    stagePrestec.setResizable(false);
+
+                    // Quan es tanqui esborrem el stage de memòria                    
+                    stagePrestec.setOnHiding(we -> stagePrestec = null);
+
+                    // Mostrem la finestra del usuari a editar
+                    stagePrestec.show();   
+
+                // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
+                }else{
+                    stagePrestec.toFront();
+                }
+                break;
         }
-        
-        
     }
 
     private void clickTaula(TableView tb, String tipus) throws IOException {

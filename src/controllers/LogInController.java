@@ -68,7 +68,7 @@ public class LogInController implements Initializable {
         String usuari = textFieldUsuari.getText();
         String password = passwordFieldPassword.getText();
         String tipus_inici = buttonOpcioEntrada.getText();
-        
+        //String password2 = AccionsClient.getMD5(password);
         // Creem el Hashmap per obtenir el codi de resposta
         HashMap msg_in;
                        

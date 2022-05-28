@@ -4,19 +4,28 @@
  */
 package dumogo;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.SimpleStringProperty;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -35,6 +44,10 @@ public class AccionsClient {
     private final static String USUARI_CASE = "usuaris";
     private final static String ADMINISTRADOR_CASE = "administradors";
     private final static String LLIBRE_CASE = "llibres";
+    private final static String PRESTEC_CASE = "prestecs";
+    private final static String PRESTEC_USUARI_CASE = "prestecs_usuari";
+    private final static String PRESTEC_NO_TORNATS_CASE = "prestecs_no_tornats";
+    private final static String PRESTEC_LLEGITS_CASE = "prestecs_llegits";                
     private static OutputStream yourOutputStream;
     private static ObjectOutputStream mapOutputStream;
     private static InputStream yourInputStream;
@@ -88,10 +101,10 @@ public class AccionsClient {
 
             // Omplim el HasMap amb l'accio, l'usuari, el password i el codi de connexio buit
             if(tipus.equals("Administrador")){
-                msg_out.put("accio", "comprobar_admin");
+                msg_out.put("accio", "comprovar_admin");
                 msg_out.put("nom_admin", usuari);
             }else if(tipus.equals("Usuari")){
-                msg_out.put("accio", "comprobar_usuari");
+                msg_out.put("accio", "comprovar_usuari");
                 msg_out.put(STRING_NOM_USUARI, usuari);
             }            
             msg_out.put("password", pass);
@@ -227,7 +240,6 @@ public class AccionsClient {
             mapInputStream.close();
             
             // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
-            //return msg_in; 
             return msg_in; 
             
         } catch (UnknownHostException ex) {
@@ -331,7 +343,7 @@ public class AccionsClient {
                     break;
                 case "Llibre":
                     msg_out.put("accio", "esborrar_llibre");
-                    // Afegim les dades de l'usuari al hashmap
+                    // Afegim les dades del llibre al hashmap
                     Llibre ll = (Llibre)obj;
                     msg_out.put(STRING_ID_LLIBRE, ll.getID());                    
                     break;
@@ -429,9 +441,11 @@ public class AccionsClient {
             // Afegim el nom d'usuari i password a modificar al hashmap
             if(obj instanceof Usuari){                
                 msg_out.put(STRING_NOM_USUARI, ((Usuari) obj).getUser_name());
+                //msg_out.put("password", ((Usuari) obj).getPassword());
             }else if(obj instanceof Administrador){
                 msg_out.put(STRING_NOM_ADMINISTRADOR, ((Administrador) obj).getNom_Admin());
-            }
+                //msg_out.put("password", ((Administrador) obj).getPassword());  
+            }            
             msg_out.put("password_nou", password);            
             
             // Enviem i rebem la informacio
@@ -455,6 +469,98 @@ public class AccionsClient {
         return null;          
     }
     
+    public static HashMap ferReserva(Object obj) throws ClassNotFoundException{
+        try {
+            // Establim connexio
+            if(establirConnexio() == -1){
+                msg_in.put(STRING_CODI_RESPOSTA, "-1");
+                return msg_in;
+            }
+
+            // Creem els HashMaps per enviar i rebre les dades per fer la accio
+            msg_out = new HashMap<>();
+            msg_in = new HashMap<>();
+            
+            // Omplim el HasMap amb l'accio, l'element a modificar i el codi de connexio 
+            if(obj instanceof Usuari){
+
+            }else if(obj instanceof Administrador){
+
+            }else if(obj instanceof Llibre){
+                msg_out.put("accio", "reserva_llibre");
+                llibreAHashmap(msg_out, (Llibre)obj);
+            }            
+            msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
+                   
+            System.out.println("ELEMENT A ENVIAR (" + obj.getClass().getSimpleName() + "):");
+            System.out.println(msg_out);
+            
+            // Enviem i rebem la informacio
+            mapOutputStream.writeObject(msg_out);     
+            codi_resposta = (int) mapInputStream.readObject();
+            msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
+            
+            // Establim connexio
+            yourOutputStream.close();
+            mapInputStream.close();
+            
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            return msg_in;            
+            
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null; 
+    }
+    
+    public static HashMap tornarReserva(Object obj) throws ClassNotFoundException {
+        try {
+            // Establim connexio
+            if(establirConnexio() == -1){
+                msg_in.put(STRING_CODI_RESPOSTA, "-1");
+                return msg_in;
+            }
+
+            // Creem els HashMaps per enviar i rebre les dades per fer la accio
+            msg_out = new HashMap<>();
+            msg_in = new HashMap<>();
+            
+            msg_out.put("accio", "retorna_llibre");
+            if(obj instanceof Llibre){
+                llibreAHashmap(msg_out, (Llibre)obj);
+            }else if(obj instanceof Prestec){
+                prestecAHashmap(msg_out, (Prestec)obj);
+            }            
+                
+            msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
+                   
+            System.out.println("ELEMENT A ENVIAR (" + obj.getClass().getSimpleName() + "):");
+            System.out.println(msg_out);
+            
+            // Enviem i rebem la informacio
+            mapOutputStream.writeObject(msg_out);     
+            codi_resposta = (int) mapInputStream.readObject();
+            msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
+            
+            // Establim connexio
+            yourOutputStream.close();
+            mapInputStream.close();
+            
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            return msg_in;            
+            
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null; 
+    }
+    
     public static ArrayList obtenirLlistat(String tipus) throws ClassNotFoundException{
         
         try {
@@ -465,7 +571,7 @@ public class AccionsClient {
             msg_out = new HashMap<>();
             List<HashMap> llistat_hashmaps;
             // Creem l'ArrayList on guardarem tots els usuaris
-            ArrayList llistat = new ArrayList<Usuari>();
+            ArrayList llistat = new ArrayList<>();
             
             // Omplim el HasMap amb l'accio del llistat que volem i el codi de connexio
             switch(tipus){
@@ -478,13 +584,26 @@ public class AccionsClient {
                 case LLIBRE_CASE:
                     msg_out.put("accio", "llista_llibres");
                     break;
-                    
+                case PRESTEC_CASE:
+                    msg_out.put("accio", "llista_prestecs");
+                    break; 
+                case PRESTEC_USUARI_CASE:
+                    msg_out.put("accio", "llista_prestecs_usuari");
+                    break; 
+                case PRESTEC_NO_TORNATS_CASE:
+                    msg_out.put("accio", "llista_prestecs_no_retornats");
+                    break; 
+                case PRESTEC_LLEGITS_CASE:
+                    msg_out.put("accio", "llista_llegits");
+                    break; 
             }
             msg_out.put(STRING_CODI_CONNEXIO, codi_connexio_client);
 
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);            
             llistat_hashmaps = (List) mapInputStream.readObject();
+            System.out.println("LLISTAT OBTINGUT:");
+            System.out.println(llistat_hashmaps);
             
             if(tipus.equals(USUARI_CASE)){
                 // Omplim el llistat d'usuaris amb els usuaris de cada HashMap dins del List tornat
@@ -493,19 +612,40 @@ public class AccionsClient {
                     llistat.add(u);
                 }
             }else if(tipus.equals(ADMINISTRADOR_CASE)){
-                // Omplim el llistat d'usuaris amb els administradors de cada HashMap dins del List tornat
+                // Omplim el llistat d'administradors amb els administradors de cada HashMap dins del List tornat
                 for (HashMap obj:llistat_hashmaps) {
                     Administrador a = new Administrador(obj);
                     llistat.add(a);
                 }
             }else if(tipus.equals(LLIBRE_CASE)){
-                // Omplim el llistat d'usuaris amb els usuaris de cada HashMap dins del List tornat
+                // Omplim el llistat de llibres amb els llibres de cada HashMap dins del List tornat
                 for (HashMap obj:llistat_hashmaps) {
                     Llibre ll = new Llibre(obj);
                     llistat.add(ll);
                 }   
+            }else if(tipus.equals(PRESTEC_CASE)){
+                // Omplim el llistat de prestecs amb els prestecs de cada HashMap dins del List tornat
+                for (HashMap obj:llistat_hashmaps) {
+                    Prestec p = new Prestec(obj);
+                    llistat.add(p);
+                }   
+            }else if(tipus.equals(PRESTEC_USUARI_CASE)){
+                HashMap<String,String> codi = new HashMap<>();
+                codi = llistat_hashmaps.get(0);
+                System.out.println("codi");
+                System.out.println(codi);
+                
+                if(codi.size() == 1){
+                    System.out.println("ES 1");         
+                    llistat = null;
+                }else{
+                    // Omplim el llistat de prestecs amb els prestecs de cada HashMap dins del List tornat
+                    for (HashMap obj:llistat_hashmaps) {
+                        Prestec p = new Prestec(obj);
+                        llistat.add(p);
+                    }   
+                }
             }
-            
 
             // Tanquem connexio
             yourOutputStream.close();
@@ -574,26 +714,75 @@ public class AccionsClient {
 
     public static void llibreAHashmap(HashMap hashmap, Llibre llibre){        
         // Afegim les dades de l'usuari al hashmap
-        hashmap.put("id", llibre.getID());
+        hashmap.put("id_llibre", llibre.getID());
         hashmap.put("nom", llibre.getNom());
         hashmap.put("autor", llibre.getAutor());
         hashmap.put("any_publicacio", llibre.getAny_Publicacio());
         hashmap.put("tipus", llibre.getTipus());
         hashmap.put("data_alta", llibre.getData_alta());
-        hashmap.put("reservat_dni", llibre.getReservat_DNI());
+        hashmap.put("user_name", llibre.getUser_name());
         hashmap.put("admin_alta", llibre.getAdmin_alta());       
         hashmap.put("caratula", llibre.getCaratula());
         hashmap.put("descripcio", llibre.getDescripcio());     
         hashmap.put("valoracio", llibre.getValoracio());  
         hashmap.put("vots", llibre.getVots());
         
-        // Si es una modificació el camp "titol" modifiquem els camps
-        if(llibre.getNom_Antic() != llibre.getNom()){
-            // Canviem el valor de "nom" per el nom antic ja que es l'identificador
-            msg_out.replace("nom", llibre.getNom_Antic());
-            // Afegim "nom_nou" el texte del titol del llibre que estem modificant
-            msg_out.put("nou_nom", llibre.getNom());
-        }  
+        // Provem si el camp "nom_antic" es null o Si es una modificació el camp "titol"
+        try{
+            if(llibre.getNom_Antic() != llibre.getNom()){
+                // Canviem el valor de "nom" per el nom antic ja que es l'identificador
+                msg_out.replace("nom", llibre.getNom_Antic());
+                // Afegim "nom_nou" el texte del titol del llibre que estem modificant
+                msg_out.put("nou_nom", llibre.getNom());
+            }  
+        } catch (NullPointerException ex) {
+            //Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
+    
+    public static void prestecAHashmap(HashMap hashmap, Prestec prestec){        
+        // Afegim les dades de l'usuari al hashmap
+        hashmap.put("id_reserva", prestec.getID_reserva());
+        hashmap.put("id_llibre", prestec.getID_llibre());
+        hashmap.put("nom_llibre", prestec.getNom_llibre());
+        hashmap.put("data_reserva", prestec.getData_reserva());
+        hashmap.put("data_retorn_teoric", prestec.getData_retorn_teoric());
+        hashmap.put("data_retorn_real", prestec.getData_retorn_real());
+        hashmap.put("user_name", prestec.getUser_name());
+        hashmap.put("avis_programat", prestec.getAvis_programat());       
+
+    }
+
+        
+    public static String encodeToString(BufferedImage imatgeBuffer, String tipus) {
+        String imatgeString = null;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();        
+        
+        try {
+            ImageIO.write(imatgeBuffer, tipus, bos);
+            byte[] imatgeBytes = bos.toByteArray();
+            imatgeString = Base64.getEncoder().encodeToString(imatgeBytes);
+ 
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return imatgeString;
+    }
+    
+    public static BufferedImage decodeToImage(String imageString) {
+ 
+        BufferedImage image = null;
+        byte[] imageByte;
+        try {
+            imageByte = Base64.getDecoder().decode(imageString);
+            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+            image = ImageIO.read(bis);
+            bis.close();            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return image;
+    }   
 
 }

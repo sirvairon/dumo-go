@@ -15,7 +15,6 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" styleClass="mainFxmlClass" stylesheets="@../styles/general.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UsuariController">
    <children>
@@ -34,17 +33,13 @@
                <children>
                   <MenuButton mnemonicParsing="false" text="Biblioteca">
                     <items>
-                        <MenuItem fx:id="llibres" mnemonicParsing="false" onAction="#obrirFinestraBusqueda" text="Buscar llibre" />
+                      <MenuItem fx:id="llibres" mnemonicParsing="false" onAction="#obrirFinestraBusqueda" text="Buscar llibre" />
                       <MenuItem fx:id="llibres" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Llistat de llibres" />
-                        <MenuItem fx:id="llibres" mnemonicParsing="false" onAction="#crearPestanyaVistaLlibres" text="Llistat de llibres (Vista)" />
                     </items>
-                     <font>
-                        <Font size="14.0" />
-                     </font>
                   </MenuButton>
                   <MenuButton mnemonicParsing="false" text="Prèstecs">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                      <MenuItem fx:id="prestecs_usuari" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Veure prestecs" />
                       <MenuItem mnemonicParsing="false" text="Action 2" />
                     </items>
                   </MenuButton>

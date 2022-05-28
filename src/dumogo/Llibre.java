@@ -20,7 +20,8 @@ public class Llibre {
     private final SimpleStringProperty any_publicacio;
     private final SimpleStringProperty tipus;
     private final SimpleStringProperty data_alta;    
-    private final SimpleStringProperty reservat_dni;  
+    //private final SimpleStringProperty reservat_dni;  
+    private final SimpleStringProperty user_name;  
     private final SimpleStringProperty admin_alta;  
     private final SimpleStringProperty caratula;
     private final SimpleStringProperty descripcio;
@@ -33,7 +34,8 @@ public class Llibre {
     private final String any_publicacio_label = "Any publicació";
     private final String tipus_label = "Tipus";
     private final String data_alta_label = "Data d'alta";    
-    private final String reservat_dni_label = "Reserva DNI";  
+    //private final String reservat_dni_label = "Reserva DNI";  
+    private final String user_name_label = "Reserva";  
     private final String admin_alta_label = "Admin alta";  
     private final String caratula_label = "Carátula";
     private final String descripcio_label = "Descripció";
@@ -50,7 +52,8 @@ public class Llibre {
         this.any_publicacio = new SimpleStringProperty((String.valueOf(map.get("any_publicacio"))));
         this.tipus = new SimpleStringProperty((String.valueOf(map.get("tipus"))));
         this.data_alta = new SimpleStringProperty((String.valueOf(map.get("data_alta"))));
-        this.reservat_dni = new SimpleStringProperty((String.valueOf(map.get("reservat_dni"))));
+        //this.reservat_dni = new SimpleStringProperty((String.valueOf(map.get("reservat_dni"))));
+        this.user_name = new SimpleStringProperty((String.valueOf(map.get("user_name"))));
         this.admin_alta = new SimpleStringProperty((String.valueOf(map.get("admin_alta"))));
         this.caratula = new SimpleStringProperty((String.valueOf(map.get("caratula"))));
         this.descripcio = new SimpleStringProperty((String.valueOf(map.get("descripcio"))));
@@ -60,7 +63,7 @@ public class Llibre {
     }
     
     public Llibre(SimpleStringProperty id, SimpleStringProperty nom, SimpleStringProperty autor, SimpleStringProperty any_publicacio, SimpleStringProperty tipus,
-            SimpleStringProperty data_alta, SimpleStringProperty reservat_dni, SimpleStringProperty admin_alta, 
+            SimpleStringProperty data_alta, SimpleStringProperty user_name, SimpleStringProperty admin_alta, 
             SimpleStringProperty caratula, SimpleStringProperty descripcio, SimpleStringProperty valoracio, 
             SimpleStringProperty vots) {   
         this.id = id;
@@ -70,7 +73,7 @@ public class Llibre {
         this.any_publicacio = any_publicacio;
         this.tipus = tipus;
         this.data_alta = data_alta;
-        this.reservat_dni = reservat_dni;
+        this.user_name = user_name;
         this.admin_alta = admin_alta;
         this.caratula = caratula;
         this.descripcio = descripcio;      
@@ -107,8 +110,8 @@ public class Llibre {
         return data_alta.get();
     }
     
-    public final String getReservat_DNI() {
-        return reservat_dni.get();
+    public final String getUser_name() {
+        return user_name.get();
     }
     
     public final String getAdmin_alta() {
@@ -163,8 +166,8 @@ public class Llibre {
         return data_alta;
     }
 
-    public SimpleStringProperty reservat_dni() {
-        return reservat_dni;
+    public SimpleStringProperty user_name() {
+        return user_name;
     }
 
     public SimpleStringProperty admin_alta() {
@@ -194,7 +197,7 @@ public class Llibre {
         mapaNomCamps.put("any_publicacio", any_publicacio_label);
         mapaNomCamps.put("tipus", tipus_label);
         mapaNomCamps.put("data_alta", data_alta_label);
-        mapaNomCamps.put("reservat_dni", reservat_dni_label);
+        mapaNomCamps.put("user_name", user_name_label);
         mapaNomCamps.put("admin_alta", admin_alta_label);
         mapaNomCamps.put("caratula", caratula_label);
         mapaNomCamps.put("descripcio", descripcio_label);
@@ -227,7 +230,7 @@ public class Llibre {
     }
 
     public String getReservat_dni_label() {
-        return reservat_dni_label;
+        return user_name_label;
     }
 
     public String getAdmin_alta_label() {

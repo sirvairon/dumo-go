@@ -271,8 +271,12 @@ public class UsuariEdicioController implements Initializable {
         textFieldDireccio.setText(usuari.getDireccio());
         textFieldPais.setText(usuari.getPais());
         textFieldCorreu.setText(usuari.getCorreu());
-        datePickerDataAlta.setValue(LocalDate.parse(usuari.getData_Alta()));
-        datePickerDataNaixement.setValue(LocalDate.parse(usuari.getData_naixement()));
+        if(!usuari.getData_Alta().equals("null")){
+            datePickerDataAlta.setValue(LocalDate.parse(usuari.getData_Alta()));
+        }
+        if(!usuari.getData_naixement().equals("null")){
+            datePickerDataNaixement.setValue(LocalDate.parse(usuari.getData_naixement()));
+        }
         textFieldAdminAlta.setText(usuari.getAdmin_Alta()); 
         passwordFieldPassword.setText(usuari.getPassword());
         textFieldNumSoci.setText(usuari.getNum_soci());

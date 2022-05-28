@@ -2,12 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package dumogo;
+package z_borrar;
 
+import dumogo.AccionsClient;
+import dumogo.Administrador;
+import dumogo.Llibre;
+import dumogo.Usuari;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -248,211 +253,7 @@ public final class PestanyaGrid extends Tab {
         
         // Obtenim a quin camp volem trobar la paraula
         String opcioFiltreTxt = opcioFiltre.getSelectionModel().getSelectedItem().toString();
-        if(tipusLlista.equals(USUARI_CASE)){            
-        
-            //data_filtrada_llibres
-            // Filtrem les dades
-            data_filtrada_usuaris = new FilteredList<>(data_usuaris, b -> true);        
-            data_filtrada_usuaris.setPredicate(usuariFiltrat -> {
-                    // Si no hi ha paraula a filtrar/buscar mostrem tot
-                    if(paraulaFiltre.isEmpty() || paraulaFiltre == null){
-                        return true;
-                    }
-
-                    if(opcioFiltreTxt.equals(mapaNomCamps.get("DNI"))){
-                        if(usuariFiltrat.getDni().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("user_name"))){
-                        if(usuariFiltrat.getUser_name().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("numero_soci"))){
-                        if(usuariFiltrat.getNum_soci().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data_alta"))){
-                        if(usuariFiltrat.getData_Alta().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("nom"))){
-                        if(usuariFiltrat.getNom().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("cognoms"))){
-                        if(usuariFiltrat.getCognoms().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data_naixement"))){
-                        if(usuariFiltrat.getData_naixement().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("direccio"))){
-                        if(usuariFiltrat.getDireccio().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("pais"))){
-                        if(usuariFiltrat.getPais().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("telefon"))){
-                        if(usuariFiltrat.getTelefon().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("correu"))){
-                        if(usuariFiltrat.getCorreu().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("admin_alta"))){
-                        if(usuariFiltrat.getAdmin_Alta().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }
-                    // No s'ha trobat res
-                    return false;
-                });
-
-            // Normalment, quan fem click al header de la columna canvia l'ordre de la TableView pero como ara te una FilteredList
-            // no es pot modificar, per lo que no es pot canviar l'ordre. Hem de ficar-la dins una SortedList per porder ordenar-la.
-
-            // Fiquem la llistra filtrada (FilteredList) dins la llista ordenada (SortedList)
-            SortedList<Usuari> sortedData = new SortedList<>(data_filtrada_usuaris);
-		
-            // Ara que tenim una SortedList separada, hem de vincular la classificació d'aquesta llista a la TableView. 
-            // Enllaçem el comparador de la llista ordenada (SortedList) al comparador de la taula (taulaLlistat)
-            //sortedData.comparatorProperty().bind(tilepane.comparatorProperty());
-		
-            // Fiquem la llista ordenada (i filtrada) a les dades de la taula (taulaLlistat)
-            //taulaLlistat.setItems(sortedData);
-
-            tilePane.getChildren().clear();
-            int total = sortedData.size();
-            Label text = new Label();
-            for (int i = 0; i < total; i++) {
-                text.setText(sortedData.get(i).getCognoms());
-                tilePane.getChildren().add(text);
-            }
-           
-        
-            // Obtenim el numero total de registres i la fiquem al label
-            resultatValor.setText(String.valueOf(data_filtrada_usuaris.size()));
-            
-        }else if(tipusLlista.equals(ADMINISTRADOR_CASE)){            
-        
-            //data_filtrada_llibres
-            // Filtrem les dades
-            data_filtrada_administradors = new FilteredList<>(data_administradors, b -> true);        
-            data_filtrada_administradors.setPredicate(adminFiltrat -> {
-                    // Si no hi ha paraula a filtrar/buscar mostrem tot
-                    if(paraulaFiltre.isEmpty() || paraulaFiltre == null){
-                        return true;
-                    }
-
-                    if(opcioFiltreTxt.equals(mapaNomCamps.get("DNI"))){
-                        if(adminFiltrat.getDni().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("nom_admin"))){
-                        if(adminFiltrat.getNom_Admin().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("nom"))){
-                        if(adminFiltrat.getNom().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("cognoms"))){
-                        if(adminFiltrat.getCognoms().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data_naixement"))){
-                        if(adminFiltrat.getData_naixement().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("direccio"))){
-                        if(adminFiltrat.getDireccio().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("pais"))){
-                        if(adminFiltrat.getPais().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("telefon"))){
-                        if(adminFiltrat.getTelefon().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("correu"))){
-                        if(adminFiltrat.getCorreu().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("admin_alta"))){
-                        if(adminFiltrat.getAdmin_Alta().toLowerCase().indexOf(paraulaFiltre) > -1){
-                            return true;
-                        } else {
-                            return false;
-                        }                    
-                    }
-                    // No s'ha trobat res
-                    return false;
-                });
-            // Normalment, quan fem click al header de la columna canvia l'ordre de la TableView pero como ara te una FilteredList
-            // no es pot modificar, per lo que no es pot canviar l'ordre. Hem de ficar-la dins una SortedList per porder ordenar-la.
-
-            // Fiquem la llistra filtrada (FilteredList) dins la llista ordenada (SortedList)
-            SortedList<Administrador> sortedData = new SortedList<>(data_filtrada_administradors);
-		
-            // Ara que tenim una SortedList separada, hem de vincular la classificació d'aquesta llista a la TableView. 
-            // Enllaçem el comparador de la llista ordenada (SortedList) al comparador de la taula (taulaLlistat)
-            //sortedData.comparatorProperty().bind(taulaLlistat.comparatorProperty());
-		
-            // Fiquem la llista ordenada (i filtrada) a les dades de la taula (taulaLlistat)
-            //taulaLlistat.setItems(sortedData);
-
-            // Obtenim el numero total de registres i la fiquem al label
-            resultatValor.setText(String.valueOf(data_filtrada_administradors.size()));
-            
-        }else if(tipusLlista.equals(LLIBRE_CASE)){            
+        if(tipusLlista.equals(LLIBRE_CASE)){            
         
             //data_filtrada_llibres
             // Filtrem les dades
@@ -494,7 +295,7 @@ public final class PestanyaGrid extends Tab {
                             return false;
                         }                    
                     }else if(opcioFiltreTxt.equals(mapaNomCamps.get("reservat_dni"))){
-                        if(llibreFiltrat.getReservat_DNI().toLowerCase().indexOf(paraulaFiltre) > -1){
+                        if(llibreFiltrat.getUser_name().toLowerCase().indexOf(paraulaFiltre) > -1){
                             return true;
                         } else {
                             return false;
@@ -547,7 +348,16 @@ public final class PestanyaGrid extends Tab {
             // Fiquem la llista ordenada (i filtrada) a les dades de la taula (taulaLlistat)
             //taulaLlistat.setItems(sortedData);
 
-            tilePane.getChildren().clear();
+            //GridPane grid = new GridPane();
+            //grid.
+            //tilePane.getChildren().clear();
+            //ObservableList list = tilePane.getChildren();
+            //tilePane.getChildren() = list.get(nRows);
+            //tilePane.getChildren().addAll(data_llibres);
+            
+            
+            
+            
             int total = data_filtrada_llibres.size();
             Label text;
             for (int i = 0; i < total; i++) {
@@ -561,6 +371,18 @@ public final class PestanyaGrid extends Tab {
             resultatValor.setText(String.valueOf(data_filtrada_llibres.size()));
         }
     }
+    
+    /*
+    private FilteredList<Node> inRow(RowConstraints row) {
+        final int index = grid.getRowConstraints().indexOf(row);
+        return grid.getChildren()
+            .filtered(node -> {
+              final Integer rowIndex = GridPane.getRowIndex(node);
+              return rowIndex != null && index == GridPane.getRowIndex(node);
+            });
+        }    
+    
+    */
     
     private void obtenirDades() throws ClassNotFoundException{
         // En cas de retornar null hi hagut problemes al obtenir el llistat
@@ -623,7 +445,7 @@ public final class PestanyaGrid extends Tab {
         Label autor = new Label(ll.getAutor());
         Label vots = new Label(ll.getVots());
         Label valoracio = new Label(ll.getValoracio());
-        Label disponibilitat = new Label(ll.getReservat_DNI());        
+        Label disponibilitat = new Label(ll.getUser_name());        
         Image i = new Image("/resources/book.jpg");
         ImageView caratula = new ImageView(i);
         

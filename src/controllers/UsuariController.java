@@ -11,7 +11,7 @@ import dumogo.Llibre;
 import dumogo.PestanyaLlistat;
 import dumogo.Usuari;
 import dumogo.Administrador;
-import dumogo.PestanyaGrid;
+import z_borrar.PestanyaGrid;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
@@ -67,6 +67,7 @@ public class UsuariController implements Initializable {
     private final static String USUARI_CASE = "usuaris";
     private final static String ADMINISTRADOR_CASE = "administradors";
     private final static String LLIBRE_CASE = "llibres";
+    private final static String PRESTEC_USUARI_CASE = "prestecs_usuari";
     
     @FXML
     private TabPane tabPaneGeneral;
@@ -144,13 +145,14 @@ public class UsuariController implements Initializable {
             butoActualitzar.setId(tipus_pestanya);
             Button butoFiltre = pt.getButoFiltre();
 
+            // La posem en mode usuari amagant botons, camps, ...
+            pt.vistaUsuari();
             
             // Configurem el EventHandler en cas de fer click a la taula
             tb.setOnMouseClicked( new EventHandler() {
                 @Override
                 public void handle(Event event) {
                     try {
-                        System.out.println(event.getSource().getClass().getSimpleName());
                         clickTaula(tb, tipus_pestanya);
                     } catch (IOException ex) {
                         Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
@@ -188,93 +190,6 @@ public class UsuariController implements Initializable {
             tabPaneGeneral.getTabs().add(pt);
             // Seleccionem la pestanya creada
             tabPaneGeneral.getSelectionModel().select(pt);
-            //tableViewUsuaris.setEditable(true);
-        }
-    }
-    
-    @FXML
-    private void crearPestanyaVistaLlibres(ActionEvent event)throws IOException, ClassNotFoundException {
-        // Comprobem la seleccio del menu
-        MenuItem menuItem = (MenuItem)event.getSource();
-        String tipus_pestanya = menuItem.getId(); // Exemple: usuari o llibre
-        String titol_pestanya = menuItem.getText(); // Exemple: Llistat d'usuaris o Llistat de llibres
-        
-        // Comprobem si ja esta creada
-        boolean existeix = false;
-        for(int i = 0; i<tabPaneGeneral.getTabs().size(); i++){
-            if(tabPaneGeneral.getTabs().get(i).getText().equals(titol_pestanya)){
-                // En cas de esta creada la seleccionem
-                tabPaneGeneral.getSelectionModel().select(i);
-                existeix = true;
-            }            
-        }
-        
-        // Si no esta creada la creem
-        if(!existeix){
-            // Creem una pestanya en funcio del tipus
-            //PestanyaLlistat pt = new PestanyaLlistat(titol_pestanya, tipus_pestanya);
-            PestanyaGrid pg = new PestanyaGrid(titol_pestanya, tipus_pestanya);
-            
-            // Obtenim els elements per controlar els clicks en els elements de la pestantya
-            TilePane gp = pg.getTilePane();
-            gp.setId(tipus_pestanya);
-            /*
-            Button butoModificar = pt.getButoModificar();
-            butoModificar.setId(tipus_pestanya);
-            Button butoAfegir = pt.getButoAfegir();
-            butoAfegir.setId(tipus_pestanya);
-            Button butoEliminar = pt.getButoEliminar();
-            butoEliminar.setId(tipus_pestanya);
-            Button butoActualitzar = pt.getButoActualitzar();
-            butoActualitzar.setId(tipus_pestanya);
-            Button butoFiltre = pt.getButoFiltre();
-            
-
-            
-            // Configurem el EventHandler en cas de fer click a la taula
-            tb.setOnMouseClicked( new EventHandler() {
-                @Override
-                public void handle(Event event) {
-                    try {
-                        System.out.println(event.getSource().getClass().getSimpleName());
-                        clickTaula(tb, tipus_pestanya);
-                    } catch (IOException ex) {
-                        Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            });
-            
-            // Configurem el EventHandler en cas de fer click al boto actualitzar
-            butoActualitzar.setOnMouseClicked( new EventHandler() {
-                @Override
-                public void handle(Event event) {
-                    try {
-                        //Usuari usuari_fila = (Usuari) tb.getSelectionModel().getSelectedItem();
-                        //dataUsuaris = null;
-                        //pt.actualitzaDadesTaula();
-                        pt.actualitzarDades();
-                    } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            });
-
-            // Configurem el EventHandler en cas de fer click al boto actualitzar
-            butoFiltre.setOnMouseClicked( new EventHandler() {
-                @Override
-                public void handle(Event event) {
-                    //Usuari usuari_fila = (Usuari) tb.getSelectionModel().getSelectedItem();
-                    //dataUsuaris = null;
-                    //pt.actualitzaDadesTaula();
-                    pt.aplicarFiltre();
-                }
-            });
-            */
-                    
-            // Afegim la pestanya al grup de pestanyes
-            tabPaneGeneral.getTabs().add(pg);
-            // Seleccionem la pestanya creada
-            tabPaneGeneral.getSelectionModel().select(pg);
             //tableViewUsuaris.setEditable(true);
         }
     }
@@ -364,7 +279,7 @@ public class UsuariController implements Initializable {
         String paraula_busqueda = AccionsClient.getNom_user_actual();
         buscarElement(paraula_busqueda, USUARI_CASE);
     }
-
+    
     private void buscarElement(String paraula_busqueda, String tipus_busqueda) throws IOException{
         
         try {
@@ -399,7 +314,7 @@ public class UsuariController implements Initializable {
                             modificarElement(new Administrador((HashMap)msg_in)); 
                             break;
                         case LLIBRE_CASE:
-                            modificarElement(new Llibre((HashMap)msg_in)); 
+                            veureElement(new Llibre((HashMap)msg_in)); 
                             break;
                     }
                 // Error al trobar l'element
@@ -421,9 +336,25 @@ public class UsuariController implements Initializable {
         }        
     }
 
-    private void modificarElement(Object obj) throws IOException{
+    private void modificarElement(Object obj) throws IOException{ 
+        // Obrim la finestra usuari 
         obrirFinestraElement(USUARI_CASE);
+        // Actualitzem el controlador (finestra usuari) per mijtà del mètode dins del controlador
         usuariEdicioControlador.modificarUsuari((Usuari)obj);
+    }
+
+    private void veureElement(Object obj) throws IOException{
+        if(obj instanceof Usuari){
+            // Obrim la finestra usuari 
+            obrirFinestraElement(USUARI_CASE);
+            // Actualitzem el controlador (finestra usuari) per mijtà del mètode dins del controlador
+            usuariEdicioControlador.modificarUsuari((Usuari)obj);
+        }else if(obj instanceof Llibre){
+            // Obrim la finestra llibre 
+            obrirFinestraElement(LLIBRE_CASE);
+            // Actualitzem el controlador (finestra llibre) per mijtà del mètode dins del controlador
+            llibreVistaControlador.mostrarLlibre((Llibre)obj);
+        }
     }
 
     private void obrirFinestraElement(String tipus) throws IOException{                    
@@ -455,9 +386,9 @@ public class UsuariController implements Initializable {
             case LLIBRE_CASE:
                 // En cas de que no s'hagi creat el stage (finestra oberta) el creem
                 if (stageLlibre == null) {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/LlibreEdicio.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/LlibreVista.fxml"));
                     Parent root = (Parent) loader.load();
-                    llibreEdicioControlador = loader.getController();
+                    llibreVistaControlador = loader.getController();
                     stageLlibre = new Stage();
                     stageLlibre.setScene(new Scene(root));
                     Image icon = new Image("/resources/usuari_icon_neg_16.png");
@@ -480,7 +411,7 @@ public class UsuariController implements Initializable {
         
         
     }
-
+    
     private void clickTaula(TableView tb, String tipus) throws IOException {
         // Mirem l'element clickat
         Object element = tb.getSelectionModel().getSelectedItem();
@@ -496,7 +427,7 @@ public class UsuariController implements Initializable {
             long diff = now.getTime() - tempsUltimClick.getTime();
             // Si ha sigut rapid (300 millis) es doble click
             if (diff < 300){ 
-                modificarElement(element);
+                veureElement(element);
             } else {
                 // Si no, actualitzem el temps
                 tempsUltimClick = new Date();

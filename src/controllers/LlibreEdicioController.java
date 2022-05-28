@@ -7,14 +7,24 @@ package controllers;
 import dumogo.AccionsClient;
 import dumogo.CodiErrors;
 import dumogo.Llibre;
+import dumogo.Prestec;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -34,8 +44,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javax.imageio.ImageIO;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 /**
  * FXML Controller class
@@ -49,7 +63,9 @@ public class LlibreEdicioController implements Initializable {
     private String nom_llibre_actual;
     private String codi_resposta;
     private String significat_codi_resposta;
+    private final static String LLIBRE_CASE = "llibres";
     private static final String STRING_CODI_RESPOSTA = "codi_retorn";
+    private static final String STRING_RESERVA_LLIURE = "LLIURE";
     private Alert alerta;
     private HashMap<String, String> msg_in;
     
@@ -82,7 +98,9 @@ public class LlibreEdicioController implements Initializable {
     @FXML
     private Button butoCancelar;    
     @FXML
-    private Button butoAccio;    
+    private Button butoAccio; 
+    @FXML
+    private Button butoAccio2;
     
     /**
      * Initializes the controller class.
@@ -110,8 +128,17 @@ public class LlibreEdicioController implements Initializable {
         textAreaDescripcio.setText(llibre.getDescripcio());
         textFieldAdminAlta.setText(llibre.getAdmin_alta());
         datePickerDataAlta.setValue(LocalDate.parse(llibre.getData_alta()));
-        textFieldReservatDNI.setText(llibre.getReservat_DNI());
+        textFieldReservatDNI.setText(llibre.getUser_name());
         nom_llibre_actual = llibre.getNom();
+        
+        String caratula = llibre.getCaratula();
+        if(!caratula.equals("null")){
+            // Per la caratula tenim que decodejar l'string
+            BufferedImage buffer = AccionsClient.decodeToImage(caratula);
+            //BufferedImage buffer = decodeToImage(caratula);
+            Image imatge = SwingFXUtils.toFXImage(buffer, null);
+            imageViewCaratula.setImage(imatge);
+        }
     }
     
     private void esborrarDades(){
@@ -183,6 +210,9 @@ public class LlibreEdicioController implements Initializable {
                     }
                 }
         });
+        
+        hboxBotones.getChildren().remove(butoAccio2);
+        
     }
     
     public void modificarLlibre(Llibre ll){
@@ -228,8 +258,6 @@ public class LlibreEdicioController implements Initializable {
                         alerta.setAlertType(Alert.AlertType.ERROR);
                         alerta.show();
                     }
-
-
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(LlibreEdicioController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
@@ -237,6 +265,20 @@ public class LlibreEdicioController implements Initializable {
                 }
             }
         });
+                
+        // Establim al buto de l'accio, l'accio que volem fer (retornar)
+        butoAccio2.setText("Retornar");
+        // Si no esta lliure es pot retornar
+        if(!ll.getUser_name().equals(STRING_RESERVA_LLIURE)){      
+            butoAccio2.setDisable(false);
+            butoAccio2.setOnMouseClicked( new EventHandler() {
+                @Override
+                public void handle(Event event) {
+                    tornarPrestec();
+                }
+            });
+        }
+
     }
     
     @FXML
@@ -245,7 +287,12 @@ public class LlibreEdicioController implements Initializable {
     }
     
     private Llibre obtenirLlibrePantalla(){
-        // Creem un llibre obtenint les dades de la pantalla
+        // Creem un llibre obtenint les dades de la pantalla 
+        Image image = imageViewCaratula.imageProperty().get();
+        BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
+        String imagen = AccionsClient.encodeToString(bImage,"jpg");
+        //String imagen = encodeToString(bImage,"jpg");
+        
         Llibre ll = new Llibre (
             new SimpleStringProperty(""), // ID
             new SimpleStringProperty(textFieldTitol.getText()),
@@ -255,7 +302,7 @@ public class LlibreEdicioController implements Initializable {
             new SimpleStringProperty(datePickerDataAlta.getValue().toString()),
             new SimpleStringProperty(textFieldReservatDNI.getText()),
             new SimpleStringProperty(textFieldAdminAlta.getText()),
-            new SimpleStringProperty(""),//imageViewCaratula            
+            new SimpleStringProperty(imagen),//imageViewCaratula            
             new SimpleStringProperty(textAreaDescripcio.getText()),
             new SimpleStringProperty(textFieldValoracio.getText()),            
             new SimpleStringProperty(textFieldVots.getText())
@@ -299,5 +346,58 @@ public class LlibreEdicioController implements Initializable {
         stage1.setResizable(false);
         stage1.show();    
     }   
-
+    
+    @FXML
+    public Image carregarImatge() throws IOException{        
+        Image imatge;
+        
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");        
+        FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.JPG");
+        FileChooser.ExtensionFilter extFilterPNG = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.PNG");
+        fileChooser.getExtensionFilters().addAll(extFilterJPG, extFilterPNG);
+        File file = fileChooser.showOpenDialog(stage);
+        
+        if (file != null) {
+            BufferedImage bufferedImage = ImageIO.read(file);
+            imatge = SwingFXUtils.toFXImage(bufferedImage, null);
+            imageViewCaratula.setImage(imatge);
+            return imatge;
+        }
+        return null;
+    }
+       
+    public void tornarPrestec(){
+        try {
+            // Creem el HashMap on rebrem el codi de resposta
+            HashMap<String, String> msg_in;
+            // Fem l'accio de fer la reserva
+            msg_in = AccionsClient.tornarReserva(llibre);
+            // Obtenim el codi de resposta
+            codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
+            // Obtenim el sinificat del codi de resposta
+            significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
+            // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
+            alerta.setTitle("Retornar llibre");
+            alerta.setHeaderText(significat_codi_resposta);
+            // Sessio caducada
+            if(codi_resposta.equals("10")){
+                sessioCaducada();
+            // Rserva correcta
+            }else if(codi_resposta.equals("2200")){
+                alerta.setAlertType(Alert.AlertType.INFORMATION);
+                alerta.showAndWait();
+                raiz.getScene().getWindow().hide();
+            // Error al fer la reserva
+            }else{
+                llibre = null;
+                alerta.setAlertType(Alert.AlertType.ERROR);
+                alerta.show();
+            }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

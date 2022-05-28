@@ -22,6 +22,8 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -37,6 +39,10 @@ public final class PestanyaLlistat extends Tab {
     private final static String USUARI_CASE = "usuaris";
     private final static String ADMINISTRADOR_CASE = "administradors";
     private final static String LLIBRE_CASE = "llibres";
+    private final static String PRESTEC_CASE = "prestecs";
+    private final static String PRESTEC_USUARI_CASE = "prestecs_usuari";
+    private final static String PRESTEC_NO_TORNATS_CASE = "prestecs_no_tornats";
+    private final static String PRESTEC_LLEGITS_CASE = "prestecs_llegits";
     private final String tipusLlista;
     
     private final TableView taulaLlistat;
@@ -51,14 +57,17 @@ public final class PestanyaLlistat extends Tab {
     private ArrayList<Usuari> llista_usuaris;
     private ArrayList<Administrador> llista_administradors;
     private ArrayList<Llibre> llista_llibres;
+    private ArrayList<Prestec> llista_prestecs;
     
     private ObservableList<Usuari> data_usuaris;
     private ObservableList<Administrador> data_administradors;
     private ObservableList<Llibre> data_llibres;
+    private ObservableList<Prestec> data_prestecs;
     
     private FilteredList<Usuari> data_filtrada_usuaris;
     private FilteredList<Administrador> data_filtrada_administradors;
     private FilteredList<Llibre> data_filtrada_llibres;
+    private FilteredList<Prestec> data_filtrada_prestecs;
     
     private Map<String, String> mapaNomCamps;
     
@@ -116,14 +125,22 @@ public final class PestanyaLlistat extends Tab {
         dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
             
         // Obtenim les dades
-        obtenirDades();
-        // Creem el filtre
-        crearFiltre(); 
-        // Apliquem el filtre
-        aplicarFiltre();
-        // Creem les columnes de la taula
-        crearColumnesTaula();                
+        if(obtenirDades()){
+            // Creem el filtre
+            crearFiltre(); 
+            // Apliquem el filtre
+            aplicarFiltre();
+            // Creem les columnes de la taula
+            crearColumnesTaula();   
+        }else{
+            // Creem el filtre
+            crearFiltre(); 
+            // Creem les columnes de la taula
+            crearColumnesTaula(); 
+            //taulaLlistat.setPlaceholder(new Label("No hi ha registres"));
         }
+             
+    }
   
     public TableView getTaula() {
         return taulaLlistat;
@@ -177,7 +194,6 @@ public final class PestanyaLlistat extends Tab {
                 break;
             case ADMINISTRADOR_CASE:
                 mapaNomCamps = Administrador.mapaNomCamps;
-                System.out.println(mapaNomCamps);
                 llistaFiltre = FXCollections.observableArrayList(
                         mapaNomCamps.get("DNI"), 
                         mapaNomCamps.get("nom_admin"),
@@ -199,14 +215,13 @@ public final class PestanyaLlistat extends Tab {
                 break;
             case LLIBRE_CASE:
                 mapaNomCamps = Llibre.mapaNomCamps;
-                System.out.println(mapaNomCamps);
                 llistaFiltre = FXCollections.observableArrayList(
                         mapaNomCamps.get("nom"), 
                         mapaNomCamps.get("autor"),
                         mapaNomCamps.get("any_publicacio"),
                         mapaNomCamps.get("tipus"),
                         mapaNomCamps.get("data_alta"), 
-                        mapaNomCamps.get("reservat_dni"), 
+                        mapaNomCamps.get("user_name"), 
                         mapaNomCamps.get("admin_alta"),
                         mapaNomCamps.get("caratula"), 
                         mapaNomCamps.get("descripcio"),
@@ -215,10 +230,42 @@ public final class PestanyaLlistat extends Tab {
                         );
                 // Introduim les opcions dins les opcions del filtre
                 opcioFiltre.setItems(llistaFiltre);
-                // Deixem marcada l'opcio del nom del administrador
+                // Deixem marcada l'opcio del titol del llibre
                 opcioFiltre.setValue(mapaNomCamps.get("nom"));
-                // Establim que la label dels resultats posi Administradors
+                // Establim que la label dels resultats posi Llibres
                 resultat.setText("Llibres:");
+                break;
+            case PRESTEC_CASE:
+                mapaNomCamps = Prestec.mapaNomCamps;
+                llistaFiltre = FXCollections.observableArrayList(
+                        mapaNomCamps.get("nom_llibre"),
+                        mapaNomCamps.get("user_name"),
+                        mapaNomCamps.get("data_reserva"),
+                        mapaNomCamps.get("data_retorn_teoric"), 
+                        mapaNomCamps.get("data_retorn_real")                        
+                        );
+                // Introduim les opcions dins les opcions del filtre
+                opcioFiltre.setItems(llistaFiltre);
+                // Deixem marcada l'opcio del nom del prestec
+                opcioFiltre.setValue(mapaNomCamps.get("user_name"));
+                // Establim que la label dels resultats posi Prestecs
+                resultat.setText("Prestecs:");
+                break;
+            case PRESTEC_USUARI_CASE:
+                mapaNomCamps = Prestec.mapaNomCamps;
+                llistaFiltre = FXCollections.observableArrayList(
+                        mapaNomCamps.get("nom_llibre"),
+                        mapaNomCamps.get("user_name"),
+                        mapaNomCamps.get("data_reserva"),
+                        mapaNomCamps.get("data_retorn_teoric"), 
+                        mapaNomCamps.get("data_retorn_real")                        
+                        );
+                // Introduim les opcions dins les opcions del filtre
+                opcioFiltre.setItems(llistaFiltre);
+                // Deixem marcada l'opcio del nom del prestec
+                opcioFiltre.setValue(mapaNomCamps.get("user_name"));
+                // Establim que la label dels resultats posi Prestecs
+                resultat.setText("Prestecs:");
                 break;
         }
     }
@@ -465,8 +512,8 @@ public final class PestanyaLlistat extends Tab {
                         } else {
                             return false;
                         }                    
-                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("reservat_dni"))){
-                        if(llibreFiltrat.getReservat_DNI().toLowerCase().indexOf(paraulaFiltre) > -1){
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("user_name"))){
+                        if(llibreFiltrat.getUser_name().toLowerCase().indexOf(paraulaFiltre) > -1){
                             return true;
                         } else {
                             return false;
@@ -521,10 +568,72 @@ public final class PestanyaLlistat extends Tab {
 
             // Obtenim el numero total de registres i la fiquem al label
             resultatValor.setText(String.valueOf(data_filtrada_llibres.size()));
+            
+        }else if(tipusLlista.equals(PRESTEC_CASE) || tipusLlista.equals(PRESTEC_USUARI_CASE)){            
+        
+            // Filtrem les dades
+            data_filtrada_prestecs = new FilteredList<>(data_prestecs, b -> true);        
+            data_filtrada_prestecs.setPredicate(prestecFiltrat -> {
+                    // Si no hi ha paraula a filtrar/buscar mostrem tot
+                    if(paraulaFiltre.isEmpty() || paraulaFiltre == null){
+                        return true;
+                    }
+
+                    if(opcioFiltreTxt.equals(mapaNomCamps.get("nom_llibre"))){
+                        if(prestecFiltrat.getNom_llibre().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data_reserva"))){
+                        if(prestecFiltrat.getData_reserva().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data_retorn_teoric"))){
+                        if(prestecFiltrat.getData_retorn_teoric().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data_retorn_real"))){
+                        if(prestecFiltrat.getData_retorn_real().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }else if(opcioFiltreTxt.equals(mapaNomCamps.get("user_name"))){
+                        if(prestecFiltrat.getUser_name().toLowerCase().indexOf(paraulaFiltre) > -1){
+                            return true;
+                        } else {
+                            return false;
+                        }                    
+                    }
+                    // No s'ha trobat res
+                    return false;
+                });
+
+            // Normalment, quan fem click al header de la columna canvia l'ordre de la TableView pero como ara te una FilteredList
+            // no es pot modificar, per lo que no es pot canviar l'ordre. Hem de ficar-la dins una SortedList per porder ordenar-la.
+
+            // Fiquem la llistra filtrada (FilteredList) dins la llista ordenada (SortedList)
+            SortedList<Prestec> sortedData = new SortedList<>(data_filtrada_prestecs);
+		
+            // Ara que tenim una SortedList separada, hem de vincular la classificació d'aquesta llista a la TableView. 
+            // Enllaçem el comparador de la llista ordenada (SortedList) al comparador de la taula (taulaLlistat)
+            sortedData.comparatorProperty().bind(taulaLlistat.comparatorProperty());
+		
+            // Fiquem la llista ordenada (i filtrada) a les dades de la taula (taulaLlistat)
+            taulaLlistat.setItems(sortedData);
+
+            // Obtenim el numero total de registres i la fiquem al label
+            resultatValor.setText(String.valueOf(data_filtrada_prestecs.size()));
         }
     }
  
-    private void obtenirDades() throws ClassNotFoundException{
+    private boolean obtenirDades() throws ClassNotFoundException{
+    //private void obtenirDades() throws ClassNotFoundException{
         // En cas de retornar null hi hagut problemes al obtenir el llistat
         try{
             switch(tipusLlista){
@@ -567,7 +676,42 @@ public final class PestanyaLlistat extends Tab {
                     // Obtenim el nom dels camps per columnes, filtre,...
                     mapaNomCamps = Llibre.mapaNomCamps;
                     break;
+                case PRESTEC_CASE:
+                    // Esborrem l'informacio per carregar-la de nou
+                    data_prestecs = null;
+
+                    // Obtenim el llistat_d'elements
+                    llista_prestecs = AccionsClient.obtenirLlistat(tipusLlista);         
+
+                    // El transformem en una ObservableList
+                    data_prestecs = FXCollections.observableArrayList(llista_prestecs); 
+
+                    // Obtenim el nom dels camps per columnes, filtre,...
+                    mapaNomCamps = Prestec.mapaNomCamps;
+                    break;                    
+                case PRESTEC_USUARI_CASE:
+                    // Esborrem l'informacio per carregar-la de nou
+                    data_prestecs = null;
+
+                    // Obtenim el llistat_d'elements
+                    llista_prestecs = AccionsClient.obtenirLlistat(tipusLlista);         
+                    
+                    // Si la llista torna buida
+                    if(llista_prestecs == null){                       
+                        taulaLlistat.setPlaceholder(new Label("No hi han prèstecs"));
+                        return false;
+                    }else{
+                        // El transformem en una ObservableList
+                        data_prestecs = FXCollections.observableArrayList(llista_prestecs); 
+
+                        // Obtenim el nom dels camps per columnes, filtre,...
+                        mapaNomCamps = Prestec.mapaNomCamps;  
+                    }
+                    break;                    
             }
+            
+            return true;
+            
         } catch (NullPointerException ex) {
             alerta.setTitle("Error al carregar dades");
             alerta.setContentText("");
@@ -575,21 +719,50 @@ public final class PestanyaLlistat extends Tab {
             alerta.setHeaderText("Error al carregar les dades dels " + tipusLlista);
             alerta.show();
             Logger.getLogger(PestanyaLlistat.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
     }       
 
     public void actualitzarDades() throws ClassNotFoundException {        
         // Obtenim les dades
-        obtenirDades();
-        // Filtrem les dades
-        aplicarFiltre();        
+        if(obtenirDades()){
+            crearFiltre();
+            // Filtrem les dades
+            aplicarFiltre(); 
+        }else{
+            
+        }               
     }
     
     private void crearColumnesTaula() {               
         
-        //switch(tipusLlista){
-        //    case USUARI_CASE:
-        
+        switch(tipusLlista){
+            case USUARI_CASE:
+                columnesUsuaris();
+                break;
+            case ADMINISTRADOR_CASE:
+                columnesAdministradors();
+                break;
+            case LLIBRE_CASE:
+                columnesLlibres();
+                break;
+            case PRESTEC_CASE:
+                columnesPrestecs();
+                break;
+            case PRESTEC_USUARI_CASE:
+                columnesPrestecs();
+                break;
+            case PRESTEC_NO_TORNATS_CASE:
+                columnesPrestecs();
+                break;
+            case PRESTEC_LLEGITS_CASE:
+                columnesPrestecs();
+                break;
+        }
+        taulaLlistat.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    }
+    
+    private void columnesUsuaris(){
         // Per crear totes les columnes de la taula usuaris
         
         TableColumn<Usuari,String> col_Nom = new TableColumn<Usuari,String>(mapaNomCamps.get("nom"));        
@@ -662,8 +835,25 @@ public final class PestanyaLlistat extends Tab {
         col_AdminAlta.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Usuari,String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Usuari,String> p) {
                 return p.getValue().admin_alta();
-        }}); 
+        }});
         
+        taulaLlistat.getColumns().addAll(
+        col_NumSoci,
+        col_NomUsuari,
+        col_DNI, 
+        col_DataAlta, 
+        col_Nom, 
+        col_Cognom, 
+        col_DataNaixament, 
+        col_Direccio,  
+        col_Pais, 
+        col_Telefon, 
+        col_Correu, 
+        col_AdminAlta 
+        );  
+    }
+    
+    private void columnesAdministradors(){
         // Per crear totes les columnes de la taula d'administradors
         
         TableColumn<Administrador,String> col_NomAdmin = new TableColumn<Administrador,String>(mapaNomCamps.get("nom"));        
@@ -726,8 +916,23 @@ public final class PestanyaLlistat extends Tab {
                 return p.getValue().direccio();
         }});  
         
+        taulaLlistat.getColumns().addAll(
+                        col_Nom_Admin,
+                        col_DNIAdmin, 
+                        col_NomAdmin, 
+                        col_CognomAdmin, 
+                        col_DataNaixamentAdmin, 
+                        col_DireccioAdmin,  
+                        col_PaisAdmin, 
+                        col_TelefonAdmin, 
+                        col_CorreuAdmin, 
+                        col_AdminAltaAdmin 
+                        );   
+    }
+    
+    private void columnesLlibres() {               
         // Per crear totes les columnes de la taula llibres
-        
+                
         TableColumn<Llibre,String> col_NomLlibre = new TableColumn<Llibre,String>(mapaNomCamps.get("nom"));
         col_NomLlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Llibre,String> p) {
@@ -758,10 +963,10 @@ public final class PestanyaLlistat extends Tab {
                 return p.getValue().data_alta();
         }});
         
-        TableColumn<Llibre,String> col_ReservatDNILlibre = new TableColumn<Llibre,String>(mapaNomCamps.get("reservat_dni"));
-        col_ReservatDNILlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
+        TableColumn<Llibre,String> col_User_name = new TableColumn<Llibre,String>(mapaNomCamps.get("user_name"));
+        col_User_name.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Llibre,String> p) {
-                return p.getValue().reservat_dni();
+                return p.getValue().user_name();
         }});
         
         TableColumn<Llibre,String> col_AdminAltaLlibre = new TableColumn<Llibre,String>(mapaNomCamps.get("admin_alta"));
@@ -792,56 +997,84 @@ public final class PestanyaLlistat extends Tab {
         col_VotsLlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Llibre,String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Llibre,String> p) {
                 return p.getValue().vots();
+        }});        
+
+        taulaLlistat.getColumns().addAll(
+                col_NomLlibre,
+                col_AutorLlibre,
+                col_AnyPublicacioLlibre, 
+                col_TipusLlibre, 
+                col_DataAltaLlibre, 
+                col_User_name, 
+                col_AdminAltaLlibre, 
+                //col_CaratulaLlibre,  
+                col_DescripcioLlibre, 
+                col_ValoracioLlibre, 
+                col_VotsLlibre
+                );            
+    }
+        
+    private void columnesPrestecs() {               
+        // Per crear totes les columnes de la taula llibres
+                
+        TableColumn<Prestec,String> col_IDPrestec = new TableColumn<Prestec,String>(mapaNomCamps.get("ID reserva"));
+        col_IDPrestec.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Prestec,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Prestec,String> p) {
+                return p.getValue().id_reserva();
+        }}); 
+        
+        TableColumn<Prestec,String> col_IDLlibrePrestec = new TableColumn<Prestec,String>(mapaNomCamps.get("id_llibre"));
+        col_IDLlibrePrestec.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Prestec,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Prestec,String> p) {
+                return p.getValue().id_llibre();
         }});
         
-        // Afegim les columnes a la taula    
-        switch(tipusLlista){
-            case USUARI_CASE:
-                taulaLlistat.getColumns().addAll(
-                        col_NumSoci,
-                        col_NomUsuari,
-                        col_DNI, 
-                        col_DataAlta, 
-                        col_Nom, 
-                        col_Cognom, 
-                        col_DataNaixament, 
-                        col_Direccio,  
-                        col_Pais, 
-                        col_Telefon, 
-                        col_Correu, 
-                        col_AdminAlta 
-                        );    
-                break;
-            case ADMINISTRADOR_CASE:
-                taulaLlistat.getColumns().addAll(
-                        col_Nom_Admin,
-                        col_DNIAdmin, 
-                        col_NomAdmin, 
-                        col_CognomAdmin, 
-                        col_DataNaixamentAdmin, 
-                        col_DireccioAdmin,  
-                        col_PaisAdmin, 
-                        col_TelefonAdmin, 
-                        col_CorreuAdmin, 
-                        col_AdminAltaAdmin 
-                        );    
-                break;
-            case LLIBRE_CASE:
-                taulaLlistat.getColumns().addAll(
-                        col_NomLlibre,
-                        col_AutorLlibre,
-                        col_AnyPublicacioLlibre, 
-                        col_TipusLlibre, 
-                        col_DataAltaLlibre, 
-                        col_ReservatDNILlibre, 
-                        col_AdminAltaLlibre, 
-                        col_CaratulaLlibre,  
-                        col_DescripcioLlibre, 
-                        col_ValoracioLlibre, 
-                        col_VotsLlibre
-                        );    
-                break;
-        }
-        taulaLlistat.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        TableColumn<Prestec,String> col_DataRetornTeoricPrestec = new TableColumn<Prestec,String>(mapaNomCamps.get("data_retorn_teoric"));
+        col_DataRetornTeoricPrestec.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Prestec,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Prestec,String> p) {
+                return p.getValue().data_retorn_teoric();
+        }});
+        
+        TableColumn<Prestec,String> col_NomLlibrePrestec = new TableColumn<Prestec,String>(mapaNomCamps.get("nom_llibre"));
+        col_NomLlibrePrestec.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Prestec,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Prestec,String> p) {
+                return p.getValue().nom_llibre();
+        }});
+        
+        TableColumn<Prestec,String> col_DataReservaPrestec = new TableColumn<Prestec,String>(mapaNomCamps.get("data_reserva"));
+        col_DataReservaPrestec.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Prestec,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Prestec,String> p) {
+                return p.getValue().data_reserva();
+        }});
+        
+        TableColumn<Prestec,String> col_DataRetornRealPrestec = new TableColumn<Prestec,String>(mapaNomCamps.get("data_retorn_real"));
+        col_DataRetornRealPrestec.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Prestec,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Prestec,String> p) {
+                return p.getValue().data_retorn_real();
+        }});
+        
+        TableColumn<Prestec,String> col_AvisProgramatPrestec = new TableColumn<Prestec,String>(mapaNomCamps.get("avis_programat"));
+        col_AvisProgramatPrestec.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Prestec,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Prestec,String> p) {
+                return p.getValue().avis_programat();
+        }});
+        
+        TableColumn<Prestec,String> col_UserNamePrestec = new TableColumn<Prestec,String>(mapaNomCamps.get("user_name"));
+        col_UserNamePrestec.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Prestec,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Prestec,String> p) {
+                return p.getValue().user_name();
+        }});             
+
+        taulaLlistat.getColumns().addAll(
+                col_NomLlibrePrestec,
+                col_UserNamePrestec,
+                col_DataReservaPrestec, 
+                col_DataRetornTeoricPrestec, 
+                col_DataRetornRealPrestec
+        );            
+    }
+            
+    public void vistaUsuari(){
+        hbButons.getChildren().removeAll(butoAfegir, butoModificar, butoEliminar);
     }
 }

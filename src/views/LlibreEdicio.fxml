@@ -21,9 +21,9 @@
                <children>
                   <VBox alignment="CENTER" styleClass="usuariImage" HBox.hgrow="ALWAYS">
                      <children>
-                        <ImageView fx:id="imageViewCaratula" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="imageViewCaratula" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#carregarImatge" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../resources/book.jpg" />
+                              <Image url="@../resources/llibre_nocaratula2.jpg" />
                            </image>
                         </ImageView>
                      </children>
@@ -124,8 +124,9 @@
             </VBox>
          </children>
       </HBox>
-      <HBox alignment="CENTER" styleClass="hboxBotones">
+      <HBox fx:id="hboxBotones" alignment="CENTER" styleClass="hboxBotones">
          <children>
+            <Button fx:id="butoAccio2" disable="true" mnemonicParsing="false" text="Accio2" />
             <Button fx:id="butoAccio" mnemonicParsing="false" text="Accio" />
             <Button fx:id="ButtonVolver" mnemonicParsing="false" onAction="#tancarFinestra" text="Sortir" />
          </children>
@@ -133,6 +134,6 @@
    </children>
    <stylesheets>
       <URL value="@../styles/general.css" />
-      <URL value="@../styles/usuari_llibre_edicio.css" />
+      <URL value="@../styles/elementvista.css" />
    </stylesheets>
 </VBox>

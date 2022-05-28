@@ -1,5 +1,5 @@
 /*
- * CSS DE L'EDICIO D'USUARI O LLIBRE
+ * CSS DE L'EDICIO O VISTA D'USUARI O LLIBRE
  */
 
 .mainFxmlClass {
@@ -106,5 +106,9 @@ HBox {
 
 .valoracioLlibre, .votsLlibre {
     -fx-alignment: CENTER;
+}
+
+.hBoxDescripcio {
+    -fx-pref-width: 50;
 }
 

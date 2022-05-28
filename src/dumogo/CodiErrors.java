@@ -180,9 +180,6 @@ public class CodiErrors {
             case "1600":
                 significat = "Dades retornades correctament";
                 break;
-            case "1610":
-                significat = "No s'ha trobat el llibre";
-                break;
                 
             /* accio = llista_llibres */
             case "1700":
@@ -201,9 +198,58 @@ public class CodiErrors {
                 significat = "Valoracio afegida";
                 break;
                 
-            /* accio = puntua_llibre */
+            /* accio = reserva_llibre */
             case "2100":
                 significat = "Llibre reservat";
+                break;
+                
+            /* accio = retorna_llibre */
+            case "2200":
+                significat = "Llibre retornat";
+                break;
+            case "2210":
+                significat = "Llibre no prestat";
+                break;
+                
+            /* accio = llista_prestecs i llista_prestecs_no_retornats */
+            case "2300":
+                significat = "Llista de prestecs retornada correctament";
+                break;
+                
+            /* accio = llista_prestecs_usuari */
+            case "2400":
+                significat = "Llista de prestecs de l'usuari retornada correctament";
+                break;
+                
+            /* accio = llista_llegits */
+            case "2500":
+                significat = "Llista de llibres llegits retornada correctament";
+                break;
+                
+            /* accio = llista_prestecs_urgents */
+            case "2600":
+                significat = "Llista de prestecs urgents retornada correctament";
+                break;
+                
+            /* accio = afegeix_comentari */
+            case "2700":
+                significat = "Comentari afegit";
+                break;
+                
+            /* accio = elimina_comentari */
+            case "2800":
+                significat = "Comentari eliminat";
+                break;
+            case "2810":
+                significat = "No existeix el comentari";
+                break;
+            case "2820":
+                significat = "No tens permissos";
+                break;
+                
+            /* accio = llista_comentaris */
+            case "2900":
+                significat = "Llista de comentaris retornada correctament";
                 break;
                 
             /* accio = tancar_sessio */

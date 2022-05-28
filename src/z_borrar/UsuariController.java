@@ -36,7 +36,7 @@ public class UsuariController implements Initializable {
 
     /**
      * Initializes the controller class.
-     */
+     */   
     private HashMap<String, String> msg_in;
     private String codi_resposta;
     private String significat_codi_resposta;

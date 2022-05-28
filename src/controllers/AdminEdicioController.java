@@ -261,7 +261,9 @@ public class AdminEdicioController implements Initializable {
         textFieldDireccio.setText(administrador.getDireccio());
         textFieldPais.setText(administrador.getPais());
         textFieldCorreu.setText(administrador.getCorreu());
-        datePickerDataNaixement.setValue(LocalDate.parse(administrador.getData_naixement()));
+        if(!administrador.getData_naixement().equals("null")){
+            datePickerDataNaixement.setValue(LocalDate.parse(administrador.getData_naixement()));
+        }
         textFieldAdminAlta.setText(administrador.getAdmin_Alta()); 
         passwordFieldPassword.setText(administrador.getPassword());
         nom_admin_actual = administrador.getNom_Admin();
@@ -377,7 +379,7 @@ public class AdminEdicioController implements Initializable {
         
         stage = new Stage();
         stage.initModality(Modality.WINDOW_MODAL);
-        Image icon = new Image("/resources/editar_icon_neg.png");
+        Image icon = new Image("/resources/editar_icon_neg_16.png");
         stage.getIcons().add(icon);
         stage.setTitle("Verificar password");
         stage.setResizable(false);
