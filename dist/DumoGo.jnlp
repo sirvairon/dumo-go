@@ -9,7 +9,7 @@
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
     <jar href="lib\DumoGo-Preloader.jar" size="260348" download="progress" />
-    <jar href="DumoGo.jar" size="2312579" download="eager" />
+    <jar href="DumoGo.jar" size="2312399" download="eager" />
     <jar href="lib\postgresql-42.2.16.jar" size="1002883" download="eager" />
   </resources>
   <jfx:javafx-desc  width="800" height="600" main-class="dumogo.DumoGo"  name="DumoGo"  preloader-class="dumogo.preloader.DumoGo_Preloader"/>

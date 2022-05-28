@@ -124,21 +124,15 @@ public final class PestanyaLlistat extends Tab {
         DialogPane dialogPane = alerta.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
             
-        // Obtenim les dades
-        if(obtenirDades()){
-            // Creem el filtre
-            crearFiltre(); 
+        boolean ok = obtenirDades();
+        // Creem el filtre
+        crearFiltre(); 
+        if(ok){
             // Apliquem el filtre
             aplicarFiltre();
-            // Creem les columnes de la taula
-            crearColumnesTaula();   
-        }else{
-            // Creem el filtre
-            crearFiltre(); 
-            // Creem les columnes de la taula
-            crearColumnesTaula(); 
-            //taulaLlistat.setPlaceholder(new Label("No hi ha registres"));
         }
+        // Creem les columnes de la taula
+        crearColumnesTaula();            
              
     }
   
@@ -236,22 +230,9 @@ public final class PestanyaLlistat extends Tab {
                 resultat.setText("Llibres:");
                 break;
             case PRESTEC_CASE:
-                mapaNomCamps = Prestec.mapaNomCamps;
-                llistaFiltre = FXCollections.observableArrayList(
-                        mapaNomCamps.get("nom_llibre"),
-                        mapaNomCamps.get("user_name"),
-                        mapaNomCamps.get("data_reserva"),
-                        mapaNomCamps.get("data_retorn_teoric"), 
-                        mapaNomCamps.get("data_retorn_real")                        
-                        );
-                // Introduim les opcions dins les opcions del filtre
-                opcioFiltre.setItems(llistaFiltre);
-                // Deixem marcada l'opcio del nom del prestec
-                opcioFiltre.setValue(mapaNomCamps.get("user_name"));
-                // Establim que la label dels resultats posi Prestecs
-                resultat.setText("Prestecs:");
-                break;
             case PRESTEC_USUARI_CASE:
+            case PRESTEC_NO_TORNATS_CASE:
+            case PRESTEC_LLEGITS_CASE:
                 mapaNomCamps = Prestec.mapaNomCamps;
                 llistaFiltre = FXCollections.observableArrayList(
                         mapaNomCamps.get("nom_llibre"),
@@ -263,10 +244,10 @@ public final class PestanyaLlistat extends Tab {
                 // Introduim les opcions dins les opcions del filtre
                 opcioFiltre.setItems(llistaFiltre);
                 // Deixem marcada l'opcio del nom del prestec
-                opcioFiltre.setValue(mapaNomCamps.get("user_name"));
+                opcioFiltre.setValue(mapaNomCamps.get("data_reserva"));
                 // Establim que la label dels resultats posi Prestecs
-                resultat.setText("Prestecs:");
-                break;
+                resultat.setText("Préstecs:");
+                break;           
         }
     }
     
@@ -276,6 +257,7 @@ public final class PestanyaLlistat extends Tab {
         
         // Obtenim a quin camp volem trobar la paraula
         String opcioFiltreTxt = opcioFiltre.getSelectionModel().getSelectedItem().toString();
+        
         if(tipusLlista.equals(USUARI_CASE)){            
         
             //data_filtrada_llibres
@@ -569,7 +551,7 @@ public final class PestanyaLlistat extends Tab {
             // Obtenim el numero total de registres i la fiquem al label
             resultatValor.setText(String.valueOf(data_filtrada_llibres.size()));
             
-        }else if(tipusLlista.equals(PRESTEC_CASE) || tipusLlista.equals(PRESTEC_USUARI_CASE)){            
+        }else if(tipusLlista.equals(PRESTEC_CASE) || tipusLlista.equals(PRESTEC_USUARI_CASE) || tipusLlista.equals(PRESTEC_NO_TORNATS_CASE) || tipusLlista.equals(PRESTEC_USUARI_CASE)){            
         
             // Filtrem les dades
             data_filtrada_prestecs = new FilteredList<>(data_prestecs, b -> true);        
@@ -676,38 +658,29 @@ public final class PestanyaLlistat extends Tab {
                     // Obtenim el nom dels camps per columnes, filtre,...
                     mapaNomCamps = Llibre.mapaNomCamps;
                     break;
+
                 case PRESTEC_CASE:
-                    // Esborrem l'informacio per carregar-la de nou
-                    data_prestecs = null;
-
-                    // Obtenim el llistat_d'elements
-                    llista_prestecs = AccionsClient.obtenirLlistat(tipusLlista);         
-
-                    // El transformem en una ObservableList
-                    data_prestecs = FXCollections.observableArrayList(llista_prestecs); 
-
-                    // Obtenim el nom dels camps per columnes, filtre,...
-                    mapaNomCamps = Prestec.mapaNomCamps;
-                    break;                    
                 case PRESTEC_USUARI_CASE:
+                case PRESTEC_NO_TORNATS_CASE:
+                case PRESTEC_LLEGITS_CASE:
                     // Esborrem l'informacio per carregar-la de nou
                     data_prestecs = null;
 
                     // Obtenim el llistat_d'elements
                     llista_prestecs = AccionsClient.obtenirLlistat(tipusLlista);         
                     
-                    // Si la llista torna buida
-                    if(llista_prestecs == null){                       
-                        taulaLlistat.setPlaceholder(new Label("No hi han prèstecs"));
+                    // Obtenim el nom dels camps per columnes, filtre,...
+                    mapaNomCamps = Prestec.mapaNomCamps;
+                    
+                    // Si la llista torna buida                    
+                    if(llista_prestecs.get(0).getID_reserva().equals("null")){ 
+                        taulaLlistat.setPlaceholder(new Label("No hi han préstecs"));
                         return false;
                     }else{
                         // El transformem en una ObservableList
                         data_prestecs = FXCollections.observableArrayList(llista_prestecs); 
-
-                        // Obtenim el nom dels camps per columnes, filtre,...
-                        mapaNomCamps = Prestec.mapaNomCamps;  
                     }
-                    break;                    
+                    break;  
             }
             
             return true;
@@ -1016,7 +989,7 @@ public final class PestanyaLlistat extends Tab {
         
     private void columnesPrestecs() {               
         // Per crear totes les columnes de la taula llibres
-                
+                         
         TableColumn<Prestec,String> col_IDPrestec = new TableColumn<Prestec,String>(mapaNomCamps.get("ID reserva"));
         col_IDPrestec.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Prestec,String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Prestec,String> p) {

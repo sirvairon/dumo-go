@@ -54,10 +54,10 @@
                         <Font size="14.0" />
                      </font>
                   </MenuButton>
-                  <MenuButton mnemonicParsing="false" text="Prèstecs">
+                  <MenuButton mnemonicParsing="false" text="Préstecs">
                     <items>
-                      <MenuItem fx:id="prestecs" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Llista de prèstecs (Tots)" />
-                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                      <MenuItem fx:id="prestecs_no_tornats" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Préstecs pendents" />
+                      <MenuItem fx:id="prestecs" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Historial de préstecs" />
                     </items>
                   </MenuButton>
                </children>

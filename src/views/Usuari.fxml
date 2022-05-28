@@ -37,10 +37,10 @@
                       <MenuItem fx:id="llibres" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Llistat de llibres" />
                     </items>
                   </MenuButton>
-                  <MenuButton mnemonicParsing="false" text="Prèstecs">
+                  <MenuButton mnemonicParsing="false" text="Préstecs">
                     <items>
-                      <MenuItem fx:id="prestecs_usuari" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Veure prestecs" />
-                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                      <MenuItem fx:id="prestecs_usuari" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Préstecs actius" />
+                      <MenuItem fx:id="prestecs_llegits" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Historial de préstecs" />
                     </items>
                   </MenuButton>
                </children>

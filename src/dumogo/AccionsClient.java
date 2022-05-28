@@ -623,28 +623,12 @@ public class AccionsClient {
                     Llibre ll = new Llibre(obj);
                     llistat.add(ll);
                 }   
-            }else if(tipus.equals(PRESTEC_CASE)){
+            }else if(tipus.equals(PRESTEC_CASE) || tipus.equals(PRESTEC_USUARI_CASE) || tipus.equals(PRESTEC_NO_TORNATS_CASE) || tipus.equals(PRESTEC_LLEGITS_CASE) ){
                 // Omplim el llistat de prestecs amb els prestecs de cada HashMap dins del List tornat
                 for (HashMap obj:llistat_hashmaps) {
                     Prestec p = new Prestec(obj);
                     llistat.add(p);
                 }   
-            }else if(tipus.equals(PRESTEC_USUARI_CASE)){
-                HashMap<String,String> codi = new HashMap<>();
-                codi = llistat_hashmaps.get(0);
-                System.out.println("codi");
-                System.out.println(codi);
-                
-                if(codi.size() == 1){
-                    System.out.println("ES 1");         
-                    llistat = null;
-                }else{
-                    // Omplim el llistat de prestecs amb els prestecs de cada HashMap dins del List tornat
-                    for (HashMap obj:llistat_hashmaps) {
-                        Prestec p = new Prestec(obj);
-                        llistat.add(p);
-                    }   
-                }
             }
 
             // Tanquem connexio
