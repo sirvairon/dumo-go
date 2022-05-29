@@ -3,7 +3,9 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -31,25 +33,25 @@
                        <children>
                           <VBox>
                              <children>
-                                <Label text="Any de publicació" />
+                                <Label styleClass="negrita" text="Any de publicació" />
                               <Label fx:id="labelAnyPublicacio" text="1985" />
                              </children>
                           </VBox>
                           <VBox HBox.hgrow="ALWAYS">
                              <children>
-                                <Label layoutX="327.0" layoutY="38.0" text="Tipus" />
+                                <Label layoutX="327.0" layoutY="38.0" styleClass="negrita" text="Tipus" />
                               <Label fx:id="labelTipus" text="Informàtica" />
                              </children>
                           </VBox>
                           <VBox styleClass="valoracioLlibre">
                              <children>
-                                <Label text="Valoració" />
+                                <Label styleClass="negrita" text="Valoració" />
                               <Label fx:id="labelValoracio" text="5/5" />
                              </children>
                           </VBox>
                           <VBox styleClass="votsLlibre">
                              <children>
-                                <Label text="Vots" />
+                                <Label styleClass="negrita" text="Vots" />
                               <Label fx:id="labelVots" text="524" />
                              </children>
                           </VBox>
@@ -67,7 +69,7 @@
                      <children>
                         <VBox>
                            <children>
-                              <Label text="Descripció" wrapText="true" />
+                              <Label styleClass="negrita" text="Descripció" wrapText="true" />
                               <Label fx:id="labelDescripcio" text="Descripció" wrapText="true" />
                            </children>
                         </VBox>
@@ -77,7 +79,7 @@
                      <children>
                         <VBox>
                            <children>
-                              <Label fx:id="labelReservatDNI" text="Reservat per" />
+                              <Label fx:id="labelReservatDNI" styleClass="negrita" text="Reservat per" />
                               <TextField fx:id="textFieldReservatDNI" disable="true" prefWidth="200.0" />
                            </children>
                         </VBox>
@@ -86,6 +88,33 @@
                         <Insets top="10.0" />
                      </padding>
                   </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox>
+         <children>
+            <VBox HBox.hgrow="ALWAYS">
+               <children>
+                  <VBox>
+                     <children>
+                        <Label styleClass="negrita" text="Comentaris" wrapText="true" />
+                        <HBox>
+                           <children>
+                              <Label text="Filtre" />
+                              <ChoiceBox fx:id="choiceBoxFiltre" />
+                              <TextField fx:id="textFiltre" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="tableViewComentaris" />
+                        <HBox styleClass="hBoxResultat">
+                           <children>
+                              <Label fx:id="resultat" text="Comentaris:" />
+                              <Label fx:id="resultatValor" text="0" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
                </children>
             </VBox>
          </children>

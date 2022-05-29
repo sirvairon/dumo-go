@@ -32,7 +32,7 @@ public class DumoGo extends Application {
         // L'afegim a l'stage i la mostrem
         stage.setScene(scene);
         stage.show();
-        System.out.println(System.getProperties());
+        //System.out.println(System.getProperties());
     }
 
     /**

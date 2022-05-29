@@ -182,7 +182,7 @@ public class UsuariController implements Initializable {
                     //Usuari usuari_fila = (Usuari) tb.getSelectionModel().getSelectedItem();
                     //dataUsuaris = null;
                     //pt.actualitzaDadesTaula();
-                    pt.aplicarFiltre();
+                    //pt.aplicarFiltre();
                 }
             });
 

@@ -47,7 +47,8 @@ public class AccionsClient {
     private final static String PRESTEC_CASE = "prestecs";
     private final static String PRESTEC_USUARI_CASE = "prestecs_usuari";
     private final static String PRESTEC_NO_TORNATS_CASE = "prestecs_no_tornats";
-    private final static String PRESTEC_LLEGITS_CASE = "prestecs_llegits";                
+    private final static String PRESTEC_LLEGITS_CASE = "prestecs_llegits";    
+    private final static String COMENTARI_CASE = "comentaris";  
     private static OutputStream yourOutputStream;
     private static ObjectOutputStream mapOutputStream;
     private static InputStream yourInputStream;
@@ -596,6 +597,9 @@ public class AccionsClient {
                 case PRESTEC_LLEGITS_CASE:
                     msg_out.put("accio", "llista_llegits");
                     break; 
+                case COMENTARI_CASE:
+                    msg_out.put("accio", "llista_comentaris");
+                    break; 
             }
             msg_out.put(STRING_CODI_CONNEXIO, codi_connexio_client);
 
@@ -603,7 +607,7 @@ public class AccionsClient {
             mapOutputStream.writeObject(msg_out);            
             llistat_hashmaps = (List) mapInputStream.readObject();
             System.out.println("LLISTAT OBTINGUT:");
-            System.out.println(llistat_hashmaps);
+            //System.out.println(llistat_hashmaps);
             
             if(tipus.equals(USUARI_CASE)){
                 // Omplim el llistat d'usuaris amb els usuaris de cada HashMap dins del List tornat
@@ -629,6 +633,12 @@ public class AccionsClient {
                     Prestec p = new Prestec(obj);
                     llistat.add(p);
                 }   
+            }else if(tipus.equals(COMENTARI_CASE)){
+                // Omplim el llistat de llibres amb els llibres de cada HashMap dins del List tornat
+                for (HashMap obj:llistat_hashmaps) {
+                    Comentari c = new Comentari(obj);
+                    llistat.add(c);
+                }   
             }
 
             // Tanquem connexio
@@ -648,6 +658,54 @@ public class AccionsClient {
         return null;        
     }
 
+    public static ArrayList obtenirLlistatComentaris(Llibre ll) throws ClassNotFoundException{
+        
+        try {
+            // Establim connexio
+            establirConnexio();
+
+            // Creem el HashMap per enviar i el List per rebre les dades per fer l'accio
+            msg_out = new HashMap<>();
+            List<HashMap> llistat_hashmaps;
+            // Creem l'ArrayList on guardarem tots els usuaris
+            ArrayList llistat = new ArrayList<>();
+            
+            // Omplim el HasMap amb l'accio del llistat que volem i el codi de connexio
+            msg_out.put("accio", "llista_comentaris");            
+            msg_out.put(STRING_CODI_CONNEXIO, codi_connexio_client);
+            llibreAHashmap(msg_out, ll);
+            System.out.println(msg_out);
+            
+            // Enviem i rebem la informacio
+            mapOutputStream.writeObject(msg_out);            
+            llistat_hashmaps = (List) mapInputStream.readObject();
+            System.out.println("COMENTARIS OBTINGUTS:");
+            System.out.println(llistat_hashmaps);
+            
+            // Omplim el llistat de llibres amb els llibres de cada HashMap dins del List tornat
+            for (HashMap obj:llistat_hashmaps) {
+                Comentari c = new Comentari(obj);
+                llistat.add(c);
+            }   
+
+            // Tanquem connexio
+            yourOutputStream.close();
+            mapInputStream.close();
+
+            // Retornem el llistat d'usuaris
+            return llistat; 
+           
+            
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;        
+    }
+
+        
     public static void usuariAHashmap(HashMap hashmap, Usuari usuari){        
         // Afegim les dades de l'usuari al hashmap
         hashmap.put(STRING_NOM_USUARI, usuari.getUser_name());
@@ -674,7 +732,7 @@ public class AccionsClient {
     }
     
     public static void administradorAHashmap(HashMap hashmap, Administrador administrador){        
-        // Afegim les dades de l'usuari al hashmap
+        // Afegim les dades de l'administrador al hashmap
         hashmap.put(STRING_NOM_ADMINISTRADOR, administrador.getNom_Admin());
         hashmap.put("dni", administrador.getDni());
         hashmap.put("data_naixement", administrador.getData_naixement());
@@ -697,7 +755,7 @@ public class AccionsClient {
     }
 
     public static void llibreAHashmap(HashMap hashmap, Llibre llibre){        
-        // Afegim les dades de l'usuari al hashmap
+        // Afegim les dades del llibre al hashmap
         hashmap.put("id_llibre", llibre.getID());
         hashmap.put("nom", llibre.getNom());
         hashmap.put("autor", llibre.getAutor());
@@ -735,6 +793,15 @@ public class AccionsClient {
         hashmap.put("user_name", prestec.getUser_name());
         hashmap.put("avis_programat", prestec.getAvis_programat());       
 
+    }
+        
+    public static void comentariAHashmap(HashMap hashmap, Comentari comentari){        
+        // Afegim les dades del comentari al hashmap
+        hashmap.put("id", comentari.getID());
+        hashmap.put("id_llibre", comentari.getID_llibre());
+        hashmap.put("user_name", comentari.getUser_name());
+        hashmap.put("comentari", comentari.getComentari());
+        hashmap.put("data", comentari.getData());    
     }
 
         

@@ -6,15 +6,23 @@ package controllers;
 
 import dumogo.AccionsClient;
 import dumogo.CodiErrors;
+import dumogo.Comentari;
 import dumogo.Llibre;
+import dumogo.PestanyaLlistat;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -27,9 +35,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -37,6 +48,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -69,11 +81,17 @@ public class LlibreVistaController implements Initializable {
     @FXML
     private Label labelVots;        
     @FXML
-    private Label labelDescripcio;   
+    private Label labelDescripcio;
+    @FXML
+    private Label resultat;   
+    @FXML
+    private Label resultatValor;
     @FXML
     private TextField textFieldAdminAlta;       
     @FXML
     private TextField textFieldReservatDNI;
+    @FXML
+    private TextField textFiltre;
     @FXML
     private DatePicker datePickerDataAlta;               
     @FXML
@@ -84,6 +102,16 @@ public class LlibreVistaController implements Initializable {
     private Button butoAccio;    
     @FXML
     private ImageView imageViewCaratula;
+    @FXML
+    private TableView tableViewComentaris;
+    @FXML
+    private ChoiceBox choiceBoxFiltre;
+    
+    private ArrayList<Comentari> llista_comentaris;
+    private ObservableList<Comentari> data_comentaris;
+    private FilteredList<Comentari> data_filtrada_comentaris;
+    private Map<String, String> mapaNomCamps;
+    private ObservableList<String> llistaFiltre;
     
     /**
      * Initializes the controller class.
@@ -96,7 +124,6 @@ public class LlibreVistaController implements Initializable {
         DialogPane dialogPane = alerta.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
         alerta.initStyle(StageStyle.UNDECORATED);
-        
         // Establim al buto de l'accio, l'accio que volem fer (fer reserva)
         butoAccio.setText("Reservar");
         // Configurem el EventHandler en cas de fer click al boto de fer reserva
@@ -106,6 +133,11 @@ public class LlibreVistaController implements Initializable {
                 //ferReserva();
                 ferReserva();
             }
+        });
+        
+        // Apliquem un listener per si canvia el camp del text del filtre que apliqui el filtre
+        textFiltre.textProperty().addListener((observable, oldValue, newValue) -> {
+            aplicarFiltre();
         });
     }    
     
@@ -132,6 +164,17 @@ public class LlibreVistaController implements Initializable {
             Image imatge = SwingFXUtils.toFXImage(buffer, null);
             imageViewCaratula.setImage(imatge);
         }
+        
+        // Per obtenir els comentaris
+        boolean ok = obtenirComentaris();
+        // Creem el filtre
+        crearFiltre(); 
+        if(ok){
+            // Apliquem el filtre
+            aplicarFiltre();
+        }
+        // Creem les columnes de la taula
+        columnesComentaris();
        
     }
     
@@ -195,6 +238,169 @@ public class LlibreVistaController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public boolean obtenirComentaris(){
+        try {
+            // Esborrem l'informacio per carregar-la de nou
+            data_comentaris = null;
+            
+            // Obtenim el llistat_d'elements
+            llista_comentaris = AccionsClient.obtenirLlistatComentaris(llibre);          
+
+            // Obtenim el nom dels camps per columnes, filtre,...
+            mapaNomCamps = Comentari.mapaNomCamps;
+
+            // Si la llista torna buida                    
+            if(llista_comentaris.get(0).getID().equals("null")){ 
+                tableViewComentaris.setPlaceholder(new Label("No hi han comentaris"));
+                return false;
+            }else{
+                // El transformem en una ObservableList
+                data_comentaris = FXCollections.observableArrayList(llista_comentaris); 
+            }
+            
+            return true;
+    
+        } catch (NullPointerException ex) {
+            alerta.setTitle("Error al carregar dades");
+            alerta.setContentText("");
+            alerta.setAlertType(Alert.AlertType.ERROR);
+            alerta.setHeaderText("Error al carregar les dades dels comentaris");
+            alerta.show();
+            Logger.getLogger(PestanyaLlistat.class.getName()).log(Level.SEVERE, null, ex);            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
+
+    private void crearFiltre(){
+        mapaNomCamps = Comentari.mapaNomCamps;
+        llistaFiltre = FXCollections.observableArrayList(
+                //mapaNomCamps.get("id"),
+                //mapaNomCamps.get("id_llibre"),
+                mapaNomCamps.get("user_name"),
+                mapaNomCamps.get("comentari"), 
+                mapaNomCamps.get("data")                        
+                );
+        // Introduim les opcions dins les opcions del filtre
+        choiceBoxFiltre.setItems(llistaFiltre);
+        // Deixem marcada l'opcio de la data del comentari
+        choiceBoxFiltre.setValue(mapaNomCamps.get("data"));
+        // Establim que la label dels resultats posi Comentaris
+        resultat.setText("Comentaris:");
+    }
+    
+    private void aplicarFiltre(){
+        // Passem el string a trobar a minuscules
+        String paraulaFiltre = textFiltre.getText().toLowerCase();
+        
+        // Obtenim a quin camp volem trobar la paraula
+        String opcioFiltreTxt = choiceBoxFiltre.getSelectionModel().getSelectedItem().toString();
+        
+        // Filtrem les dades
+        data_filtrada_comentaris = new FilteredList<>(data_comentaris, b -> true);        
+        data_filtrada_comentaris.setPredicate(comentariFiltrat -> {
+                // Si no hi ha paraula a filtrar/buscar mostrem tot
+                if(paraulaFiltre.isEmpty() || paraulaFiltre == null){
+                    return true;
+                }
+
+                if(opcioFiltreTxt.equals(mapaNomCamps.get("id"))){
+                    if(comentariFiltrat.getID().toLowerCase().indexOf(paraulaFiltre) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }                    
+                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("id_llibre"))){
+                    if(comentariFiltrat.getID_llibre().toLowerCase().indexOf(paraulaFiltre) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }                    
+                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("user_name"))){
+                    if(comentariFiltrat.getUser_name().toLowerCase().indexOf(paraulaFiltre) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }                    
+                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("comentari"))){
+                    if(comentariFiltrat.getComentari().toLowerCase().indexOf(paraulaFiltre) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }                    
+                }else if(opcioFiltreTxt.equals(mapaNomCamps.get("data"))){
+                    if(comentariFiltrat.getData().toLowerCase().indexOf(paraulaFiltre) > -1){
+                        return true;
+                    } else {
+                        return false;
+                    }                    
+                }
+                // No s'ha trobat res
+                return false;
+            });
+
+        // Normalment, quan fem click al header de la columna canvia l'ordre de la TableView pero como ara te una FilteredList
+        // no es pot modificar, per lo que no es pot canviar l'ordre. Hem de ficar-la dins una SortedList per porder ordenar-la.
+
+        // Fiquem la llistra filtrada (FilteredList) dins la llista ordenada (SortedList)
+        SortedList<Comentari> sortedData = new SortedList<>(data_filtrada_comentaris);
+
+        // Ara que tenim una SortedList separada, hem de vincular la classificació d'aquesta llista a la TableView. 
+        // Enllaçem el comparador de la llista ordenada (SortedList) al comparador de la taula (taulaLlistat)
+        sortedData.comparatorProperty().bind(tableViewComentaris.comparatorProperty());
+
+        // Fiquem la llista ordenada (i filtrada) a les dades de la taula (taulaLlistat)
+        tableViewComentaris.setItems(sortedData);
+
+        // Obtenim el numero total de registres i la fiquem al label
+        resultatValor.setText(String.valueOf(data_filtrada_comentaris.size()));
+        
+    }
+    
+    private void columnesComentaris(){
+        // Per crear totes les columnes de la taula usuaris
+
+        TableColumn<Comentari,String> col_ID = new TableColumn<Comentari,String>(mapaNomCamps.get("id"));        
+        col_ID.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Comentari,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Comentari,String> p) {
+                return p.getValue().id();
+        }});
+
+        TableColumn<Comentari,String> col_IDLlibre = new TableColumn<Comentari,String>(mapaNomCamps.get("id_llibre"));
+        col_IDLlibre.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Comentari,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Comentari,String> p) {
+                return p.getValue().id_llibre();
+        }});
+
+        TableColumn<Comentari,String> col_NomUsuari = new TableColumn<Comentari,String>(mapaNomCamps.get("user_name"));
+        col_NomUsuari.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Comentari,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Comentari,String> p) {
+                return p.getValue().user_name();
+        }});
+
+        TableColumn<Comentari,String> col_Commentari = new TableColumn<Comentari,String>(mapaNomCamps.get("comentari"));
+        col_Commentari.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Comentari,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Comentari,String> p) {
+                return p.getValue().comentari();
+        }});
+        
+        TableColumn<Comentari,String> col_Data = new TableColumn<Comentari,String>(mapaNomCamps.get("data"));
+        col_Data.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Comentari,String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Comentari,String> p) {
+                return p.getValue().data();
+        }});
+        
+        tableViewComentaris.getColumns().addAll(
+            col_Data,
+            col_NomUsuari, 
+            col_Commentari            
+        );         
+        
+        tableViewComentaris.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
    
     @FXML

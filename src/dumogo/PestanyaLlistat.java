@@ -251,7 +251,7 @@ public final class PestanyaLlistat extends Tab {
         }
     }
     
-    public void aplicarFiltre(){
+    private void aplicarFiltre(){
         // Passem el string a trobar a minuscules
         String paraulaFiltre = textFiltre.getText().toLowerCase();
         
@@ -551,7 +551,7 @@ public final class PestanyaLlistat extends Tab {
             // Obtenim el numero total de registres i la fiquem al label
             resultatValor.setText(String.valueOf(data_filtrada_llibres.size()));
             
-        }else if(tipusLlista.equals(PRESTEC_CASE) || tipusLlista.equals(PRESTEC_USUARI_CASE) || tipusLlista.equals(PRESTEC_NO_TORNATS_CASE) || tipusLlista.equals(PRESTEC_USUARI_CASE)){            
+        }else if(tipusLlista.equals(PRESTEC_CASE) || tipusLlista.equals(PRESTEC_USUARI_CASE) || tipusLlista.equals(PRESTEC_NO_TORNATS_CASE) || tipusLlista.equals(PRESTEC_LLEGITS_CASE)){            
         
             // Filtrem les dades
             data_filtrada_prestecs = new FilteredList<>(data_prestecs, b -> true);        
