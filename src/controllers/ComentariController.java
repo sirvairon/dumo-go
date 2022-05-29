@@ -160,7 +160,7 @@ public class ComentariController implements Initializable {
         Stage stage = new Stage();
         Scene scene = new Scene(parent);
         stage.setScene(scene);
-        Image icon = new Image("/resources/dumogo_icon_neg_35.png");
+        Image icon = new Image("/resources/dumogo_window_icon.png");
         stage.getIcons().add(icon);
         stage.setTitle("Dumo-Go");
         stage.setResizable(false);

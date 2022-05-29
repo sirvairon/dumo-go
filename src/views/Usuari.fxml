@@ -39,6 +39,7 @@
                   </MenuButton>
                   <MenuButton mnemonicParsing="false" text="Préstecs">
                     <items>
+                        <MenuItem fx:id="prestecs_urgents" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Préstecs urgents" />
                       <MenuItem fx:id="prestecs_usuari" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Préstecs actius" />
                       <MenuItem fx:id="prestecs_llegits" mnemonicParsing="false" onAction="#crearPestanyaLlistat" text="Historial de préstecs" />
                     </items>

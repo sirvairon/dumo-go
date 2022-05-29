@@ -48,7 +48,8 @@ public class AccionsClient {
     private final static String PRESTEC_CASE = "prestecs";
     private final static String PRESTEC_USUARI_CASE = "prestecs_usuari";
     private final static String PRESTEC_NO_TORNATS_CASE = "prestecs_no_tornats";
-    private final static String PRESTEC_LLEGITS_CASE = "prestecs_llegits";    
+    private final static String PRESTEC_LLEGITS_CASE = "prestecs_llegits";   
+    private final static String PRESTEC_URGENTS = "prestecs_urgents";
     private final static String COMENTARI_CASE = "comentaris";  
     private static OutputStream yourOutputStream;
     private static ObjectOutputStream mapOutputStream;
@@ -597,7 +598,10 @@ public class AccionsClient {
                     break; 
                 case PRESTEC_LLEGITS_CASE:
                     msg_out.put("accio", "llista_llegits");
-                    break; 
+                    break;
+                case PRESTEC_URGENTS:
+                    msg_out.put("accio", "llista_prestecs_urgents");
+                    break;
                 case COMENTARI_CASE:
                     msg_out.put("accio", "llista_comentaris");
                     break; 
@@ -628,7 +632,11 @@ public class AccionsClient {
                     Llibre ll = new Llibre(obj);
                     llistat.add(ll);
                 }   
-            }else if(tipus.equals(PRESTEC_CASE) || tipus.equals(PRESTEC_USUARI_CASE) || tipus.equals(PRESTEC_NO_TORNATS_CASE) || tipus.equals(PRESTEC_LLEGITS_CASE) ){
+            }else if(tipus.equals(PRESTEC_CASE) 
+                    || tipus.equals(PRESTEC_USUARI_CASE) 
+                    || tipus.equals(PRESTEC_NO_TORNATS_CASE) 
+                    || tipus.equals(PRESTEC_LLEGITS_CASE) 
+                    || tipus.equals(PRESTEC_URGENTS) ){
                 // Omplim el llistat de prestecs amb els prestecs de cada HashMap dins del List tornat
                 for (HashMap obj:llistat_hashmaps) {
                     Prestec p = new Prestec(obj);
@@ -747,6 +755,46 @@ public class AccionsClient {
         return null; 
     }
         
+    public static HashMap puntuarLlibre(Llibre ll, String puntuacio) throws ClassNotFoundException{
+        try {
+            // Establim connexio
+            if(establirConnexio() == -1){
+                msg_in.put(STRING_CODI_RESPOSTA, "-1");
+                return msg_in;
+            }
+
+            // Creem els HashMaps per enviar i rebre les dades per fer la accio
+            msg_out = new HashMap<>();
+            msg_in = new HashMap<>();
+            
+            // Omplim el HasMap amb l'accio, l'element a modificar i el codi de connexio 
+            msg_out.put("accio", "puntua_llibre");
+            llibreAHashmap(msg_out, ll);
+            msg_out.put("valoracio_usuari", puntuacio);
+            msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
+                               
+            // Enviem i rebem la informacio
+            mapOutputStream.writeObject(msg_out);     
+            codi_resposta = (int) mapInputStream.readObject();
+            msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
+            
+            // Establim connexio
+            yourOutputStream.close();
+            mapInputStream.close();
+            
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            return msg_in;            
+            
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null; 
+    }
+
+    
     public static void usuariAHashmap(HashMap hashmap, Usuari usuari){        
         // Afegim les dades de l'usuari al hashmap
         hashmap.put(STRING_NOM_USUARI, usuari.getUser_name());

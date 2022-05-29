@@ -59,6 +59,10 @@
     -fx-spacing: 40;
 }
 
+VBox > HBox > VBox > Hbox > VBox {
+    -fx-alignment: TOP-LEFT;
+}
+
 .choice-box { 
     -fx-pref-width: 150;
     -fx-padding: 0.0em 0.0em 0.0em 0.0em;
@@ -110,7 +114,7 @@ HBox {
 }
 
 .valoracioLlibre, .votsLlibre {
-    -fx-alignment: CENTER;
+    -fx-alignment: TOP_CENTER;
 }
 
 .hBoxDescripcio {

@@ -68,6 +68,7 @@ public class UsuariController implements Initializable {
     private final static String ADMINISTRADOR_CASE = "administradors";
     private final static String LLIBRE_CASE = "llibres";
     private final static String PRESTEC_USUARI_CASE = "prestecs_usuari";
+    private final static String PRESTEC_URGENTS = "prestecs_urgents";
     
     @FXML
     private TabPane tabPaneGeneral;
@@ -95,7 +96,7 @@ public class UsuariController implements Initializable {
             Stage stage = new Stage();
             Scene scene = new Scene(parent);
             stage.setScene(scene);
-            Image icon = new Image("/resources/dumogo_icon_neg_35.png");
+            Image icon = new Image("/resources/dumogo_window_icon.png");
             stage.getIcons().add(icon);
             stage.setTitle("Dumo-Go");
             stage.setResizable(false);
@@ -454,7 +455,7 @@ public class UsuariController implements Initializable {
         Stage stage = new Stage();
         Scene scene = new Scene(parent);
         stage.setScene(scene);
-        Image icon = new Image("/resources/dumogo_icon_neg_35.png");
+        Image icon = new Image("/resources/dumogo_window_icon.png");
         stage.getIcons().add(icon);
         stage.setTitle("Dumo-Go");
         stage.setResizable(false);

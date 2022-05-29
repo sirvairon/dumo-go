@@ -233,3 +233,16 @@ TilePane {
 .vBoxLlibre:target {
     -fx-background-color: #03A9F4;
 }
+
+.choiceBoxValoracio {
+    -fx-alignment: TOP_LEFT;
+    -fx-pref-width: 60; 
+    -fx-max-width: 60;
+    -fx-padding: 0 0 0 0;
+}
+
+
+.choiceBoxValoracio .context-menu {
+    -fx-pref-width: 60; 
+    -fx-max-width: 60;
+}

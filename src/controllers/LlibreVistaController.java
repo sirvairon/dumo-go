@@ -125,6 +125,8 @@ public class LlibreVistaController implements Initializable {
     @FXML
     private TableView tableViewComentaris;
     @FXML
+    private ChoiceBox choiceBoxValoracio;
+    @FXML
     private ChoiceBox choiceBoxFiltre;
     
     /**
@@ -179,7 +181,7 @@ public class LlibreVistaController implements Initializable {
             @Override
             public void handle(Event event) {
                 //ferReserva();
-                //ferVotacio();
+                ferVotacio();
             }
         });
         
@@ -187,6 +189,12 @@ public class LlibreVistaController implements Initializable {
         textFiltre.textProperty().addListener((observable, oldValue, newValue) -> {
             aplicarFiltre();
         });
+        
+        ObservableList<String> valoracio = FXCollections.observableArrayList("1","2","3","4","5");
+        // Introduim les opcions dins les opcions del filtre
+        choiceBoxValoracio.setItems(valoracio);
+        // Deixem marcada l'opcio de la data del comentari
+        //choiceBoxValoracio.setValue(mapaNomCamps.get("data"));
     }    
     
     private void omplirDades(Llibre llibre){
@@ -334,6 +342,54 @@ public class LlibreVistaController implements Initializable {
         }
     }
 
+    private void ferVotacio(){
+        try {
+            // Creem el HashMap on rebrem el codi de resposta
+            HashMap<String, String> msg_in;
+            
+            // Obtenim el comentari, la data actual i l'usuari
+            String puntuacio = choiceBoxValoracio.getSelectionModel().getSelectedItem().toString();
+            System.out.println("puntuacio: " + puntuacio);
+            
+            if(!puntuacio.equals("") || puntuacio != null){
+                // Fem l'accio de fer la reserva
+                msg_in = AccionsClient.puntuarLlibre(llibre, puntuacio);
+                // Obtenim el codi de resposta
+                codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
+                // Obtenim el sinificat del codi de resposta
+                significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
+                // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
+                alerta.setTitle("Valorar llibre");
+                alerta.setHeaderText(significat_codi_resposta);
+                // Sessio caducada
+                if(codi_resposta.equals("10")){
+                    sessioCaducada();
+                // Rserva correcta
+                }else if(codi_resposta.equals("1900")){
+                    alerta.setAlertType(Alert.AlertType.INFORMATION);
+                    alerta.showAndWait();
+                    raiz.getScene().getWindow().hide();
+                // Error al fer la reserva
+                }else{
+                    llibre = null;
+                    alerta.setAlertType(Alert.AlertType.ERROR);
+                    alerta.show();
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullPointerException ex) {
+            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
+            alerta.setTitle("Valorar llibre");
+            alerta.setHeaderText("Has de donar una valoració");
+            alerta.setAlertType(Alert.AlertType.INFORMATION);
+            alerta.show();
+        }
+    }
+
+    
     private void veureComentari(Comentari c) throws IOException{
         // En cas de que no s'hagi creat el stage (finestra oberta) el creem
         if (stageComentari == null) {

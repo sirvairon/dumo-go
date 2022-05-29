@@ -43,6 +43,7 @@ public final class PestanyaLlistat extends Tab {
     private final static String PRESTEC_USUARI_CASE = "prestecs_usuari";
     private final static String PRESTEC_NO_TORNATS_CASE = "prestecs_no_tornats";
     private final static String PRESTEC_LLEGITS_CASE = "prestecs_llegits";
+    private final static String PRESTEC_URGENTS = "prestecs_urgents";
     private final String tipusLlista;
     
     private final TableView taulaLlistat;
@@ -233,6 +234,7 @@ public final class PestanyaLlistat extends Tab {
             case PRESTEC_USUARI_CASE:
             case PRESTEC_NO_TORNATS_CASE:
             case PRESTEC_LLEGITS_CASE:
+            case PRESTEC_URGENTS:
                 mapaNomCamps = Prestec.mapaNomCamps;
                 llistaFiltre = FXCollections.observableArrayList(
                         mapaNomCamps.get("nom_llibre"),
@@ -551,7 +553,11 @@ public final class PestanyaLlistat extends Tab {
             // Obtenim el numero total de registres i la fiquem al label
             resultatValor.setText(String.valueOf(data_filtrada_llibres.size()));
             
-        }else if(tipusLlista.equals(PRESTEC_CASE) || tipusLlista.equals(PRESTEC_USUARI_CASE) || tipusLlista.equals(PRESTEC_NO_TORNATS_CASE) || tipusLlista.equals(PRESTEC_LLEGITS_CASE)){            
+        }else if(tipusLlista.equals(PRESTEC_CASE) 
+                || tipusLlista.equals(PRESTEC_USUARI_CASE) 
+                || tipusLlista.equals(PRESTEC_NO_TORNATS_CASE) 
+                || tipusLlista.equals(PRESTEC_LLEGITS_CASE)
+                || tipusLlista.equals(PRESTEC_URGENTS)){            
         
             // Filtrem les dades
             data_filtrada_prestecs = new FilteredList<>(data_prestecs, b -> true);        
@@ -663,6 +669,7 @@ public final class PestanyaLlistat extends Tab {
                 case PRESTEC_USUARI_CASE:
                 case PRESTEC_NO_TORNATS_CASE:
                 case PRESTEC_LLEGITS_CASE:
+                case PRESTEC_URGENTS:
                     // Esborrem l'informacio per carregar-la de nou
                     data_prestecs = null;
 
@@ -720,17 +727,12 @@ public final class PestanyaLlistat extends Tab {
                 columnesLlibres();
                 break;
             case PRESTEC_CASE:
-                columnesPrestecs();
-                break;
             case PRESTEC_USUARI_CASE:
-                columnesPrestecs();
-                break;
             case PRESTEC_NO_TORNATS_CASE:
-                columnesPrestecs();
-                break;
             case PRESTEC_LLEGITS_CASE:
+            case PRESTEC_URGENTS:            
                 columnesPrestecs();
-                break;
+                break;            
         }
         taulaLlistat.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }

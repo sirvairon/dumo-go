@@ -26,7 +26,7 @@
                  <children>
               <VBox>
                  <children>
-                          <Label fx:id="labelTitol" styleClass="titolLlibre" text="INTRODUCCIÓN A LA BASE DE DATOS RELACIONAL" />
+                          <Label fx:id="labelTitol" styleClass="titolLlibre" text="TITOL" />
                           <Label fx:id="labelAutor" styleClass="autorLlibre" text="Autor" />
                  </children>
               </VBox>
@@ -56,6 +56,12 @@
                               <Label fx:id="labelVots" text="524" />
                              </children>
                           </VBox>
+                        <VBox styleClass="valoracioLlibre">
+                           <children>
+                              <Label styleClass="negrita" text="Fer Valoració" />
+                              <ChoiceBox fx:id="choiceBoxValoracio" maxWidth="60.0" styleClass="choiceBoxValoracio" />
+                           </children>
+                        </VBox>
                        </children>
                     </HBox>
                  </children>
