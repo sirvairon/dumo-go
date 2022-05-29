@@ -156,6 +156,32 @@ public class LlibreEdicioController implements Initializable {
         nom_llibre_actual = null;
     }
     
+    private Llibre obtenirLlibrePantalla(){
+        // Creem un llibre obtenint les dades de la pantalla 
+        Image image = imageViewCaratula.imageProperty().get();
+        BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
+        String imagen = AccionsClient.encodeToString(bImage,"jpg");
+        //String imagen = encodeToString(bImage,"jpg");
+        
+        Llibre ll = new Llibre (
+            new SimpleStringProperty(""), // ID
+            new SimpleStringProperty(textFieldTitol.getText()),
+            new SimpleStringProperty(textFieldAutor.getText()),
+            new SimpleStringProperty(textFieldAnyPublicacio.getText()),
+            new SimpleStringProperty(textFieldTipus.getText()),
+            new SimpleStringProperty(datePickerDataAlta.getValue().toString()),
+            new SimpleStringProperty(textFieldReservatDNI.getText()),
+            new SimpleStringProperty(textFieldAdminAlta.getText()),
+            new SimpleStringProperty(imagen),//imageViewCaratula            
+            new SimpleStringProperty(textAreaDescripcio.getText()),
+            new SimpleStringProperty(textFieldValoracio.getText()),            
+            new SimpleStringProperty(textFieldVots.getText())
+        );
+        //ll.setNom_Antic("");
+        // Tornem el llibre creat
+        return ll;
+    }
+        
     public void afegirLlibre(){
         // Esborrem dades en cas de que hi hagi
         esborrarDades();
@@ -282,32 +308,6 @@ public class LlibreEdicioController implements Initializable {
     @FXML
     private void tancarFinestra(ActionEvent event) throws IOException, ClassNotFoundException {
         ((Node) (event.getSource())).getScene().getWindow().hide();
-    }
-    
-    private Llibre obtenirLlibrePantalla(){
-        // Creem un llibre obtenint les dades de la pantalla 
-        Image image = imageViewCaratula.imageProperty().get();
-        BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
-        String imagen = AccionsClient.encodeToString(bImage,"jpg");
-        //String imagen = encodeToString(bImage,"jpg");
-        
-        Llibre ll = new Llibre (
-            new SimpleStringProperty(""), // ID
-            new SimpleStringProperty(textFieldTitol.getText()),
-            new SimpleStringProperty(textFieldAutor.getText()),
-            new SimpleStringProperty(textFieldAnyPublicacio.getText()),
-            new SimpleStringProperty(textFieldTipus.getText()),
-            new SimpleStringProperty(datePickerDataAlta.getValue().toString()),
-            new SimpleStringProperty(textFieldReservatDNI.getText()),
-            new SimpleStringProperty(textFieldAdminAlta.getText()),
-            new SimpleStringProperty(imagen),//imageViewCaratula            
-            new SimpleStringProperty(textAreaDescripcio.getText()),
-            new SimpleStringProperty(textFieldValoracio.getText()),            
-            new SimpleStringProperty(textFieldVots.getText())
-        );
-        //ll.setNom_Antic("");
-        // Tornem el llibre creat
-        return ll;
     }
     
     public void sessioCaducada() throws IOException {

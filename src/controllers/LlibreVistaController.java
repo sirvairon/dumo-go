@@ -9,15 +9,19 @@ import dumogo.CodiErrors;
 import dumogo.Comentari;
 import dumogo.Llibre;
 import dumogo.PestanyaLlistat;
+import dumogo.Usuari;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,6 +45,7 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -57,7 +62,7 @@ import javafx.util.Callback;
  */
 public class LlibreVistaController implements Initializable {
 
-    private Stage stage;
+    private Stage stage, stageComentari;
     private Llibre llibre;
     private String codi_resposta;
     private String significat_codi_resposta;
@@ -65,6 +70,15 @@ public class LlibreVistaController implements Initializable {
     private static final String STRING_RESERVA_LLIURE = "LLIURE";
     private Alert alerta;
     private HashMap<String, String> msg_in;
+    private ArrayList<Comentari> llista_comentaris;
+    private ObservableList<Comentari> data_comentaris;
+    private FilteredList<Comentari> data_filtrada_comentaris;
+    private Map<String, String> mapaNomCamps;
+    private ObservableList<String> llistaFiltre;
+    private Comentari comentariTemp;
+    private Object element_temp;
+    private Date tempsUltimClick;
+    private ComentariController comentariControlador;
     
     @FXML
     private VBox raiz;    
@@ -93,6 +107,8 @@ public class LlibreVistaController implements Initializable {
     @FXML
     private TextField textFiltre;
     @FXML
+    private TextArea textAreaComentari;
+    @FXML
     private DatePicker datePickerDataAlta;               
     @FXML
     private HBox hboxBotones;    
@@ -101,17 +117,15 @@ public class LlibreVistaController implements Initializable {
     @FXML
     private Button butoAccio;    
     @FXML
+    private Button butoAccio2;
+    @FXML
+    private Button butoAccio3;
+    @FXML
     private ImageView imageViewCaratula;
     @FXML
     private TableView tableViewComentaris;
     @FXML
     private ChoiceBox choiceBoxFiltre;
-    
-    private ArrayList<Comentari> llista_comentaris;
-    private ObservableList<Comentari> data_comentaris;
-    private FilteredList<Comentari> data_filtrada_comentaris;
-    private Map<String, String> mapaNomCamps;
-    private ObservableList<String> llistaFiltre;
     
     /**
      * Initializes the controller class.
@@ -124,6 +138,20 @@ public class LlibreVistaController implements Initializable {
         DialogPane dialogPane = alerta.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
         alerta.initStyle(StageStyle.UNDECORATED);
+        
+        // Configurem el EventHandler en cas de fer click a la taula
+        tableViewComentaris.setOnMouseClicked( new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                try {
+                    clickTaulaComentaris();
+                } catch (IOException ex) {
+                    Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        
+        
         // Establim al buto de l'accio, l'accio que volem fer (fer reserva)
         butoAccio.setText("Reservar");
         // Configurem el EventHandler en cas de fer click al boto de fer reserva
@@ -132,6 +160,26 @@ public class LlibreVistaController implements Initializable {
             public void handle(Event event) {
                 //ferReserva();
                 ferReserva();
+            }
+        });
+        // Establim al buto de l'accio, l'accio que volem fer (fer comentari)
+        butoAccio2.setText("Comentar");
+        // Configurem el EventHandler en cas de fer click al boto de fer comentari
+        butoAccio2.setOnMouseClicked( new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                //ferReserva();
+                afegirComentari();
+            }
+        });
+        // Establim al buto de l'accio, l'accio que volem fer (fer comentari)
+        butoAccio3.setText("Votar");
+        // Configurem el EventHandler en cas de fer click al boto de fer comentari
+        butoAccio3.setOnMouseClicked( new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                //ferReserva();
+                //ferVotacio();
             }
         });
         
@@ -206,7 +254,7 @@ public class LlibreVistaController implements Initializable {
         }
     }
     
-    public void ferReserva(){
+    private void ferReserva(){
         try {
             // Creem el HashMap on rebrem el codi de resposta
             HashMap<String, String> msg_in;
@@ -240,7 +288,104 @@ public class LlibreVistaController implements Initializable {
         }
     }
     
-    public boolean obtenirComentaris(){
+    private void afegirComentari(){
+        try {
+            // Creem el HashMap on rebrem el codi de resposta
+            HashMap<String, String> msg_in;
+            Comentari comentari;
+            
+            // Obtenim el comentari, la data actual i l'usuari
+            SimpleStringProperty id_llibre = new SimpleStringProperty(llibre.getID());
+            SimpleStringProperty text_comentari = new SimpleStringProperty(textAreaComentari.getText());
+            SimpleStringProperty data_creacio = new SimpleStringProperty(LocalDate.now().toString());
+            SimpleStringProperty user_name = new SimpleStringProperty(AccionsClient.getNom_user_actual());
+            SimpleStringProperty id_comentari = new SimpleStringProperty("");
+            
+            if(!text_comentari.equals("") || text_comentari != null){
+                comentari = new Comentari(id_comentari, id_llibre, user_name, text_comentari, data_creacio);               
+                // Fem l'accio de fer la reserva
+                msg_in = AccionsClient.afegirComentari(comentari);
+                // Obtenim el codi de resposta
+                codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
+                // Obtenim el sinificat del codi de resposta
+                significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
+                // Configurem l'alerta que ens confirmara que ha sigut correcte o hi ha hagut error
+                alerta.setTitle("Afegir comentari");
+                alerta.setHeaderText(significat_codi_resposta);
+                // Sessio caducada
+                if(codi_resposta.equals("10")){
+                    sessioCaducada();
+                // Rserva correcta
+                }else if(codi_resposta.equals("2700")){
+                    alerta.setAlertType(Alert.AlertType.INFORMATION);
+                    alerta.showAndWait();
+                    raiz.getScene().getWindow().hide();
+                // Error al fer la reserva
+                }else{
+                    llibre = null;
+                    alerta.setAlertType(Alert.AlertType.ERROR);
+                    alerta.show();
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void veureComentari(Comentari c) throws IOException{
+        // En cas de que no s'hagi creat el stage (finestra oberta) el creem
+        if (stageComentari == null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Comentari.fxml"));
+            Parent root = (Parent) loader.load();
+            comentariControlador = loader.getController();
+            stageComentari = new Stage();
+            stageComentari.setScene(new Scene(root));
+            Image icon = new Image("/resources/usuari_icon_neg_16.png");
+            stageComentari.getIcons().add(icon);
+            stageComentari.setTitle("Comentari");
+            stageComentari.setResizable(false);
+
+            // Quan es tanqui esborrem el stage de memòria                    
+            stageComentari.setOnHiding(we -> stageComentari = null);
+
+            // Mostrem la finestra del usuari a editar
+            stageComentari.show();   
+
+        // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
+        }else{
+            stageComentari.toFront();
+        }
+        // Actualitzem el controlador (finestra usuari) per mijtà del mètode dins del controlador
+        comentariControlador.mostrarComentari(c);
+    }
+    
+    private void clickTaulaComentaris() throws IOException {
+        // Mirem l'element clickat
+        Object element = tableViewComentaris.getSelectionModel().getSelectedItem();
+        // Si està buit tornem
+        if (element == null) return;
+        // Si fem click un altre vegada comparem si es el mateix element clickat i generem un temps desde aquest click
+        if(element != element_temp){
+            element_temp = element;
+            tempsUltimClick = new Date();
+        // Si es el mateix element clickat i generem un altre temps desde aquest click i comparem temps entre clicks
+        } else if(element.equals(element_temp)) {
+            Date now = new Date();
+            long diff = now.getTime() - tempsUltimClick.getTime();
+            // Si ha sigut rapid (300 millis) es doble click
+            if (diff < 300){ 
+                veureComentari((Comentari)element);
+            } else {
+                // Si no, actualitzem el temps
+                tempsUltimClick = new Date();
+            }
+        }else{
+        }
+    }
+    
+    private boolean obtenirComentaris(){
         try {
             // Esborrem l'informacio per carregar-la de nou
             data_comentaris = null;

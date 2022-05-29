@@ -39,6 +39,7 @@ public class AccionsClient {
     private static final String STRING_NOM_USUARI = "user_name";
     private static final String STRING_NOM_ADMINISTRADOR = "nom_admin";
     private static final String STRING_ID_LLIBRE = "id";
+    private static final String STRING_ID_COMENTARI = "id_comentari";
     private static int codi_resposta;
     private static final String STRING_CODI_RESPOSTA = "codi_retorn";
     private final static String USUARI_CASE = "usuaris";
@@ -348,6 +349,12 @@ public class AccionsClient {
                     Llibre ll = (Llibre)obj;
                     msg_out.put(STRING_ID_LLIBRE, ll.getID());                    
                     break;
+                case "Comentari":
+                    msg_out.put("accio", "elimina_comentari");
+                    // Afegim les dades del comentari al hashmap
+                    Comentari c = (Comentari)obj;
+                    msg_out.put(STRING_ID_COMENTARI, c.getID());                    
+                    break;
             }            
             msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
             
@@ -483,14 +490,8 @@ public class AccionsClient {
             msg_in = new HashMap<>();
             
             // Omplim el HasMap amb l'accio, l'element a modificar i el codi de connexio 
-            if(obj instanceof Usuari){
-
-            }else if(obj instanceof Administrador){
-
-            }else if(obj instanceof Llibre){
-                msg_out.put("accio", "reserva_llibre");
-                llibreAHashmap(msg_out, (Llibre)obj);
-            }            
+            msg_out.put("accio", "reserva_llibre");
+            llibreAHashmap(msg_out, (Llibre)obj);
             msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
                    
             System.out.println("ELEMENT A ENVIAR (" + obj.getClass().getSimpleName() + "):");
@@ -705,6 +706,46 @@ public class AccionsClient {
         return null;        
     }
 
+    public static HashMap afegirComentari(Comentari c) throws ClassNotFoundException{
+        try {
+            // Establim connexio
+            if(establirConnexio() == -1){
+                msg_in.put(STRING_CODI_RESPOSTA, "-1");
+                return msg_in;
+            }
+
+            // Creem els HashMaps per enviar i rebre les dades per fer la accio
+            msg_out = new HashMap<>();
+            msg_in = new HashMap<>();
+            
+            // Omplim el HasMap amb l'accio, l'element a modificar i el codi de connexio 
+            msg_out.put("accio", "afegeix_comentari");
+            comentariAHashmap(msg_out, c);
+            msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
+                   
+            System.out.println("COMENTARI A ENVIAR:");
+            System.out.println(msg_out);
+            
+            // Enviem i rebem la informacio
+            mapOutputStream.writeObject(msg_out);     
+            codi_resposta = (int) mapInputStream.readObject();
+            msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
+            
+            // Establim connexio
+            yourOutputStream.close();
+            mapInputStream.close();
+            
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            return msg_in;            
+            
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null; 
+    }
         
     public static void usuariAHashmap(HashMap hashmap, Usuari usuari){        
         // Afegim les dades de l'usuari al hashmap
@@ -803,7 +844,6 @@ public class AccionsClient {
         hashmap.put("comentari", comentari.getComentari());
         hashmap.put("data", comentari.getData());    
     }
-
         
     public static String encodeToString(BufferedImage imatgeBuffer, String tipus) {
         String imatgeString = null;

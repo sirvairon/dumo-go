@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -94,19 +95,19 @@
       </HBox>
       <HBox>
          <children>
-            <VBox HBox.hgrow="ALWAYS">
+            <VBox styleClass="vBoxComentaris" HBox.hgrow="ALWAYS">
                <children>
                   <VBox>
                      <children>
                         <Label styleClass="negrita" text="Comentaris" wrapText="true" />
-                        <HBox>
+                        <HBox spacing="20.0">
                            <children>
                               <Label text="Filtre" />
                               <ChoiceBox fx:id="choiceBoxFiltre" />
                               <TextField fx:id="textFiltre" />
                            </children>
                         </HBox>
-                        <TableView fx:id="tableViewComentaris" />
+                        <TableView fx:id="tableViewComentaris" maxHeight="100.0" prefHeight="100.0" />
                         <HBox styleClass="hBoxResultat">
                            <children>
                               <Label fx:id="resultat" text="Comentaris:" />
@@ -115,6 +116,16 @@
                         </HBox>
                      </children>
                   </VBox>
+                  <HBox>
+                     <children>
+                        <VBox HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="Afegir comentari" />
+                              <TextArea fx:id="textAreaComentari" maxHeight="100.0" prefHeight="100.0" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
                </children>
             </VBox>
          </children>
@@ -122,6 +133,8 @@
       <HBox fx:id="hboxBotones" alignment="CENTER" styleClass="hboxBotones">
          <children>
             <Button fx:id="butoAccio" mnemonicParsing="false" text="Reservar" />
+            <Button fx:id="butoAccio2" mnemonicParsing="false" text="Comentar" />
+            <Button fx:id="butoAccio3" mnemonicParsing="false" text="Votar" />
             <Button fx:id="ButtonVolver" mnemonicParsing="false" onAction="#tancarFinestra" text="Sortir" />
          </children>
       </HBox>

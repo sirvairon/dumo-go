@@ -96,6 +96,31 @@
     -fx-background-color: #ffffff;
 }
 
+.date-picker-popup > .month-year-pane {
+    -fx-aligment: CENTER;
+    -fx-background-color: transparent ;
+    -fx-padding: 0.333333em 0.333333em 0.333333em 0.333333em;
+}
+
+.date-picker-popup .button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 0 0;
+}
+
+.date-picker-popup .label {
+    -fx-padding: 0.333333em 0.333333em 0.333333em 0.333333em;
+    -fx-text-fill: #000000;
+}
+
+.date-picker-popup > .month-year-pane .button {
+    -fx-background-color: transparent;
+}
+
+.date-picker .cell:hover {
+    -fx-background-color: #03A9F4;
+}
+
+
 /************* CLASSES PROPIES *************/
 
 /* menu top */
