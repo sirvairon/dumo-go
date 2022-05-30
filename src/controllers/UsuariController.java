@@ -11,12 +11,10 @@ import dumogo.Llibre;
 import dumogo.PestanyaLlistat;
 import dumogo.Usuari;
 import dumogo.Administrador;
-import z_borrar.PestanyaGrid;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,14 +29,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.TilePane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -386,6 +381,11 @@ public class UsuariController implements Initializable {
                 break;
             case LLIBRE_CASE:
                 // En cas de que no s'hagi creat el stage (finestra oberta) el creem
+                if (stageLlibre != null) {
+                    stageLlibre.close();
+                    stageLlibre = null;
+                }
+                
                 if (stageLlibre == null) {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/LlibreVista.fxml"));
                     Parent root = (Parent) loader.load();
@@ -406,6 +406,7 @@ public class UsuariController implements Initializable {
                 // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
                 }else{
                     stageLlibre.toFront();
+                    //stageLlibre.close();
                 }
                 break;
         }

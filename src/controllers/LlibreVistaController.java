@@ -75,7 +75,6 @@ public class LlibreVistaController implements Initializable {
     private FilteredList<Comentari> data_filtrada_comentaris;
     private Map<String, String> mapaNomCamps;
     private ObservableList<String> llistaFiltre;
-    private Comentari comentariTemp;
     private Object element_temp;
     private Date tempsUltimClick;
     private ComentariController comentariControlador;
@@ -148,7 +147,7 @@ public class LlibreVistaController implements Initializable {
                 try {
                     clickTaulaComentaris();
                 } catch (IOException ex) {
-                    Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -191,10 +190,7 @@ public class LlibreVistaController implements Initializable {
         });
         
         ObservableList<String> valoracio = FXCollections.observableArrayList("1","2","3","4","5");
-        // Introduim les opcions dins les opcions del filtre
         choiceBoxValoracio.setItems(valoracio);
-        // Deixem marcada l'opcio de la data del comentari
-        //choiceBoxValoracio.setValue(mapaNomCamps.get("data"));
     }    
     
     private void omplirDades(Llibre llibre){
@@ -220,6 +216,7 @@ public class LlibreVistaController implements Initializable {
             Image imatge = SwingFXUtils.toFXImage(buffer, null);
             imageViewCaratula.setImage(imatge);
         }
+        
         
         // Per obtenir els comentaris
         boolean ok = obtenirComentaris();
@@ -248,9 +245,15 @@ public class LlibreVistaController implements Initializable {
         //textFieldAdminAlta.setText("");
         //datePickerDataAlta.setValue(LocalDate.now());
         textFieldReservatDNI.setText("");
+        
+        //data_comentaris.forEach(tableViewComentaris.getItems()::remove);
+        if(data_comentaris != null){
+            data_comentaris.forEach(tableViewComentaris.getItems()::remove);
+        }
     }
     
     public void mostrarLlibre(Llibre ll){
+        esborrarDades();
         // Omplim les dades per les dades obtingudes de l'usuari
         omplirDades(ll);
         
@@ -264,8 +267,6 @@ public class LlibreVistaController implements Initializable {
     
     private void ferReserva(){
         try {
-            // Creem el HashMap on rebrem el codi de resposta
-            HashMap<String, String> msg_in;
             // Fem l'accio de fer la reserva
             msg_in = AccionsClient.ferReserva(llibre);
             // Obtenim el codi de resposta
@@ -298,8 +299,6 @@ public class LlibreVistaController implements Initializable {
     
     private void afegirComentari(){
         try {
-            // Creem el HashMap on rebrem el codi de resposta
-            HashMap<String, String> msg_in;
             Comentari comentari;
             
             // Obtenim el comentari, la data actual i l'usuari
@@ -343,10 +342,7 @@ public class LlibreVistaController implements Initializable {
     }
 
     private void ferVotacio(){
-        try {
-            // Creem el HashMap on rebrem el codi de resposta
-            HashMap<String, String> msg_in;
-            
+        try {            
             // Obtenim el comentari, la data actual i l'usuari
             String puntuacio = choiceBoxValoracio.getSelectionModel().getSelectedItem().toString();
             System.out.println("puntuacio: " + puntuacio);
@@ -469,7 +465,7 @@ public class LlibreVistaController implements Initializable {
             alerta.setAlertType(Alert.AlertType.ERROR);
             alerta.setHeaderText("Error al carregar les dades dels comentaris");
             alerta.show();
-            Logger.getLogger(PestanyaLlistat.class.getName()).log(Level.SEVERE, null, ex);            
+            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);            
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -565,6 +561,8 @@ public class LlibreVistaController implements Initializable {
     private void columnesComentaris(){
         // Per crear totes les columnes de la taula usuaris
 
+        tableViewComentaris.getColumns().clear();
+                
         TableColumn<Comentari,String> col_ID = new TableColumn<Comentari,String>(mapaNomCamps.get("id"));        
         col_ID.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Comentari,String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Comentari,String> p) {

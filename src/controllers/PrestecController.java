@@ -202,9 +202,9 @@ public class PrestecController implements Initializable {
                 alerta.show();
             }
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PrestecController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PrestecController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }    
   

@@ -24,6 +24,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -36,6 +38,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextArea;
@@ -66,6 +69,7 @@ public class LlibreEdicioController implements Initializable {
     private static final String STRING_RESERVA_LLIURE = "LLIURE";
     private Alert alerta;
     private HashMap<String, String> msg_in;
+    private ObservableList<String> llistaFiltreTipus;
     
     @FXML
     private VBox raiz;    
@@ -86,7 +90,7 @@ public class LlibreEdicioController implements Initializable {
     @FXML
     private TextField textFieldAnyPublicacio;
     @FXML
-    private TextField textFieldTipus;
+    private ChoiceBox choiceBoxTipus;
     @FXML
     private DatePicker datePickerDataAlta;
     @FXML
@@ -111,6 +115,9 @@ public class LlibreEdicioController implements Initializable {
         DialogPane dialogPane = alerta.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
         alerta.initStyle(StageStyle.UNDECORATED);
+        
+        ObservableList<String> tipus = FXCollections.observableArrayList("Fantasia", "Suspens", "Terror", "Aventures", "Romantica", "Historia", "Ciencia");
+        choiceBoxTipus.setItems(tipus);
     }    
     
     private void omplirDades(Llibre llibre){
@@ -120,7 +127,7 @@ public class LlibreEdicioController implements Initializable {
         textFieldTitol.setText(llibre.getNom());        
         textFieldAutor.setText(llibre.getAutor());
         textFieldAnyPublicacio.setText(llibre.getAny_Publicacio());
-        textFieldTipus.setText(llibre.getTipus());
+        choiceBoxTipus.setValue(llibre.getTipus());
         textFieldValoracio.setText(llibre.getValoracio());
         textFieldVots.setText(llibre.getVots());
         textAreaDescripcio.setText(llibre.getDescripcio());
@@ -146,7 +153,7 @@ public class LlibreEdicioController implements Initializable {
         textFieldTitol.setText("");        
         textFieldAutor.setText("");
         textFieldAnyPublicacio.setText("");
-        textFieldTipus.setText("");
+        choiceBoxTipus.setValue(null);
         textFieldValoracio.setText("");
         textFieldVots.setText("");
         textAreaDescripcio.setText("");
@@ -157,29 +164,46 @@ public class LlibreEdicioController implements Initializable {
     }
     
     private Llibre obtenirLlibrePantalla(){
+        
         // Creem un llibre obtenint les dades de la pantalla 
         Image image = imageViewCaratula.imageProperty().get();
         BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
         String imagen = AccionsClient.encodeToString(bImage,"jpg");
-        //String imagen = encodeToString(bImage,"jpg");
+
+        String tipus = "";
+        try{                
+            tipus = choiceBoxTipus.getSelectionModel().getSelectedItem().toString();
+        } catch (NullPointerException ex) {
+            Logger.getLogger(LlibreEdicioController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if(tipus.equals("") || tipus == null){
+            // Configurem l'alerta que ens confirmara que hi ha hagut error a l'obtenir les dades del llibre a pantalla
+            alerta.setTitle("Tipus de llibre");
+            alerta.setHeaderText("S'ha d'indicar un tipus de llibre");  
+            alerta.setAlertType(Alert.AlertType.ERROR);
+            alerta.show();
+            return null;
+        }else{
+            Llibre ll = new Llibre (
+                new SimpleStringProperty(""), // ID
+                new SimpleStringProperty(textFieldTitol.getText()),
+                new SimpleStringProperty(textFieldAutor.getText()),
+                new SimpleStringProperty(textFieldAnyPublicacio.getText()),
+                new SimpleStringProperty(tipus),
+                new SimpleStringProperty(datePickerDataAlta.getValue().toString()),
+                new SimpleStringProperty(textFieldReservatDNI.getText()),
+                new SimpleStringProperty(textFieldAdminAlta.getText()),
+                new SimpleStringProperty(imagen),//imageViewCaratula            
+                new SimpleStringProperty(textAreaDescripcio.getText()),
+                new SimpleStringProperty(textFieldValoracio.getText()),            
+                new SimpleStringProperty(textFieldVots.getText())
+            );
+
+            // Tornem el llibre creat
+            return ll;
+        }
         
-        Llibre ll = new Llibre (
-            new SimpleStringProperty(""), // ID
-            new SimpleStringProperty(textFieldTitol.getText()),
-            new SimpleStringProperty(textFieldAutor.getText()),
-            new SimpleStringProperty(textFieldAnyPublicacio.getText()),
-            new SimpleStringProperty(textFieldTipus.getText()),
-            new SimpleStringProperty(datePickerDataAlta.getValue().toString()),
-            new SimpleStringProperty(textFieldReservatDNI.getText()),
-            new SimpleStringProperty(textFieldAdminAlta.getText()),
-            new SimpleStringProperty(imagen),//imageViewCaratula            
-            new SimpleStringProperty(textAreaDescripcio.getText()),
-            new SimpleStringProperty(textFieldValoracio.getText()),            
-            new SimpleStringProperty(textFieldVots.getText())
-        );
-        //ll.setNom_Antic("");
-        // Tornem el llibre creat
-        return ll;
     }
         
     public void afegirLlibre(){
@@ -393,9 +417,9 @@ public class LlibreEdicioController implements Initializable {
                 alerta.show();
             }
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LlibreEdicioController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(LlibreVistaController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LlibreEdicioController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

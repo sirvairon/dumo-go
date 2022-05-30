@@ -106,7 +106,7 @@
                   <VBox>
                      <children>
                         <Label styleClass="negrita" text="Comentaris" wrapText="true" />
-                        <HBox spacing="20.0">
+                        <HBox fx:id="hboxTaulaComentaris" spacing="20.0">
                            <children>
                               <Label text="Filtre" />
                               <ChoiceBox fx:id="choiceBoxFiltre" />

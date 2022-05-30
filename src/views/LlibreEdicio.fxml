@@ -3,6 +3,7 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
@@ -53,7 +54,7 @@
                               <VBox HBox.hgrow="ALWAYS">
                                  <children>
                                     <Label fx:id="labelTipus" layoutX="327.0" layoutY="38.0" text="Tipus" />
-                                    <TextField fx:id="textFieldTipus" prefWidth="100.0" />
+                                    <ChoiceBox fx:id="choiceBoxTipus" prefWidth="150.0" />
                                     <HBox />
                                  </children>
                               </VBox>

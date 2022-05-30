@@ -121,14 +121,13 @@ public class AccionsClient {
             //String codi_resposta = (String) msg_in.get(STRING_CODI_RESPOSTA);
             codi_resposta = (int) mapInputStream.readObject();   
             //codi_resposta = mapInputStream.readInt();
-            System.out.println("(ACCIONS CLIENT)codi_resposta:" + codi_resposta);
+            //System.out.println("(ACCIONS CLIENT)codi_resposta:" + codi_resposta);
             // Si el codi de retorn es correcte guardem el codi de connexio rebut del servidor
             // i el nom d'usuari per futures consultes
             if(codi_resposta == 8010 || codi_resposta == 8020 || codi_resposta == 8030 || codi_resposta == 7010 || codi_resposta == 7020 || codi_resposta == 7030 || codi_resposta == 0){
-                System.out.println("(ACCIONS CLIENT 2)codi_resposta:" + String.valueOf(codi_resposta));
+                //System.out.println("(ACCIONS CLIENT 2)codi_resposta:" + String.valueOf(codi_resposta));
                 msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));               
             }else{                
-                /*System.out.println("HE ENTRAT");*/
                 msg_in.put(STRING_CODI_RESPOSTA, "8000");
                 codi_connexio_client = String.valueOf(codi_resposta);
                 nom_user_actual = usuari; 
@@ -178,7 +177,7 @@ public class AccionsClient {
             //String codi_resposta = (String) msg_in.get(STRING_CODI_RESPOSTA);
             codi_resposta = (int) mapInputStream.readObject();   
             //codi_resposta = mapInputStream.readInt();
-            System.out.println("(ACCIONS CLIENT)codi_resposta:" + codi_resposta);
+            //System.out.println("(ACCIONS CLIENT)codi_resposta:" + codi_resposta);
             // Si el codi de retorn es correcte guardem el codi de connexio rebut del servidor
             // i el nom d'usuari per futures consultes
             if(codi_resposta == 20 || codi_resposta == 10){
@@ -236,7 +235,7 @@ public class AccionsClient {
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);           
             msg_in = (HashMap) mapInputStream.readObject(); 
-            System.out.println(msg_in.toString()); 
+            //System.out.println(msg_in.toString()); 
             
             // Establim connexio
             yourOutputStream.close();
@@ -290,8 +289,8 @@ public class AccionsClient {
             }       
             msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
             
-            System.out.println("ELEMENT A ENVIAR (" + tipus + "):");
-            System.out.println(msg_out);
+            //System.out.println("ELEMENT A ENVIAR (" + tipus + "):");
+            //System.out.println(msg_out);
             
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);     
@@ -406,8 +405,8 @@ public class AccionsClient {
             }            
             msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
                    
-            System.out.println("ELEMENT A ENVIAR (" + obj.getClass().getSimpleName() + "):");
-            System.out.println(msg_out);
+            //System.out.println("ELEMENT A ENVIAR (" + obj.getClass().getSimpleName() + "):");
+            //System.out.println(msg_out);
             
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);     
@@ -495,8 +494,8 @@ public class AccionsClient {
             llibreAHashmap(msg_out, (Llibre)obj);
             msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
                    
-            System.out.println("ELEMENT A ENVIAR (" + obj.getClass().getSimpleName() + "):");
-            System.out.println(msg_out);
+            //System.out.println("ELEMENT A ENVIAR (" + obj.getClass().getSimpleName() + "):");
+            //System.out.println(msg_out);
             
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);     
@@ -540,8 +539,8 @@ public class AccionsClient {
                 
             msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
                    
-            System.out.println("ELEMENT A ENVIAR (" + obj.getClass().getSimpleName() + "):");
-            System.out.println(msg_out);
+            //System.out.println("ELEMENT A ENVIAR (" + obj.getClass().getSimpleName() + "):");
+            //System.out.println(msg_out);
             
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);     
@@ -611,7 +610,7 @@ public class AccionsClient {
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);            
             llistat_hashmaps = (List) mapInputStream.readObject();
-            System.out.println("LLISTAT OBTINGUT:");
+            //System.out.println("LLISTAT OBTINGUT:");
             //System.out.println(llistat_hashmaps);
             
             if(tipus.equals(USUARI_CASE)){
@@ -683,13 +682,13 @@ public class AccionsClient {
             msg_out.put("accio", "llista_comentaris");            
             msg_out.put(STRING_CODI_CONNEXIO, codi_connexio_client);
             llibreAHashmap(msg_out, ll);
-            System.out.println(msg_out);
+            //System.out.println(msg_out);
             
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);            
             llistat_hashmaps = (List) mapInputStream.readObject();
-            System.out.println("COMENTARIS OBTINGUTS:");
-            System.out.println(llistat_hashmaps);
+            //System.out.println("COMENTARIS OBTINGUTS:");
+            //System.out.println(llistat_hashmaps);
             
             // Omplim el llistat de llibres amb els llibres de cada HashMap dins del List tornat
             for (HashMap obj:llistat_hashmaps) {
@@ -793,8 +792,7 @@ public class AccionsClient {
         
         return null; 
     }
-
-    
+ 
     public static void usuariAHashmap(HashMap hashmap, Usuari usuari){        
         // Afegim les dades de l'usuari al hashmap
         hashmap.put(STRING_NOM_USUARI, usuari.getUser_name());
