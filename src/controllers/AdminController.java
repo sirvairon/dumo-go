@@ -35,6 +35,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
@@ -78,7 +79,8 @@ public class AdminController implements Initializable {
         alerta = new Alert(Alert.AlertType.NONE);
         alerta.initStyle(StageStyle.UNDECORATED);
         DialogPane dialogPane = alerta.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());        
+        dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());   
+        tabPaneGeneral.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
     }
     
     @FXML

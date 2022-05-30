@@ -77,6 +77,7 @@ public final class PestanyaLlistat extends Tab {
     public PestanyaLlistat(String nomLlista, String tipusLlista) throws ClassNotFoundException {
         super(nomLlista);
         
+        
         this.tipusLlista = tipusLlista;
         taulaLlistat = new TableView();
         taulaLlistat.setPlaceholder(new Label("No hi ha registres"));
