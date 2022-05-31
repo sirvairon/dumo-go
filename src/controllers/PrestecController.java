@@ -97,9 +97,11 @@ public class PrestecController implements Initializable {
     private void omplirDades(Prestec prestec){
         // Agafem el prestec i el guardem
         this.prestec = prestec;
-        // Omplim els camps de pantalla amb l'usuari
+        // Omplim els camps de pantalla amb el prestec
         labelTitol.setText(prestec.getNom_llibre());        
         textFieldReserva.setText(prestec.getUser_name());
+        
+        // Si les dates no estan buides les carreguem
         if(!prestec.getData_reserva().equals("null")){
             datePickerDataReserva.setValue(LocalDate.parse(prestec.getData_reserva()));
         }
@@ -113,9 +115,7 @@ public class PrestecController implements Initializable {
         }
     }
     
-    
     public void modificarPrestec(Prestec p){
-        /** PER MODIFICAR PERFIL DESDE L'ADMINISTRADOR **/
         // Omplim les dades per les dades obtingudes del prestec
         omplirDades(p);
         // En cas de que el prestec no tingui data de retorn real es que no s'ha retornat
@@ -141,9 +141,7 @@ public class PrestecController implements Initializable {
     
     public void sessioCaducada() throws IOException {
         // En cas de retornar codi 10 (sessio caducada)
-        // Obtenim el text de l'error
-        //significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-                // Creem l'alerta que farem servir per informar d'errors o accions correctes
+        // Creem l'alerta que farem servir per informar d'errors o accions correctes
         alerta = new Alert(Alert.AlertType.NONE);
         // Per poder aplicar estil a les alertes hem de aplicar-les al dialogpane
         DialogPane dialogPane = alerta.getDialogPane();
@@ -158,9 +156,6 @@ public class PrestecController implements Initializable {
         // La mostrem i esperem click
         alerta.showAndWait();
         // Tanquem finestra
-        //raiz.getScene().getWindow().hide();
-        //Stage stage1 = stage.getScene().getWindow();
-        //stage1.close();
         stage.getScene().getWindow();
         // Obrim finestra de login
         Parent parent = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));
@@ -178,7 +173,7 @@ public class PrestecController implements Initializable {
         try {
             // Creem el HashMap on rebrem el codi de resposta
             HashMap<String, String> msg_in;
-            // Fem l'accio de fer la reserva
+            // Fem l'accio de tornar el prestec
             msg_in = AccionsClient.tornarReserva(prestec);
             // Obtenim el codi de resposta
             codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
@@ -190,12 +185,12 @@ public class PrestecController implements Initializable {
             // Sessio caducada
             if(codi_resposta.equals("10")){
                 sessioCaducada();
-            // Rserva correcta
+            // Reserva correcta
             }else if(codi_resposta.equals("2200")){
                 alerta.setAlertType(Alert.AlertType.INFORMATION);
                 alerta.showAndWait();
                 raiz.getScene().getWindow().hide();
-            // Error al fer la reserva
+            // Error al retornar prestec
             }else{
                 prestec = null;
                 alerta.setAlertType(Alert.AlertType.ERROR);

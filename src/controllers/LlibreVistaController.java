@@ -8,8 +8,6 @@ import dumogo.AccionsClient;
 import dumogo.CodiErrors;
 import dumogo.Comentari;
 import dumogo.Llibre;
-import dumogo.PestanyaLlistat;
-import dumogo.Usuari;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -159,7 +157,6 @@ public class LlibreVistaController implements Initializable {
         butoAccio.setOnMouseClicked( new EventHandler() {
             @Override
             public void handle(Event event) {
-                //ferReserva();
                 ferReserva();
             }
         });
@@ -189,6 +186,7 @@ public class LlibreVistaController implements Initializable {
             aplicarFiltre();
         });
         
+        // Creem el contingut del llistat per poder votar
         ObservableList<String> valoracio = FXCollections.observableArrayList("1","2","3","4","5");
         choiceBoxValoracio.setItems(valoracio);
     }    
@@ -196,7 +194,7 @@ public class LlibreVistaController implements Initializable {
     private void omplirDades(Llibre llibre){
         // Agafem el llibre i el guardem
         this.llibre = llibre;
-        // Omplim els camps de pantalla amb l'usuari
+        // Omplim els camps de pantalla amb el llibre
         labelTitol.setText(llibre.getNom());        
         labelAutor.setText(llibre.getAutor());
         labelAnyPublicacio.setText(llibre.getAny_Publicacio());
@@ -204,15 +202,12 @@ public class LlibreVistaController implements Initializable {
         labelValoracio.setText(llibre.getValoracio());
         labelVots.setText(llibre.getVots());
         labelDescripcio.setText(llibre.getDescripcio());
-        //textFieldAdminAlta.setText(llibre.getAdmin_alta());
-        //datePickerDataAlta.setValue(LocalDate.parse(llibre.getData_alta()));
         textFieldReservatDNI.setText(llibre.getUser_name());
         
         String caratula = llibre.getCaratula();
         if(!caratula.equals("null")){
             // Per la caratula tenim que decodejar l'string
             BufferedImage buffer = AccionsClient.decodeToImage(caratula);
-            //BufferedImage buffer = decodeToImage(caratula);
             Image imatge = SwingFXUtils.toFXImage(buffer, null);
             imageViewCaratula.setImage(imatge);
         }
@@ -242,19 +237,18 @@ public class LlibreVistaController implements Initializable {
         labelValoracio.setText("");
         labelVots.setText("");
         labelDescripcio.setText("");
-        //textFieldAdminAlta.setText("");
-        //datePickerDataAlta.setValue(LocalDate.now());
         textFieldReservatDNI.setText("");
         
-        //data_comentaris.forEach(tableViewComentaris.getItems()::remove);
+        // Esborrem el contigut de la taula
         if(data_comentaris != null){
             data_comentaris.forEach(tableViewComentaris.getItems()::remove);
         }
     }
     
     public void mostrarLlibre(Llibre ll){
+        // Esborrem el llibre
         esborrarDades();
-        // Omplim les dades per les dades obtingudes de l'usuari
+        // Omplim les dades per les dades obtingudes del llibre
         omplirDades(ll);
         
         // Si la reserva esta 'LLIURE' mostrem el boto per poder reservar-lo
@@ -310,7 +304,7 @@ public class LlibreVistaController implements Initializable {
             
             if(!text_comentari.equals("") || text_comentari != null){
                 comentari = new Comentari(id_comentari, id_llibre, user_name, text_comentari, data_creacio);               
-                // Fem l'accio de fer la reserva
+                // Fem l'accio d'afegir comentari
                 msg_in = AccionsClient.afegirComentari(comentari);
                 // Obtenim el codi de resposta
                 codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
@@ -327,7 +321,7 @@ public class LlibreVistaController implements Initializable {
                     alerta.setAlertType(Alert.AlertType.INFORMATION);
                     alerta.showAndWait();
                     raiz.getScene().getWindow().hide();
-                // Error al fer la reserva
+                // Error al fer el comentari
                 }else{
                     llibre = null;
                     alerta.setAlertType(Alert.AlertType.ERROR);
@@ -343,12 +337,12 @@ public class LlibreVistaController implements Initializable {
 
     private void ferVotacio(){
         try {            
-            // Obtenim el comentari, la data actual i l'usuari
+            // Obtenim la puntuacio seleccionada
             String puntuacio = choiceBoxValoracio.getSelectionModel().getSelectedItem().toString();
-            System.out.println("puntuacio: " + puntuacio);
             
+            // Si ha escollit una valoracio
             if(!puntuacio.equals("") || puntuacio != null){
-                // Fem l'accio de fer la reserva
+                // Fem l'accio de puntuar llibre
                 msg_in = AccionsClient.puntuarLlibre(llibre, puntuacio);
                 // Obtenim el codi de resposta
                 codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
@@ -365,7 +359,7 @@ public class LlibreVistaController implements Initializable {
                     alerta.setAlertType(Alert.AlertType.INFORMATION);
                     alerta.showAndWait();
                     raiz.getScene().getWindow().hide();
-                // Error al fer la reserva
+                // Error al puntuar llibre
                 }else{
                     llibre = null;
                     alerta.setAlertType(Alert.AlertType.ERROR);
@@ -402,14 +396,14 @@ public class LlibreVistaController implements Initializable {
             // Quan es tanqui esborrem el stage de memòria                    
             stageComentari.setOnHiding(we -> stageComentari = null);
 
-            // Mostrem la finestra del usuari a editar
+            // Mostrem la finestra del comentari a mostrar
             stageComentari.show();   
 
         // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
         }else{
             stageComentari.toFront();
         }
-        // Actualitzem el controlador (finestra usuari) per mijtà del mètode dins del controlador
+        // Actualitzem el controlador (finestra comentari) per mijtà del mètode dins del controlador
         comentariControlador.mostrarComentari(c);
     }
     
@@ -476,8 +470,6 @@ public class LlibreVistaController implements Initializable {
     private void crearFiltre(){
         mapaNomCamps = Comentari.mapaNomCamps;
         llistaFiltre = FXCollections.observableArrayList(
-                //mapaNomCamps.get("id"),
-                //mapaNomCamps.get("id_llibre"),
                 mapaNomCamps.get("user_name"),
                 mapaNomCamps.get("comentari"), 
                 mapaNomCamps.get("data")                        
@@ -559,8 +551,9 @@ public class LlibreVistaController implements Initializable {
     }
     
     private void columnesComentaris(){
-        // Per crear totes les columnes de la taula usuaris
+        // Per crear totes les columnes de la taula comentaris
 
+        // Primer esborrem les columnes
         tableViewComentaris.getColumns().clear();
                 
         TableColumn<Comentari,String> col_ID = new TableColumn<Comentari,String>(mapaNomCamps.get("id"));        
@@ -593,12 +586,14 @@ public class LlibreVistaController implements Initializable {
                 return p.getValue().data();
         }});
         
+        // Afegim les columnes a la taula
         tableViewComentaris.getColumns().addAll(
             col_Data,
             col_NomUsuari, 
             col_Commentari            
         );         
         
+        // Establim que facin la mateixa amplada
         tableViewComentaris.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
    
@@ -609,8 +604,6 @@ public class LlibreVistaController implements Initializable {
     
     public void sessioCaducada() throws IOException {
         // En cas de retornar codi 10 (sessio caducada)
-        // Obtenim el text de l'error
-        //significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
         // Creem l'alerta que farem servir per informar d'errors o accions correctes
         alerta = new Alert(Alert.AlertType.NONE);
         // Per poder aplicar estil a les alertes hem de aplicar-les al dialogpane
@@ -626,9 +619,6 @@ public class LlibreVistaController implements Initializable {
         // La mostrem i esperem click
         alerta.showAndWait();
         // Tanquem finestra
-        //raiz.getScene().getWindow().hide();
-        //Stage stage1 = stage.getScene().getWindow();
-        //stage1.close();
         stage.getScene().getWindow();
         // Obrim finestra de login
         Parent parent = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));

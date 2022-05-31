@@ -395,11 +395,9 @@ public class AdminEdicioController implements Initializable {
         ((Node) (event.getSource())).getScene().getWindow().hide();
     }
     
-    private void sessioCaducada() throws IOException {
+    public void sessioCaducada() throws IOException {
         // En cas de retornar codi 10 (sessio caducada)
-        // Obtenim el text de l'error
-        //significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-                // Creem l'alerta que farem servir per informar d'errors o accions correctes
+        // Creem l'alerta que farem servir per informar d'errors o accions correctes
         alerta = new Alert(Alert.AlertType.NONE);
         // Per poder aplicar estil a les alertes hem de aplicar-les al dialogpane
         DialogPane dialogPane = alerta.getDialogPane();
@@ -413,10 +411,6 @@ public class AdminEdicioController implements Initializable {
         alerta.setHeaderText(significat_codi_resposta);
         // La mostrem i esperem click
         alerta.showAndWait();
-        // Tanquem finestra
-        //raiz.getScene().getWindow().hide();
-        //Stage stage1 = stage.getScene().getWindow();
-        //stage1.close();
         stage.getScene().getWindow();
         // Obrim finestra de login
         Parent parent = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));

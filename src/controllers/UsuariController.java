@@ -11,8 +11,10 @@ import dumogo.Llibre;
 import dumogo.PestanyaLlistat;
 import dumogo.Usuari;
 import dumogo.Administrador;
+import dumogo.Prestec;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -70,10 +72,29 @@ public class UsuariController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // Creem l'alerta que farem servir per informar d'errors o accions correctes
         alerta = new Alert(Alert.AlertType.NONE);
         alerta.initStyle(StageStyle.UNDECORATED);
+        // Per poder aplicar estil a les alertes hem de aplicar-les al dialogpane
         DialogPane dialogPane = alerta.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());        
+        
+        // Comprovem si l'usuari te prestecs urgents
+        ArrayList<Prestec> llista_prestecs_urgents = null;
+        try {
+            // Obtenim el llistat_d'elements
+            llista_prestecs_urgents = AccionsClient.obtenirLlistat(PRESTEC_URGENTS);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UsuariController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        // Si en el llistat hi ha algun prestec fem avis
+        if(!llista_prestecs_urgents.get(0).getID_reserva().equals("null")){
+            alerta.setAlertType(Alert.AlertType.INFORMATION);
+            alerta.setHeaderText("Tens prestecs urgents per tornar!");
+            alerta.showAndWait();
+        }
+        
     }
     
     @FXML
@@ -286,8 +307,6 @@ public class UsuariController implements Initializable {
             
             if(paraula_busqueda != null){
                 msg_in = AccionsClient.buscarElement(paraula_busqueda, tipus_busqueda);
-                System.out.println("RESULTAT BUSQUEDA:");
-                System.out.println(msg_in.toString());
 
                 // Obtenim el codi de resposta
                 codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);

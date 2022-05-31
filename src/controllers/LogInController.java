@@ -56,6 +56,25 @@ public class LogInController implements Initializable {
     @FXML
     private ToggleButton buttonOpcioEntrada;
        
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        EventHandler enter = new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent ke) {
+            if (ke.getCode().equals(KeyCode.ENTER)) {
+                try {
+                    logIn();
+                } catch (IOException ex) {
+                    Logger.getLogger(LogInController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(LogInController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }};
+        textFieldUsuari.setOnKeyPressed(enter);
+        passwordFieldPassword.setOnKeyPressed(enter);
+    }  
+    
     @FXML
     private void logInButtonAction(ActionEvent event) throws IOException, ClassNotFoundException {
         logIn();
@@ -68,7 +87,7 @@ public class LogInController implements Initializable {
         String usuari = textFieldUsuari.getText();
         String password = passwordFieldPassword.getText();
         String tipus_inici = buttonOpcioEntrada.getText();
-        //String password2 = AccionsClient.getMD5(password);
+        
         // Creem el Hashmap per obtenir el codi de resposta
         HashMap msg_in;
                        
@@ -76,7 +95,6 @@ public class LogInController implements Initializable {
         msg_in = AccionsClient.ferLogIn(usuari, password, tipus_inici);
         codi_resposta = (String) msg_in.get(STRING_CODI_RESPOSTA);
         
-        System.out.println("(LOGIN CONTROLLER)codi_resposta:" + codi_resposta);
         // En cas d'error comprobem el significat i mostrem l'error en la label destinada per aquest us
         if(codi_resposta.equals("8000")){
             
@@ -112,7 +130,6 @@ public class LogInController implements Initializable {
             stage.show();
         }else if(codi_resposta.equals("-1")){
             significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-            System.out.println("Codi de resposta: " + codi_resposta + " - " + significat_codi_resposta);
             Alert alerta = new Alert(Alert.AlertType.NONE);
             DialogPane dialogPane = alerta.getDialogPane();
             dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
@@ -123,7 +140,6 @@ public class LogInController implements Initializable {
             alerta.show();
         }else{
             significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-            System.out.println("Codi de resposta: " + codi_resposta + " - " + significat_codi_resposta);
             labelLogInMissatge.setText(significat_codi_resposta);
         }
     }
@@ -138,23 +154,6 @@ public class LogInController implements Initializable {
         }
     }
    
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        EventHandler enter = new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent ke) {
-            if (ke.getCode().equals(KeyCode.ENTER)) {
-                try {
-                    logIn();
-                } catch (IOException ex) {
-                    Logger.getLogger(LogInController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(LogInController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }};
-        textFieldUsuari.setOnKeyPressed(enter);
-        passwordFieldPassword.setOnKeyPressed(enter);
-    }    
+  
     
 }

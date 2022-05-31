@@ -115,17 +115,13 @@ public class AccionsClient {
             
             // Enviem i rebem la informacio  
             mapOutputStream.writeObject(msg_out);            
-            //msg_in = (HashMap) mapInputStream.readObject();
 
             // Obtenim el codi de retorn de fer l'accio login
-            //String codi_resposta = (String) msg_in.get(STRING_CODI_RESPOSTA);
-            codi_resposta = (int) mapInputStream.readObject();   
-            //codi_resposta = mapInputStream.readInt();
-            //System.out.println("(ACCIONS CLIENT)codi_resposta:" + codi_resposta);
+            codi_resposta = (int) mapInputStream.readObject(); 
+            
             // Si el codi de retorn es correcte guardem el codi de connexio rebut del servidor
             // i el nom d'usuari per futures consultes
             if(codi_resposta == 8010 || codi_resposta == 8020 || codi_resposta == 8030 || codi_resposta == 7010 || codi_resposta == 7020 || codi_resposta == 7030 || codi_resposta == 0){
-                //System.out.println("(ACCIONS CLIENT 2)codi_resposta:" + String.valueOf(codi_resposta));
                 msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));               
             }else{                
                 msg_in.put(STRING_CODI_RESPOSTA, "8000");
@@ -133,6 +129,7 @@ public class AccionsClient {
                 nom_user_actual = usuari; 
 
             }      
+            
             // Tanquem connexio
             yourOutputStream.close();
             mapInputStream.close();
@@ -171,20 +168,19 @@ public class AccionsClient {
                  
             // Enviem i rebem la informacio  
             mapOutputStream.writeObject(msg_out);            
-            //msg_in = (HashMap) mapInputStream.readObject();
 
             // Obtenim el codi de retorn de fer l'accio login
-            //String codi_resposta = (String) msg_in.get(STRING_CODI_RESPOSTA);
             codi_resposta = (int) mapInputStream.readObject();   
-            //codi_resposta = mapInputStream.readInt();
-            //System.out.println("(ACCIONS CLIENT)codi_resposta:" + codi_resposta);
+
             // Si el codi de retorn es correcte guardem el codi de connexio rebut del servidor
             // i el nom d'usuari per futures consultes
             if(codi_resposta == 20 || codi_resposta == 10){
                 codi_connexio_client = null;
                 nom_user_actual = null;                
             }
+            
             msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));
+            
             // Tanquem connexio
             yourOutputStream.close();
             mapInputStream.close();
@@ -235,13 +231,12 @@ public class AccionsClient {
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);           
             msg_in = (HashMap) mapInputStream.readObject(); 
-            //System.out.println(msg_in.toString()); 
             
-            // Establim connexio
+            // Tanquem connexio
             yourOutputStream.close();
             mapInputStream.close();
             
-            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio del element
             return msg_in; 
             
         } catch (UnknownHostException ex) {
@@ -289,19 +284,16 @@ public class AccionsClient {
             }       
             msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
             
-            //System.out.println("ELEMENT A ENVIAR (" + tipus + "):");
-            //System.out.println(msg_out);
-            
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);     
             codi_resposta = (int) mapInputStream.readObject();
             msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
             
-            // Establim connexio
+            // Tanquem connexio
             yourOutputStream.close();
             mapInputStream.close();
             
-            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio del element
             return msg_in;            
             
         } catch (UnknownHostException ex) {
@@ -363,7 +355,7 @@ public class AccionsClient {
             codi_resposta = (int) mapInputStream.readObject();
             msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
             
-            // Establim connexio
+            // Tanquem connexio
             yourOutputStream.close();
             mapInputStream.close();
             
@@ -404,20 +396,17 @@ public class AccionsClient {
                 llibreAHashmap(msg_out, (Llibre)obj);
             }            
             msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
-                   
-            //System.out.println("ELEMENT A ENVIAR (" + obj.getClass().getSimpleName() + "):");
-            //System.out.println(msg_out);
             
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);     
             codi_resposta = (int) mapInputStream.readObject();
             msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
             
-            // Establim connexio
+            // Tanquem connexio
             yourOutputStream.close();
             mapInputStream.close();
             
-            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio del element
             return msg_in;            
             
         } catch (UnknownHostException ex) {
@@ -449,10 +438,8 @@ public class AccionsClient {
             // Afegim el nom d'usuari i password a modificar al hashmap
             if(obj instanceof Usuari){                
                 msg_out.put(STRING_NOM_USUARI, ((Usuari) obj).getUser_name());
-                //msg_out.put("password", ((Usuari) obj).getPassword());
             }else if(obj instanceof Administrador){
                 msg_out.put(STRING_NOM_ADMINISTRADOR, ((Administrador) obj).getNom_Admin());
-                //msg_out.put("password", ((Administrador) obj).getPassword());  
             }            
             msg_out.put("password_nou", password);            
             
@@ -461,11 +448,11 @@ public class AccionsClient {
             codi_resposta = (int) mapInputStream.readObject();
             msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
             
-            // Establim connexio
+            // Tanquem connexio
             yourOutputStream.close();
             mapInputStream.close();
             
-            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio del element
             return msg_in;            
             
         } catch (UnknownHostException ex) {
@@ -493,20 +480,17 @@ public class AccionsClient {
             msg_out.put("accio", "reserva_llibre");
             llibreAHashmap(msg_out, (Llibre)obj);
             msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
-                   
-            //System.out.println("ELEMENT A ENVIAR (" + obj.getClass().getSimpleName() + "):");
-            //System.out.println(msg_out);
             
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);     
             codi_resposta = (int) mapInputStream.readObject();
             msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
             
-            // Establim connexio
+            // Tanquem connexio
             yourOutputStream.close();
             mapInputStream.close();
             
-            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio del element
             return msg_in;            
             
         } catch (UnknownHostException ex) {
@@ -538,20 +522,17 @@ public class AccionsClient {
             }            
                 
             msg_out.put(STRING_CODI_CONNEXIO, String.valueOf(codi_connexio_client));
-                   
-            //System.out.println("ELEMENT A ENVIAR (" + obj.getClass().getSimpleName() + "):");
-            //System.out.println(msg_out);
             
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);     
             codi_resposta = (int) mapInputStream.readObject();
             msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
             
-            // Establim connexio
+            // Tanquem connexio
             yourOutputStream.close();
             mapInputStream.close();
             
-            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio del element
             return msg_in;            
             
         } catch (UnknownHostException ex) {
@@ -572,7 +553,7 @@ public class AccionsClient {
             // Creem el HashMap per enviar i el List per rebre les dades per fer l'accio
             msg_out = new HashMap<>();
             List<HashMap> llistat_hashmaps;
-            // Creem l'ArrayList on guardarem tots els usuaris
+            // Creem l'ArrayList on guardarem tots els elements
             ArrayList llistat = new ArrayList<>();
             
             // Omplim el HasMap amb l'accio del llistat que volem i el codi de connexio
@@ -610,8 +591,6 @@ public class AccionsClient {
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);            
             llistat_hashmaps = (List) mapInputStream.readObject();
-            //System.out.println("LLISTAT OBTINGUT:");
-            //System.out.println(llistat_hashmaps);
             
             if(tipus.equals(USUARI_CASE)){
                 // Omplim el llistat d'usuaris amb els usuaris de cada HashMap dins del List tornat
@@ -642,7 +621,7 @@ public class AccionsClient {
                     llistat.add(p);
                 }   
             }else if(tipus.equals(COMENTARI_CASE)){
-                // Omplim el llistat de llibres amb els llibres de cada HashMap dins del List tornat
+                // Omplim el llistat de comentaris amb els comentaris de cada HashMap dins del List tornat
                 for (HashMap obj:llistat_hashmaps) {
                     Comentari c = new Comentari(obj);
                     llistat.add(c);
@@ -675,22 +654,19 @@ public class AccionsClient {
             // Creem el HashMap per enviar i el List per rebre les dades per fer l'accio
             msg_out = new HashMap<>();
             List<HashMap> llistat_hashmaps;
-            // Creem l'ArrayList on guardarem tots els usuaris
+            // Creem l'ArrayList on guardarem tots els comentaris
             ArrayList llistat = new ArrayList<>();
             
             // Omplim el HasMap amb l'accio del llistat que volem i el codi de connexio
             msg_out.put("accio", "llista_comentaris");            
             msg_out.put(STRING_CODI_CONNEXIO, codi_connexio_client);
             llibreAHashmap(msg_out, ll);
-            //System.out.println(msg_out);
             
             // Enviem i rebem la informacio
             mapOutputStream.writeObject(msg_out);            
             llistat_hashmaps = (List) mapInputStream.readObject();
-            //System.out.println("COMENTARIS OBTINGUTS:");
-            //System.out.println(llistat_hashmaps);
             
-            // Omplim el llistat de llibres amb els llibres de cada HashMap dins del List tornat
+            // Omplim el llistat de comentaris amb els comentaris de cada HashMap dins del List tornat
             for (HashMap obj:llistat_hashmaps) {
                 Comentari c = new Comentari(obj);
                 llistat.add(c);
@@ -700,7 +676,7 @@ public class AccionsClient {
             yourOutputStream.close();
             mapInputStream.close();
 
-            // Retornem el llistat d'usuaris
+            // Retornem el llistat de comentaris
             return llistat; 
            
             
@@ -738,11 +714,11 @@ public class AccionsClient {
             codi_resposta = (int) mapInputStream.readObject();
             msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
             
-            // Establim connexio
+            // Tanquem connexio
             yourOutputStream.close();
             mapInputStream.close();
             
-            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio del element
             return msg_in;            
             
         } catch (UnknownHostException ex) {
@@ -777,11 +753,11 @@ public class AccionsClient {
             codi_resposta = (int) mapInputStream.readObject();
             msg_in.put(STRING_CODI_RESPOSTA, String.valueOf(codi_resposta));        
             
-            // Establim connexio
+            // Tanquem connexio
             yourOutputStream.close();
             mapInputStream.close();
             
-            // Retornem el HashMap de la informacio rebuda amb tota la informacio de l'usuari
+            // Retornem el HashMap de la informacio rebuda amb tota la informacio del element
             return msg_in;            
             
         } catch (UnknownHostException ex) {

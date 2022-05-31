@@ -164,7 +164,6 @@ public class UsuariEdicioController implements Initializable {
     }
     
     public void modificarUsuari(Usuari u){
-        /** PER MODIFICAR PERFIL DESDE L'ADMINISTRADOR **/
         // Omplim les dades per les dades obtingudes de l'usuari
         omplirDades(u);
         // Com es desde l'administrador s'han de poder editar tots els camps
@@ -179,7 +178,6 @@ public class UsuariEdicioController implements Initializable {
                 usuari = obtenirUsuariPantalla();
                 if(usuari!=null){
                     // Omplim el camp "nom_admin_antic" del Usuari amb el nom anterior
-                    System.out.println("user_name_actual: "+ user_name_actual);
                     usuari.setUser_name_antic(user_name_actual);
                     try {
                         // Creem el HashMap on rebrem el codi de resposta
@@ -356,8 +354,6 @@ public class UsuariEdicioController implements Initializable {
                                 }else{
                                     label_resultat.setText(significat_codi_resposta);
                                 }
-                                System.out.println("modificarpassword msg_in:");
-                                System.out.println(msg_in.toString());
                             }else{
                                 // Si la variable usuari esta buida es que estem afegint un usuari nou
                                 passwordFieldPassword.setText(pass1);

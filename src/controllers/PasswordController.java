@@ -53,21 +53,17 @@ public class PasswordController extends UsuariEdicioController implements Initia
         alerta.setContentText("");        
         if(pass1.equals(pass2)){
             sessioCaducada();
-            //msg_in = AccionsClient.modificarPassword(pass1);
             codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
             // Comprobem el text del codi de resposta
             significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
             // Sessio caducada
-            if(codi_resposta.equals("10")){
-                //sessioCaducada();
-            // Usuari eliminat correctament
-            }else if(codi_resposta.equals("9000")){
+            if(codi_resposta.equals("9000")){
                 alerta.setAlertType(Alert.AlertType.INFORMATION);
                 alerta.setHeaderText(significat_codi_resposta);
                 alerta.showAndWait();
                 // Tanquem finestra
                 passwordFieldPassword1.getScene().getWindow().hide();
-            // Error al eliminar usuari
+            // Error al modificar password
             }else{
                 alerta.setAlertType(Alert.AlertType.ERROR);
                 alerta.setHeaderText(significat_codi_resposta);

@@ -49,8 +49,6 @@ import javafx.stage.StageStyle;
  */
 public class AdminController implements Initializable {
 
-    private ObservableList<Usuari> dataUsuaris;
-    private Usuari usuariTemp;
     private Object element_temp;
     private Date tempsUltimClick;
     private Stage stageUsuari, stageAdministrador, stageBuscar, stageLlibre, stagePrestec;
@@ -67,20 +65,20 @@ public class AdminController implements Initializable {
     private final static String ADMINISTRADOR_CASE = "administradors";
     private final static String LLIBRE_CASE = "llibres";
     private final static String PRESTEC_CASE = "prestecs";
-    private final static String PRESTEC_USUARI_CASE = "prestecs_usuari";
     private final static String PRESTEC_NO_TORNATS_CASE = "prestecs_no_tornats";
-    private final static String PRESTEC_LLEGITS_CASE = "prestecs_llegits";
     
     @FXML
     private TabPane tabPaneGeneral;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // Creem l'alerta que farem servir per informar d'errors o accions correctes
         alerta = new Alert(Alert.AlertType.NONE);
         alerta.initStyle(StageStyle.UNDECORATED);
+        // Per poder aplicar estil a les alertes hem de aplicar-les al dialogpane
         DialogPane dialogPane = alerta.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());   
-        tabPaneGeneral.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+        tabPaneGeneral.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
     }
     
     @FXML
@@ -166,9 +164,6 @@ public class AdminController implements Initializable {
                 @Override
                 public void handle(Event event) {
                     try {
-                        //Usuari usuari_fila = (Usuari) tb.getSelectionModel().getSelectedItem();
-                        //dataUsuaris = null;
-                        //pt.actualitzaDadesTaula();
                         pt.actualitzarDades();
                     } catch (ClassNotFoundException ex) {
                         Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
@@ -183,7 +178,6 @@ public class AdminController implements Initializable {
                     try {
                         // Mirem l'element clickat
                         Object element = tb.getSelectionModel().getSelectedItem();
-                        //Usuari usuari_fila = (Usuari) tb.getSelectionModel().getSelectedItem();
                         if(element == null){
                             alerta.setAlertType(Alert.AlertType.INFORMATION);
                             alerta.setTitle("Selecció");
@@ -206,7 +200,6 @@ public class AdminController implements Initializable {
                     try {
                         // Mirem l'element clickat
                         Object element = tb.getSelectionModel().getSelectedItem();
-                        //Usuari usuari_fila = (Usuari) tb.getSelectionModel().getSelectedItem();
                         if(element == null){
                             alerta.setAlertType(Alert.AlertType.INFORMATION);
                             alerta.setTitle("Selecció");
@@ -238,22 +231,14 @@ public class AdminController implements Initializable {
                 }
             });
 
-            // Configurem el EventHandler en cas de fer click al boto actualitzar
-            butoFiltre.setOnMouseClicked( new EventHandler() {
-                @Override
-                public void handle(Event event) {
-                    //Usuari usuari_fila = (Usuari) tb.getSelectionModel().getSelectedItem();
-                    //dataUsuaris = null;
-                    //pt.actualitzaDadesTaula();
-                    //pt.aplicarFiltre();
-                }
-            });
-
+            // Si la pestanya es de prestecs eliminem els botons de modificar, afegir i eliminar
+            if(tipus_pestanya.equals(PRESTEC_CASE) || tipus_pestanya.equals(PRESTEC_NO_TORNATS_CASE)){
+               pt.vistaUsuari(); 
+            }
             // Afegim la pestanya al grup de pestanyes
             tabPaneGeneral.getTabs().add(pt);
             // Seleccionem la pestanya creada
             tabPaneGeneral.getSelectionModel().select(pt);
-            //tableViewUsuaris.setEditable(true);
         }
     }
     
@@ -296,11 +281,6 @@ public class AdminController implements Initializable {
                         String paraula_busqueda = buscador.getParaula();
                         if(paraula_busqueda != null){
                             buscarElement(paraula_busqueda, tipus_busqueda);
-                            /*
-                            if(buscarElement2(paraula_busqueda, tipus_busqueda)){
-                                stageBuscar.close();
-                            }
-                            */
                         }else{
                             alerta.setAlertType(Alert.AlertType.ERROR);
                             alerta.setHeaderText("El camp no pot estar buit");
@@ -322,29 +302,31 @@ public class AdminController implements Initializable {
             
             stageBuscar = new Stage();
             stageBuscar.initModality(Modality.WINDOW_MODAL);
-            //Image icon = new Image("/resources/usuari_icon_neg_16.png");
             stageBuscar.getIcons().add(icon);
             stageBuscar.setTitle(titol_busqueda);
             stageBuscar.setResizable(false);
             stageBuscar.setScene(new Scene(buscador));
             stageBuscar.initOwner( tabPaneGeneral.getScene().getWindow() );
             stageBuscar.setOnHiding(we -> stageBuscar = null);
-            stageBuscar.show();
-            
-        // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
+            stageBuscar.show();            
+        
         }else{
+            // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
             stageBuscar.toFront();
         }
     }
     
     @FXML
     private void modificarPerfil(ActionEvent event) throws IOException{
+        // Obtenim el nom de l'usuari
         String paraula_busqueda = AccionsClient.getNom_user_actual();
+        // Fem l'accio de trobar l'usuari
         buscarElement(paraula_busqueda, ADMINISTRADOR_CASE);
     }
     
     @FXML
     private void afegirElement(Event event) throws IOException{
+        // Obtenim el tipus d'element que volem afegir per mitja de l'ID del buto
         String tipus = "";
         if(event.getSource() instanceof Button){
             Button menuItem = (Button)event.getSource();
@@ -353,23 +335,28 @@ public class AdminController implements Initializable {
             MenuItem menuItem = (MenuItem)event.getSource();
             tipus = menuItem.getId();
         }
+        
+        // En funcio del tipus fem una accio
         switch(tipus){
             case USUARI_CASE:
                 // Obrim la finestra usuari
                 obrirFinestraElement(tipus);
                 stageUsuari.setTitle("Afegir usuari");
+                // Cridem el metode del controlador per afegir l'usuari
                 usuariEdicioControlador.afegirUsuari();
                 break;
             case ADMINISTRADOR_CASE:
-                // Obrim la finestra usuari
+                // Obrim la finestra administrador
                 obrirFinestraElement(tipus);
                 stageAdministrador.setTitle("Afegir administrador");
+                // Cridem el metode del controlador per afegir l'administrador
                 adminEdicioControlador.afegirAdministrador();
                 break;
             case LLIBRE_CASE:
-                // Obrim la finestra usuari
+                // Obrim la finestra llibre
                 obrirFinestraElement(tipus);
                 stageLlibre.setTitle("Afegir llibre");
+                // Cridem el metode del controlador per afegir el llibre
                 llibreEdicioControlador.afegirLlibre();
                 break;
         }
@@ -378,15 +365,14 @@ public class AdminController implements Initializable {
     private void buscarElement(String paraula_busqueda, String tipus_busqueda) throws IOException{
         
         try {
-            // Comprobem que per buscar un llibre introduim un numero
+            // Comprobem que en el cas de buscar un llibre introduim un numero
             if(tipus_busqueda.equals(LLIBRE_CASE)){
                 int test = Integer.valueOf(paraula_busqueda);
             }
             
             if(paraula_busqueda != null){
+                // Cridem l'accio de buscar un element indicant la paraula i el tipus
                 msg_in = AccionsClient.buscarElement(paraula_busqueda, tipus_busqueda);
-                System.out.println("RESULTAT BUSQUEDA:");
-                System.out.println(msg_in.toString());
 
                 // Obtenim el codi de resposta
                 codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
@@ -401,6 +387,7 @@ public class AdminController implements Initializable {
                     if(stageBuscar != null){
                         stageBuscar.close();
                     }
+                    // Cridem l'accio de modificar un element creant el tipus d'element rebut
                     switch(tipus_busqueda){
                         case USUARI_CASE:
                             modificarElement(new Usuari((HashMap)msg_in));
@@ -438,9 +425,9 @@ public class AdminController implements Initializable {
             // Actualitzem el controlador (finestra usuari) per mijtà del mètode dins del controlador
             usuariEdicioControlador.modificarUsuari((Usuari)obj);
         }else if(obj instanceof Administrador){
-            // Obrim la finestra ud'administradorsuari 
+            // Obrim la finestra administrador
             obrirFinestraElement(ADMINISTRADOR_CASE);
-            // Actualitzem el controlador (finestra usuari) per mijtà del mètode dins del controlador
+            // Actualitzem el controlador (finestra administrador) per mijtà del mètode dins del controlador
             adminEdicioControlador.modificarAdministrador((Administrador)obj);;
         }else if(obj instanceof Llibre){
             // Obrim la finestra llibre 
@@ -448,9 +435,9 @@ public class AdminController implements Initializable {
             // Actualitzem el controlador (finestra llibre) per mijtà del mètode dins del controlador
             llibreEdicioControlador.modificarLlibre((Llibre)obj);
         }else if(obj instanceof Prestec){
-            // Obrim la finestra llibre 
+            // Obrim la finestra prestec 
             obrirFinestraElement(PRESTEC_CASE);
-            // Actualitzem el controlador (finestra llibre) per mijtà del mètode dins del controlador
+            // Actualitzem el controlador (finestra prestec) per mijtà del mètode dins del controlador
             prestecEdicioControlador.modificarPrestec((Prestec)obj);
         }
     }
@@ -459,9 +446,11 @@ public class AdminController implements Initializable {
         
         alerta.setAlertType(Alert.AlertType.CONFIRMATION);
         
+        // Obtenim el tipus d'element que volem eliminar per mitja de l'ID del buto
         Button menuItem = (Button)event.getSource();
         String tipus = menuItem.getId();
         
+        // Obrim una alerta per confirmar que volem fer l'accio d'eliminar l'element 
         switch(tipus){
             case USUARI_CASE:
                 Usuari u = (Usuari)obj;
@@ -486,6 +475,7 @@ public class AdminController implements Initializable {
                 break;
         }
         
+        // En funcio del buto clickat (OK) farem l'accio
         Optional<ButtonType> option = alerta.showAndWait();
         if (option.get() == ButtonType.OK) {                
             // Fem l'accio d'eliminar l'element
@@ -498,12 +488,12 @@ public class AdminController implements Initializable {
             // Sessio caducada
             if(codi_resposta.equals("10")){
                 sessioCaducada();
-            // Usuari eliminat correctament
+            // Element eliminat correctament
             }else if(codi_resposta.equals("3000") || codi_resposta.equals("4000") || codi_resposta.equals("1500")){
                 alerta.setAlertType(Alert.AlertType.INFORMATION);
                 alerta.setHeaderText(significat_codi_resposta);
                 alerta.show();
-            // Error al eliminar usuari
+            // Error al eliminar l'element
             }else{
                 alerta.setAlertType(Alert.AlertType.ERROR);
                 alerta.setHeaderText(significat_codi_resposta);
@@ -580,7 +570,7 @@ public class AdminController implements Initializable {
                     // Quan es tanqui esborrem el stage de memòria                    
                     stageLlibre.setOnHiding(we -> stageLlibre = null);
 
-                    // Mostrem la finestra del usuari a editar
+                    // Mostrem la finestra del llibre a editar
                     stageLlibre.show();   
 
                 // En cas de ja estigui creat el stage (finestra oberta) el portem al davant
@@ -604,7 +594,7 @@ public class AdminController implements Initializable {
                     // Quan es tanqui esborrem el stage de memòria                    
                     stagePrestec.setOnHiding(we -> stagePrestec = null);
 
-                    // Mostrem la finestra del usuari a editar
+                    // Mostrem la finestra del prestec a editar
                     stagePrestec.show();   
 
                 // En cas de ja estigui creat el stage (finestra oberta) el portem al davant

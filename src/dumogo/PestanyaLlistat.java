@@ -22,8 +22,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -76,8 +74,7 @@ public final class PestanyaLlistat extends Tab {
     
     public PestanyaLlistat(String nomLlista, String tipusLlista) throws ClassNotFoundException {
         super(nomLlista);
-        
-        
+
         this.tipusLlista = tipusLlista;
         taulaLlistat = new TableView();
         taulaLlistat.setPlaceholder(new Label("No hi ha registres"));
@@ -263,7 +260,6 @@ public final class PestanyaLlistat extends Tab {
         
         if(tipusLlista.equals(USUARI_CASE)){            
         
-            //data_filtrada_llibres
             // Filtrem les dades
             data_filtrada_usuaris = new FilteredList<>(data_usuaris, b -> true);        
             data_filtrada_usuaris.setPredicate(usuariFiltrat -> {
@@ -367,7 +363,6 @@ public final class PestanyaLlistat extends Tab {
             
         }else if(tipusLlista.equals(ADMINISTRADOR_CASE)){            
         
-            //data_filtrada_llibres
             // Filtrem les dades
             data_filtrada_administradors = new FilteredList<>(data_administradors, b -> true);        
             data_filtrada_administradors.setPredicate(adminFiltrat -> {
@@ -458,7 +453,6 @@ public final class PestanyaLlistat extends Tab {
             
         }else if(tipusLlista.equals(LLIBRE_CASE)){            
         
-            //data_filtrada_llibres
             // Filtrem les dades
             data_filtrada_llibres = new FilteredList<>(data_llibres, b -> true);        
             data_filtrada_llibres.setPredicate(llibreFiltrat -> {
@@ -707,6 +701,7 @@ public final class PestanyaLlistat extends Tab {
     public void actualitzarDades() throws ClassNotFoundException {        
         // Obtenim les dades
         if(obtenirDades()){
+            // Creem filtre
             crearFiltre();
             // Filtrem les dades
             aplicarFiltre(); 
@@ -735,6 +730,7 @@ public final class PestanyaLlistat extends Tab {
                 columnesPrestecs();
                 break;            
         }
+        // Establim que facin la mateixa amplada
         taulaLlistat.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
     
@@ -983,7 +979,6 @@ public final class PestanyaLlistat extends Tab {
                 col_DataAltaLlibre, 
                 col_User_name, 
                 col_AdminAltaLlibre, 
-                //col_CaratulaLlibre,  
                 col_DescripcioLlibre, 
                 col_ValoracioLlibre, 
                 col_VotsLlibre
@@ -1051,6 +1046,7 @@ public final class PestanyaLlistat extends Tab {
     }
             
     public void vistaUsuari(){
+        // Per treure els botos de modificar, afegir i eliminar
         hbButons.getChildren().removeAll(butoAfegir, butoModificar, butoEliminar);
     }
 }

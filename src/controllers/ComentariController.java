@@ -63,16 +63,18 @@ public class ComentariController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // Creem l'alerta que farem servir per informar d'errors o accions correctes
         alerta = new Alert(Alert.AlertType.NONE);
         alerta.initStyle(StageStyle.UNDECORATED);
+        // Per poder aplicar estil a les alertes hem de aplicar-les al dialogpane
         DialogPane dialogPane = alerta.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
     }    
     
     public void mostrarComentari(Comentari comentari){
-        // Agafem el llibre i el guardem
+        // Agafem el comentari i el guardem
         this.comentari = comentari;
-        // Omplim els camps de pantalla amb l'usuari
+        // Omplim els camps de pantalla amb el comentari
         labelComentari.setText(comentari.getComentari());        
         labelUsuari.setText(comentari.getUser_name());
         labelData.setText(comentari.getData());
@@ -84,7 +86,6 @@ public class ComentariController implements Initializable {
             buto_eliminar.setOnMouseClicked( new EventHandler() {
                 @Override
                 public void handle(Event event) {
-                    //ferReserva();
                     eliminarComentari();
                 }
             });
@@ -102,18 +103,17 @@ public class ComentariController implements Initializable {
         Optional<ButtonType> option = alerta.showAndWait();
         if (option.get() == ButtonType.OK) {   
             try {
-                // Fem l'accio d'eliminar l'element
+                // Fem l'accio d'eliminar el comentari
                 msg_in = AccionsClient.eliminarElement(comentari);
             
                 // Obtenim el codi de resposta
                 codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);
-                // codi_resposta = "10";
                 // Comprobem el text del codi de resposta
                 significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
                 // Sessio caducada
                 if(codi_resposta.equals("10")){
                     sessioCaducada();
-                // Usuari eliminat correctament
+                // Comentari eliminat correctament
                 }else if(codi_resposta.equals("2800")){
                     Alert alerta2 = new Alert(Alert.AlertType.NONE);
                     alerta2.initStyle(StageStyle.UNDECORATED);
@@ -123,7 +123,7 @@ public class ComentariController implements Initializable {
                     alerta2.setHeaderText(significat_codi_resposta);
                     alerta2.showAndWait();
                     labelComentari.getScene().getWindow().hide();
-                // Error al eliminar usuari
+                // Error al eliminar el comentari
                 }else{
                     alerta.setAlertType(Alert.AlertType.ERROR);
                     alerta.setHeaderText(significat_codi_resposta);

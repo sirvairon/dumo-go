@@ -7,18 +7,11 @@ package controllers;
 import dumogo.AccionsClient;
 import dumogo.CodiErrors;
 import dumogo.Llibre;
-import dumogo.Prestec;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -64,12 +57,9 @@ public class LlibreEdicioController implements Initializable {
     private String nom_llibre_actual;
     private String codi_resposta;
     private String significat_codi_resposta;
-    private final static String LLIBRE_CASE = "llibres";
     private static final String STRING_CODI_RESPOSTA = "codi_retorn";
     private static final String STRING_RESERVA_LLIURE = "LLIURE";
     private Alert alerta;
-    private HashMap<String, String> msg_in;
-    private ObservableList<String> llistaFiltreTipus;
     
     @FXML
     private VBox raiz;    
@@ -111,11 +101,12 @@ public class LlibreEdicioController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // Creem l'alerta que farem servir per informar d'errors o accions correctes
         alerta = new Alert(Alert.AlertType.NONE);
+        alerta.initStyle(StageStyle.UNDECORATED);
         // Per poder aplicar estil a les alertes hem de aplicar-les al dialogpane
         DialogPane dialogPane = alerta.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/styles/alertes.css").toExternalForm());
-        alerta.initStyle(StageStyle.UNDECORATED);
         
+        // Creem el contingut de les opcions del tipus de llibre
         ObservableList<String> tipus = FXCollections.observableArrayList("Fantasia", "Suspens", "Terror", "Aventures", "Romantica", "Historia", "Ciencia");
         choiceBoxTipus.setItems(tipus);
     }    
@@ -123,7 +114,7 @@ public class LlibreEdicioController implements Initializable {
     private void omplirDades(Llibre llibre){
         // Agafem el llibre i el guardem
         this.llibre = llibre;
-        // Omplim els camps de pantalla amb l'usuari
+        // Omplim els camps de pantalla amb el llibre
         textFieldTitol.setText(llibre.getNom());        
         textFieldAutor.setText(llibre.getAutor());
         textFieldAnyPublicacio.setText(llibre.getAny_Publicacio());
@@ -140,7 +131,6 @@ public class LlibreEdicioController implements Initializable {
         if(!caratula.equals("null")){
             // Per la caratula tenim que decodejar l'string
             BufferedImage buffer = AccionsClient.decodeToImage(caratula);
-            //BufferedImage buffer = decodeToImage(caratula);
             Image imatge = SwingFXUtils.toFXImage(buffer, null);
             imageViewCaratula.setImage(imatge);
         }
@@ -149,6 +139,7 @@ public class LlibreEdicioController implements Initializable {
     private void esborrarDades(){
         // Esborrem el llibre de memoria
         this.llibre = null;
+        
         // Esborrem els camps de pantalla
         textFieldTitol.setText("");        
         textFieldAutor.setText("");
@@ -170,6 +161,7 @@ public class LlibreEdicioController implements Initializable {
         BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
         String imagen = AccionsClient.encodeToString(bImage,"jpg");
 
+        // Comprovem si hi s'ha escollit tipus de llibre
         String tipus = "";
         try{                
             tipus = choiceBoxTipus.getSelectionModel().getSelectedItem().toString();
@@ -177,6 +169,7 @@ public class LlibreEdicioController implements Initializable {
             Logger.getLogger(LlibreEdicioController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        // Si no s'ha escollit tipus de llibre mostrem alerta
         if(tipus.equals("") || tipus == null){
             // Configurem l'alerta que ens confirmara que hi ha hagut error a l'obtenir les dades del llibre a pantalla
             alerta.setTitle("Tipus de llibre");
@@ -184,6 +177,7 @@ public class LlibreEdicioController implements Initializable {
             alerta.setAlertType(Alert.AlertType.ERROR);
             alerta.show();
             return null;
+        // Si es correcte creem el llibre
         }else{
             Llibre ll = new Llibre (
                 new SimpleStringProperty(""), // ID
@@ -211,11 +205,9 @@ public class LlibreEdicioController implements Initializable {
         esborrarDades();
         // Establim per defecte la data d'avui
         datePickerDataAlta.setValue(LocalDate.now());
-        // Establim l'administrador que esta afegint l'usuari
+        // Establim l'administrador que esta afegint el llibre
         textFieldAdminAlta.setText(AccionsClient.getNom_user_actual());
-        // Com es un alta nova desde l'administrador s'han de poder editar tots els camps
-        //textFieldDNI.setDisable(false);
-        // Establim al buto de l'accio, l'accio que volem fer (afegir)
+        // Establim al buto de l'accio (afegir)
         butoAccio.setText("Afegir");
         // Configurem el EventHandler en cas de fer click al boto d'afegir
         butoAccio.setOnMouseClicked( new EventHandler() {
@@ -264,22 +256,17 @@ public class LlibreEdicioController implements Initializable {
     }
     
     public void modificarLlibre(Llibre ll){
-        /** PER MODIFICAR PERFIL DESDE L'ADMINISTRADOR **/
-        // Omplim les dades per les dades obtingudes de l'usuari
+        // Omplim les dades per les dades obtingudes del llibre
         omplirDades(ll);
-        // Com es desde l'administrador s'han de poder editar tots els camps
-        //textFieldDNI.setDisable(false);
-        // Establim al buto de l'accio, l'accio que volem fer (modificar)
+        // Establim al buto de l'accio (modificar)
         butoAccio.setText("Modificar");
         // Configurem el EventHandler en cas de fer click al boto de modificar
         butoAccio.setOnMouseClicked( new EventHandler() {
             @Override
             public void handle(Event event) {
-                // Abans d'obtenir les dades del llibre guardem el seu nom ja que serveix d'identificador
-                //String titol_antic = llibre.getNom();                
                 // Obtenim les dades del llibre amb les dades de la pantalla
                 llibre = obtenirLlibrePantalla();
-                System.out.println("nom_llibre_actual: "+ nom_llibre_actual);
+                // Abans d'obtenir les dades del llibre guardem el seu nom ja que serveix d'identificador en el camp "nom_llibre_actual"
                 llibre.setNom_Antic(nom_llibre_actual);
                 try {
                     // Creem el HashMap on rebrem el codi de resposta
@@ -301,7 +288,7 @@ public class LlibreEdicioController implements Initializable {
                         alerta.setAlertType(Alert.AlertType.INFORMATION);
                         alerta.showAndWait();
                         ((Node) (event.getSource())).getScene().getWindow().hide();
-                    // Error al modificar l'usuari
+                    // Error al modificar el llibre
                     }else{
                         alerta.setAlertType(Alert.AlertType.ERROR);
                         alerta.show();
@@ -336,9 +323,7 @@ public class LlibreEdicioController implements Initializable {
     
     public void sessioCaducada() throws IOException {
         // En cas de retornar codi 10 (sessio caducada)
-        // Obtenim el text de l'error
-        //significat_codi_resposta = CodiErrors.ComprobarCodiError(codi_resposta);
-                // Creem l'alerta que farem servir per informar d'errors o accions correctes
+        // Creem l'alerta que farem servir per informar d'errors o accions correctes
         alerta = new Alert(Alert.AlertType.NONE);
         // Per poder aplicar estil a les alertes hem de aplicar-les al dialogpane
         DialogPane dialogPane = alerta.getDialogPane();
@@ -352,10 +337,6 @@ public class LlibreEdicioController implements Initializable {
         alerta.setHeaderText(significat_codi_resposta);
         // La mostrem i esperem click
         alerta.showAndWait();
-        // Tanquem finestra
-        //raiz.getScene().getWindow().hide();
-        //Stage stage1 = stage.getScene().getWindow();
-        //stage1.close();
         stage.getScene().getWindow();
         // Obrim finestra de login
         Parent parent = FXMLLoader.load(getClass().getResource("/views/LogIn.fxml"));
@@ -373,6 +354,7 @@ public class LlibreEdicioController implements Initializable {
     public Image carregarImatge() throws IOException{        
         Image imatge;
         
+        // Obtenim l'imagtge que volem ficar i fiquem de filtre JPG i PNG
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");        
         FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.JPG");
@@ -380,6 +362,7 @@ public class LlibreEdicioController implements Initializable {
         fileChooser.getExtensionFilters().addAll(extFilterJPG, extFilterPNG);
         File file = fileChooser.showOpenDialog(stage);
         
+        // Si s'ha escollit una imatge la posem a la imageview
         if (file != null) {
             BufferedImage bufferedImage = ImageIO.read(file);
             imatge = SwingFXUtils.toFXImage(bufferedImage, null);
@@ -393,7 +376,7 @@ public class LlibreEdicioController implements Initializable {
         try {
             // Creem el HashMap on rebrem el codi de resposta
             HashMap<String, String> msg_in;
-            // Fem l'accio de fer la reserva
+            // Fem l'accio de tornar la reserva
             msg_in = AccionsClient.tornarReserva(llibre);
             // Obtenim el codi de resposta
             codi_resposta = msg_in.get(STRING_CODI_RESPOSTA);

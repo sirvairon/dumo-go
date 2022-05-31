@@ -16,7 +16,6 @@ import javafx.scene.layout.VBox;
  */
 public class Buscador extends VBox {
     
-    //private final VBox vbContigut, vbBusqueda;
     private final VBox vbBusqueda;
     private final HBox hbButons;    
     private final Label tipus;
@@ -27,7 +26,6 @@ public class Buscador extends VBox {
     private final static String LLIBRE_CASE = "llibres";
     
     public Buscador(String tipus_busqueda) {
-        //vbContigut = new VBox();
         vbBusqueda = new VBox();
         hbButons = new HBox();   
         tipus = new Label();

@@ -5,7 +5,7 @@
             <url>src/dumogo/PestanyaLlistat.java</url>
             <bookmark id="1">
                 <name/>
-                <line>821</line>
+                <line>822</line>
                 <key/>
             </bookmark>
         </file>
@@ -18,7 +18,11 @@
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/LogInController.java</file>
         </group>
         <group name="DUMO-GO">
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/AdminController.java</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/AccionsClient.java</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/styles/general.css</file>
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/LlibreEdicioController.java</file>
+            <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/dumogo/PestanyaLlistat.java</file>
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/test/dumogo/AccionsClientTest.java</file>
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/AdminEdicioController.java</file>
             <file>file:/G:/Proyectos%20NetBeans/DumoGo/src/controllers/LlibreVistaController.java</file>
