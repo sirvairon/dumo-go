@@ -7,25 +7,36 @@ package dumogo;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.security.MessageDigest;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.SimpleStringProperty;
 import javax.imageio.ImageIO;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 
 /**
  *
@@ -57,13 +68,13 @@ public class AccionsClient {
     private static ObjectInputStream mapInputStream;
     private static HashMap<String, String> msg_out;
     private static HashMap<String, String> msg_in;
-
+            
     
     public static String getNom_user_actual() {
         return nom_user_actual;
     }
         
-    private static int establirConnexio(){
+    private static int establirConnexio2(){
         
         int port = 7777;
             
@@ -82,6 +93,65 @@ public class AccionsClient {
         } catch (UnknownHostException ex) {
             Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return -1;
+    }
+    
+    private static int establirConnexio(){
+        SSLSocket client;
+        
+        int port = 7777;
+            
+        try {            
+            KeyStore keyStore = KeyStore.getInstance("JKS");
+            //keyStore.load(new FileInputStream("certificat/clientKey2.jks"), "clientpass".toCharArray());
+            keyStore.load(new FileInputStream("certificat/clientPCKey.jks"), "client_dg2022".toCharArray());
+
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            //kmf.init(keyStore, "clientpass".toCharArray());
+            kmf.init(keyStore, "client_dg2022".toCharArray());
+
+            KeyStore trustedStore = KeyStore.getInstance("JKS");
+            //trustedStore.load(new FileInputStream("certificat/clientTrustedCerts.jks"), "clientpass".toCharArray());
+            trustedStore.load(new FileInputStream("certificat/clientPCTrustedCerts.jks"), "client_dg2022".toCharArray());
+
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(trustedStore);
+
+            SSLContext sc = SSLContext.getInstance("TLS");
+            TrustManager[] trustManagers = tmf.getTrustManagers();
+            KeyManager[] keyManagers = kmf.getKeyManagers();
+            sc.init(keyManagers, trustManagers, null);
+
+            SSLSocketFactory ssf = sc.getSocketFactory();
+            InetAddress address = InetAddress.getByName("localhost");
+            client = (SSLSocket) ssf.createSocket(address, port);
+            client.startHandshake();
+            
+            yourOutputStream = client.getOutputStream();
+            mapOutputStream = new ObjectOutputStream(yourOutputStream);
+            
+            yourInputStream = client.getInputStream();
+            mapInputStream = new ObjectInputStream(yourInputStream);
+
+            return 1;
+                
+            
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (KeyStoreException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (CertificateException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnrecoverableKeyException ex) {
+            Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (KeyManagementException ex) {
             Logger.getLogger(AccionsClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         
